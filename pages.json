@@ -1,0 +1,68 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "Remote WOL"
+			}
+		}
+	    ,{
+            "path" : "pages/manage/manage",
+            "style" :                                                                                    
+            {
+                // "navigationBarTitleText": "Management",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":{
+						"buttons":[{
+							"text":"\ue600",
+							"fontSrc":"/static/iconfont.ttf",
+							"fontSize":"20px"
+						}]
+					}
+				}
+            }
+        }
+        ,{
+            "path" : "pages/settings/settings",
+            "style" :                                                                                    
+            {
+                // "navigationBarTitleText": "Settings",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"tabBar": {
+		"color":"#bdbdbd",
+		"selectedColor":"#1e88e5",
+		"borderStyle":"black",
+		"backgroundColor":"#424242",
+		"list":[
+			{
+				"pagePath":"pages/index/index",
+				// "text":"首页",
+				"iconPath":"static/icons/home.png",
+				"selectedIconPath":"static/icons/home_selected.png"
+			},
+			{
+				"pagePath":"pages/manage/manage",
+				// "text":"管理",
+				"iconPath":"static/icons/manage.png",
+				"selectedIconPath":"static/icons/manage_selected.png"
+			},
+			{
+				"pagePath":"pages/settings/settings",
+				// "text":"设置",
+				"iconPath":"static/icons/settings.png",
+				"selectedIconPath":"static/icons/settings_selected.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "Remote WOL",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
