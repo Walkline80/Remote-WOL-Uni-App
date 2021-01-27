@@ -1,4 +1,4 @@
-<h1 align="center">Remote WOL MicroPython</h1>
+<h1 align="center">Remote WOL Uni-App</h1>
 
 <p align="center"><img src="https://img.shields.io/badge/Licence-MIT-green.svg?style=for-the-badge" /></p>
 
