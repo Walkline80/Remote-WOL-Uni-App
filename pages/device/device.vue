@@ -105,7 +105,14 @@
 			}
 		},
 		onLoad(options) {
-			const item = this.DEV ? JSON.parse('{"id":0,"ssid":"zysa-2.4G","bssid":"d0:76:e7:10:04:3b","level":-37}') : JSON.parse(decodeURIComponent(options.item))
+			// #ifdef APP-PLUS
+			const item = JSON.parse(decodeURIComponent(options.item))
+			// #endif
+			
+			// #ifndef APP-PLUS
+			const item = JSON.parse('{"id":0,"ssid":"zysa-2.4G","bssid":"d0:76:e7:10:04:3b","level":-37}')
+			// #endif
+			
 			const event_channel = this.getOpenerEventChannel()
 			
 			// event_channel.emit('acceptDataFromOpenedPage', "feedback")
