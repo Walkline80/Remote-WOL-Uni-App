@@ -1,14 +1,15 @@
 <template>
 	<view>
 		<view>
-			<uni-list v-for="(item, index) in wifi_list" :key="index">
+			<uni-list v-for="(item, index) in wifi_list" :key="index" :border=false>
 				<uni-list-item
-					clickable
+					link="navigateTo"
 					thumb="/static/icons/wifi.png"
 					thumbSize="base"
 					:title="item.ssid"
 					:note="'mac: ' + item.bssid + ' level: ' + item.level"
-					style="border: none;"></uni-list-item>
+					style="border: none;"
+					@click="device_detail_click(item)"></uni-list-item>
 			</uni-list>
 		</view>
 	</view>
@@ -66,6 +67,17 @@
 			})
 		},
 		methods: {
+			device_detail_click: function (item) {
+				console.log("item: " + JSON.stringify(item))
+				uni.navigateTo({
+					url:"../device/device?item=" + encodeURIComponent(JSON.stringify(item)),
+					events:{
+						acceptDataFromOpenedPage(data) {
+							console.log(data)
+						}
+					}
+				})
+			}
 		}
 	}
 
