@@ -16,8 +16,8 @@
 </template>
 
 <script>
-	import * as manage from "./manage.js"
-	
+	import wifi_handler from "../../common/wifi_handler.js"
+		
 	export default {
 		data() {
 			return {
@@ -25,9 +25,9 @@
 			}
 		},
 		onLoad() {
-			if (!this.DEV && this.ANDROID) {
-				manage.grant_wifi_permission()
-			}
+			// #ifdef APP-PLUS
+			console.log("wifi enabled: " + wifi_handler.is_wifi_enabled())
+			// #endif
 		},
 		onNavigationBarButtonTap(e) {
 			// search button click event
@@ -35,7 +35,11 @@
 				console.log("searching")
 				
 				// #ifdef APP-PLUS
-				this.$data.wifi_list = manage.loadWifiInfo()
+				if (!wifi_handler.is_wifi_enabled()) {
+					wifi_handler.set_wifi_enabled(true)
+				}
+				
+				this.$data.wifi_list = wifi_handler.scan_wifi()
 				// #endif
 				
 				// #ifndef APP-PLUS
