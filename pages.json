@@ -5,8 +5,8 @@
 			"style": {
 				"navigationBarTitleText": "Remote WOL"
 			}
-		}
-	    ,{
+		},
+	    {
             "path" : "pages/manage/manage",
             "style" :                                                                                    
             {
@@ -22,16 +22,21 @@
 					}
 				}
             }
-        }
-        ,{
-            "path" : "pages/settings/settings",
-            "style" :                                                                                    
-            {
+        },
+        {
+            "path": "pages/settings/settings",
+            "style": {
                 // "navigationBarTitleText": "Settings",
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+			"path":"pages/device/device",
+			"style": {
+				"navigationBarTitleText":"设备详情"
+			}
+		}
     ],
 	"tabBar": {
 		"color":"#bdbdbd",
