@@ -1,3 +1,10 @@
+/**
+ * The MIT License (MIT)
+ * Copyright © 2021 Walkline Wang (https://walkline.wang)
+ * 
+ * https://gitee.com/walkline/remote-wol-uni-app
+ */
+
 plus.android.importClass("java.util.List")
 plus.android.importClass("java.util.ArrayList")
 plus.android.importClass("android.net.wifi.WifiManager")
