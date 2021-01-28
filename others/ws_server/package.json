@@ -1,0 +1,11 @@
+{
+  "name": "ws_server",
+  "version": "0.0.1",
+  "main": "server.js",
+  "author": "Walkline Wang",
+  "license": "MIT",
+  "dependencies": {
+    "validator": "^13.5.2",
+    "ws": "^7.4.2"
+  }
+}
