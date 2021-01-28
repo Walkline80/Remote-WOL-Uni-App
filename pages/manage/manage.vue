@@ -25,9 +25,6 @@
 			}
 		},
 		onLoad() {
-			// #ifdef APP-PLUS
-			console.log("wifi enabled: " + wifi_handler.is_wifi_enabled())
-			// #endif
 		},
 		onNavigationBarButtonTap(e) {
 			// search button click event
@@ -35,10 +32,6 @@
 				console.log("searching")
 				
 				// #ifdef APP-PLUS
-				if (!wifi_handler.is_wifi_enabled()) {
-					wifi_handler.set_wifi_enabled(true)
-				}
-				
 				this.$data.wifi_list = wifi_handler.scan_wifi()
 				// #endif
 				
