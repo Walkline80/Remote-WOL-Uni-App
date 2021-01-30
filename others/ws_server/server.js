@@ -60,7 +60,7 @@ wss.on('connection', function connection(ws, req) {
 	const client_ip = req.connection.remoteAddress;
 	const client_port = req.connection.remotePort;
 
-	console.log(`client [${client_ip}:${client_port}] connected with path '${client_path}'`);
+	console.log(`[client (${client_ip}:${client_port})] connected with path '${client_path}'`);
 
 	if (client_path !== valid_path) {
 		ws.send('it\'s not your device!');
@@ -68,7 +68,7 @@ wss.on('connection', function connection(ws, req) {
 	}
 	
 	ws.on('message', function incoming(message) {
-		console.log('received: %s', message);
+		console.log('[%s] received: %s', `client (${client_ip}:${client_port})`, message);
 		
 		if (validator.isJSON(message)) {
 			var json_object = JSON.parse(message);
@@ -77,7 +77,7 @@ wss.on('connection', function connection(ws, req) {
 				case IDENTITY:
 					identity_result.hardware_version = 'Version0';
 					identity_result.hardware_name = 'Remote WOL v0';
-					identity_result.mac_address = '112233445566';
+					identity_result.mac_address = '246f289da321';
 					identity_result.ip_address = '192.168.66.1';
 					
 					ws.send(JSON.stringify(identity_result));
@@ -139,10 +139,10 @@ wss.on('connection', function connection(ws, req) {
 	});
 
 	ws.on('close', function() {
-		console.log('connection closed');
+		console.log('[%s] connection closed', `client (${client_ip}:${client_port})`);
 	});
-	
+
 	ws.on('error', function (error) {
-		console.log('connection error', error);
+		console.log('[%s] connection error: %s', `client (${client_ip}:${client_port})`, error);
 	});
 });
