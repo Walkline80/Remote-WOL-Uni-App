@@ -5,6 +5,7 @@
  * https://gitee.com/walkline/remote-wol-uni-app
  */
 
+// #ifdef APP-PLUS
 plus.android.importClass("java.util.List")
 plus.android.importClass("java.util.ArrayList")
 plus.android.importClass("android.net.wifi.WifiManager")
@@ -254,3 +255,4 @@ export default {
 	get_ip_address,
 	get_dhcp_info
 }
+// #endif
