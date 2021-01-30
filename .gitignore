@@ -6,3 +6,4 @@ unpackage/
 wxcomponents/**/*.vue
 wxcomponents/**/*.css
 package-lock.json
+/others/device_test_data.js
