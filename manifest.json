@@ -60,5 +60,8 @@
     },
     "uniStatistics" : {
         "enable" : false
-    }
+    },
+	"networkTimeout" : {
+		"connectSocket" : 3000
+	}
 }
