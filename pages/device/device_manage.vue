@@ -8,8 +8,8 @@
 -->
 
 <template>
-	<view>
-		<text>无设备</text>
+	<view class="page_notice" v-show="show_notice">
+		<text>点击加号添加硬件</text>
 	</view>
 </template>
 
@@ -17,10 +17,16 @@
 	export default {
 		data() {
 			return {
+				show_notice: true
 			}
 		},
-		onLoad(options) {
+		onHide() {
 			
+		},
+		onShow() {
+			// load device list from storage
+		},
+		onLoad(options) {
 		},
 		onReady() {
 		},
