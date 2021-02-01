@@ -29,4 +29,14 @@
 
 <style>
 	/*每个页面公共css */
+	.page_notice {
+		margin-top: 200rpx;
+		text-align: center;
+		font-size: 40rpx;
+		color: #C8C7CC;
+	}
+	
+	page {
+		background-color: #999999;
+	}
 </style>
