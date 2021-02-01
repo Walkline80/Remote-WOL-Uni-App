@@ -164,7 +164,14 @@
 			},
 			button_save_click (form) {
 				this.$refs.form.submit().then(result => {
-					console.log("form info: ", result);
+					// console.log("form info: ", result);
+
+					uni.navigateBack({
+						delta: 2,
+					});
+					
+					this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
+					
 				}).catch(error => {
 					console.log("form error: ", error);
 				})
