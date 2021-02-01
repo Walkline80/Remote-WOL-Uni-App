@@ -27,7 +27,6 @@
 		    		}
 		    	}
 		    }
-		    
 		},
 		{
 		    "path" : "pages/computer/commputer_add",
@@ -105,18 +104,18 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "添加硬件",
-                "enablePullDownRefresh": false,
+                "enablePullDownRefresh": true,
 				"app-plus":{
 					"titleNView":{
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加硬件",
-						"titleAlign": "left",
-						"buttons":[{
-							"text":"\ue63e",
-							"fontSrc":"/static/iconfont.ttf",
-							"fontSize":"20px"
-						}]
+						"titleAlign": "left"
+						// "buttons":[{
+						// 	"text":"\ue63e",
+						// 	"fontSrc":"/static/iconfont.ttf",
+						// 	"fontSize":"20px"
+						// }]
 					}
 				}
             }
@@ -156,32 +155,6 @@
             
         }
     ],
-	// "tabBar": {
-	// 	"color":"#bdbdbd",
-	// 	"selectedColor":"#1e88e5",
-	// 	"borderStyle":"black",
-	// 	"backgroundColor":"#424242",
-	// 	"list":[
-	// 		{
-	// 			"pagePath":"pages/index/index",
-	// 			// "text":"首页",
-	// 			"iconPath":"static/icons/home.png",
-	// 			"selectedIconPath":"static/icons/home_selected.png"
-	// 		},
-	// 		{
-	// 			"pagePath":"pages/manage/manage",
-	// 			// "text":"管理",
-	// 			"iconPath":"static/icons/manage.png",
-	// 			"selectedIconPath":"static/icons/manage_selected.png"
-	// 		},
-	// 		{
-	// 			"pagePath":"pages/settings/settings",
-	// 			// "text":"设置",
-	// 			"iconPath":"static/icons/settings.png",
-	// 			"selectedIconPath":"static/icons/settings_selected.png"
-	// 		}
-	// 	]
-	// },
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "Remote WOL",
