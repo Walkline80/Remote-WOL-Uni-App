@@ -120,6 +120,7 @@ var connect = function (ssid) {
 		var enabled = wifiManager.enableNetwork(network_id, true);
 		
 		if (enabled) {
+			sleep(1000);
 			return true;
 		} else {
 			console.log("enable network failed");
@@ -145,7 +146,7 @@ var disconnect = function () {
  */
 var get_dhcp_info = function () {
 	turn_on_wifi();
-	sleep();
+	sleep(1000);
 	
 	var info = wifiManager.getDhcpInfo();
 	var json_result = new Object();
@@ -158,7 +159,8 @@ var get_dhcp_info = function () {
 	json_result["server"] = ip_to_string(info.plusGetAttribute("serverAddress"));
 	json_result["dns1"] = ip_to_string(info.plusGetAttribute("dns1"));
 	json_result["dns2"] = ip_to_string(info.plusGetAttribute("dns2"));
-		
+	
+	sleep();
 	return json_result;
 }
 
