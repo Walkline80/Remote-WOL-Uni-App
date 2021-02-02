@@ -65,6 +65,7 @@
 
 <script>
 	import test_data from '../../others/device_test_data.js'
+	import wifi_handler from '../../common/wifi_handler.js'
 
 	export default {
 		data() {
@@ -176,7 +177,7 @@
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
 					// console.log("form info: ", result);
-					
+					wifi_handler.connect(this.$data.device_info.ssid);
 					this.start_test_websocket_client();
 				}).catch(error => {
 					console.log("form error: ", error);
@@ -199,11 +200,12 @@
 			},
 			start_save_websocket_client () {
 				var that = this;
+				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
 				
 				uni.closeSocket();
 				
 				var websocket = uni.connectSocket({
-					url: "ws://localhost:" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
+					url: "ws://"  + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
 						console.log("websocket completed");
 					}
@@ -249,15 +251,12 @@
 								websocket.send({
 									data: JSON.stringify(params)
 								});
-							}
-							break;
-						case 'reboot_device_result':
-							if (result.result === 'success') {
-								// uni.navigateBack({
-								// 	delta: 2,
-								// });
 								
-								// this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
+								uni.navigateBack({
+									delta: 2,
+								});
+								
+								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
 							}
 							break;
 						default:
@@ -272,11 +271,13 @@
 			},
 			start_test_websocket_client () {
 				var that = this;
+				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
 				
 				uni.closeSocket();
 				
+				// console.log("host: ws://" + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path);
 				var websocket = uni.connectSocket({
-					url: "ws://localhost:" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
+					url: "ws://" + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
 						console.log("websocket completed");
 					}
@@ -305,7 +306,7 @@
 					switch (result.command) {
 						case 'identity_result':
 							if (result.result === 'success') {
-								if (that.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address) {
+								if (that.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address.toLowerCase()) {
 									that.$data.device_info.hardware_name = result.hardware_name;
 									that.$data.device_info.hardware_version = result.hardware_version;
 									
