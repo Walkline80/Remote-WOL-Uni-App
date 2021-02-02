@@ -29,6 +29,9 @@
 		onLoad(options) {
 		},
 		onReady() {
+			// #ifdef APP-PLUS
+			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
+			// #endif
 		},
 		onNavigationBarButtonTap(e) {
 			// add button click event

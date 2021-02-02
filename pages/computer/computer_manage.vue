@@ -57,12 +57,17 @@
 			// 	icon:"none"
 			// })
 		},
-		onLoad() {
+		onLoad(options) {
 
+		},
+		onReady() {
+			// #ifdef APP-PLUS
+			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
+			// #endif
 		},
 		methods: {
 			open_settings_page () {
-				this.$refs.drawer.close();
+				// this.$refs.drawer.close();
 				
 				uni.navigateTo({
 					url: "../settings/settings",
@@ -70,7 +75,7 @@
 				})
 			},
 			open_device_manage_page () {
-				this.$refs.drawer.close();
+				// this.$refs.drawer.close();
 				
 				uni.navigateTo({
 					url: "../device/device_manage",
@@ -78,7 +83,7 @@
 				})
 			},
 			open_about_page () {
-				this.$refs.drawer.close();
+				// this.$refs.drawer.close();
 				
 				uni.navigateTo({
 					url: "../about/about",
