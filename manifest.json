@@ -62,6 +62,6 @@
         "enable" : false
     },
 	"networkTimeout" : {
-		"connectSocket" : 3000
+		"connectSocket" : 10000
 	}
 }
