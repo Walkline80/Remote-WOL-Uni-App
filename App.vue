@@ -35,8 +35,4 @@
 		font-size: 40rpx;
 		color: #C8C7CC;
 	}
-	
-	page {
-		background-color: #999999;
-	}
 </style>
