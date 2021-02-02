@@ -78,8 +78,7 @@
 				"level": -58
 			}]
 			// #endif
-			
-			this.$data.show_notice = false;
+			this.$data.show_notice = this.$data.wifi_list === null ? true : false;
 			uni.stopPullDownRefresh();
 		},
 		methods: {
