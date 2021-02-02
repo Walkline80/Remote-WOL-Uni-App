@@ -43,6 +43,11 @@ var check_mqtt_result_failed = {
 	"result": "failed"
 };
 
+var reboot_device_result = {
+	"command": "reboot_device_result",
+	"result": "success"
+};
+
 const url = require('url');
 const WebSocket = require('ws');
 const validator = require('validator');
@@ -84,14 +89,15 @@ wss.on('connection', function connection(ws, req) {
 					break;
 				case CHECK_WIFI:
 					check_wifi_result.result_code = 1010;
-					ws.send(JSON.parse(check_wifi_result));
+					ws.send(JSON.stringify(check_wifi_result));
 					
 					if (check_wifi_result.result_code === 1010) {
-						ws.send(JSON.stringify(check_internet_result_success));
-					} else {
-						ws.send(JSON.stringify(check_internet_result_failed));
-					}
-					
+						if (true) {
+							ws.send(JSON.stringify(check_internet_result_success));
+						} else {
+							ws.send(JSON.stringify(check_internet_result_failed));
+						}
+					} 
 					break;
 				case CHECK_MQTT:
 					var error = '5';
@@ -102,7 +108,7 @@ wss.on('connection', function connection(ws, req) {
 						switch (error) {
 							case '5':
 								check_mqtt_result_failed.error_code = '5';
-								check_mqtt_result_failed.error_msg = 'Authorized failed, check Device Number and Device Authorize';
+								check_mqtt_result_failed.error_msg = 'Authorized failed, check Username and Password';
 								break;
 							case '128':
 								check_mqtt_result_failed.error_code = '128';
@@ -124,10 +130,9 @@ wss.on('connection', function connection(ws, req) {
 					} else {
 						ws.send(JSON.stringify(save_settings_result_failed));
 					}
-					
 					break;
 				case REBOOT_DEVICE:
-					ws.send('rebooting device now');
+					ws.send(JSON.stringify(reboot_device_result));
 					break;
 				default:
 					ws.send('unknown command');
