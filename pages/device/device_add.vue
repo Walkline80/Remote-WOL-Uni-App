@@ -39,7 +39,7 @@
 			}
 		},
 		onShow() {
-			if (this.$data.wifi_list === null) {this.$data.show_notice = true;}
+			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false;
 		},
 		onLoad(options) {
 		},
@@ -57,28 +57,28 @@
 			
 			// #ifndef APP-PLUS
 			this.$data.wifi_list = [{
-				"id": 0,
+				"index": 0,
 				"ssid": "zysa-2.4G",
 				"bssid": "d0:76:e7:10:04:3b",
 				"level": -37
 			}, {
-				"id": 1,
+				"index": 1,
 				"ssid": "zysa-5G",
 				"bssid": "d0:76:e7:10:04:3d",
 				"level": -38
 			}, {
-				"id": 2,
+				"index": 2,
 				"ssid": "wol_246F289DA320",
 				"bssid": "24:6f:28:9d:a3:21",
 				"level": -39
 			}, {
-				"id": 3,
+				"index": 3,
 				"ssid": "TP-LINK_3470",
 				"bssid": "54:a7:03:ea:34:70",
 				"level": -58
 			}]
 			// #endif
-			this.$data.show_notice = this.$data.wifi_list === null ? true : false;
+			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false;
 			uni.stopPullDownRefresh();
 		},
 		methods: {
@@ -88,26 +88,21 @@
 				console.log("item: " + JSON.stringify(item))
 				
 				uni.navigateTo({
-					url:"../device/device_detail?item=" + encodeURIComponent(JSON.stringify(item)),
+					url:"../device/device_detail?modify=0&item=" + encodeURIComponent(JSON.stringify(item)),
 					events:{
 						acceptDataFromOpenedPage(data) {
 							console.log(data);
 							
-							that.$data.wifi_list = null;
+							that.$data.wifi_list = [];
 							// uni.startPullDownRefresh();
 						}
 					}
-				})
+				});
 			}
 		}
 	}
-
-	
 </script>
 
 <style>
-	button {
-		float: right;
-		margin: 10rpx;
-	}
+
 </style>
