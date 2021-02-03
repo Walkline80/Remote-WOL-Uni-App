@@ -204,7 +204,7 @@ var scan_wifi = function () {
 		var obj = results.get(count);
 
 		lists.push({
-			id: count,
+			index: count,
 			ssid: obj.plusGetAttribute("SSID") !== "" ? obj.plusGetAttribute("SSID") : "(empty)",
 			bssid: obj.plusGetAttribute("BSSID"),
 			level: obj.plusGetAttribute("level").toString(),
