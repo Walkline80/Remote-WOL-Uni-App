@@ -54,7 +54,7 @@ const validator = require('validator');
 const valid_path = '/control';
 
 const wss = new WebSocket.Server({
-	port: 8080,
+	port: 80,
 	path: valid_path
 });
 
@@ -85,13 +85,17 @@ wss.on('connection', function connection(ws, req) {
 					identity_result.mac_address = '246f289da321';
 					identity_result.ip_address = '192.168.66.1';
 					
+					sleep(1000);
 					ws.send(JSON.stringify(identity_result));
 					break;
 				case CHECK_WIFI:
 					check_wifi_result.result_code = 1010;
+					sleep(1000);
 					ws.send(JSON.stringify(check_wifi_result));
 					
 					if (check_wifi_result.result_code === 1010) {
+						sleep(1000);
+						
 						if (true) {
 							ws.send(JSON.stringify(check_internet_result_success));
 						} else {
@@ -101,6 +105,8 @@ wss.on('connection', function connection(ws, req) {
 					break;
 				case CHECK_MQTT:
 					var error = '5';
+					
+					sleep(1000);
 					
 					if (true) {
 						ws.send(JSON.stringify(check_mqtt_result_success));
@@ -125,6 +131,8 @@ wss.on('connection', function connection(ws, req) {
 
 					break;
 				case SAVE_SETTINGS:
+					sleep(3000);
+					
 					if (true) {
 						ws.send(JSON.stringify(save_settings_result_success));
 					} else {
@@ -132,6 +140,7 @@ wss.on('connection', function connection(ws, req) {
 					}
 					break;
 				case REBOOT_DEVICE:
+					sleep(1000);
 					ws.send(JSON.stringify(reboot_device_result));
 					break;
 				default:
@@ -151,3 +160,11 @@ wss.on('connection', function connection(ws, req) {
 		console.log('[%s] connection error: %s', `client (${client_ip}:${client_port})`, error);
 	});
 });
+
+function sleep(delay) {
+    var start = (new Date()).getTime();
+    while ((new Date()).getTime() - start < delay) {
+        // 使用  continue 实现；
+        continue; 
+    }
+}
