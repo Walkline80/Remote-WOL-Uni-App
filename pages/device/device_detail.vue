@@ -16,21 +16,21 @@
 				</uni-group>
 				<uni-group title="设置 WIFI" top=0>
 					<uni-forms-item required label="名称" name="wifi_ssid" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.wifi_ssid" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.wifi_ssid" />
 					</uni-forms-item>
 					<uni-forms-item required label="密码" name="wifi_password" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="password" v-model="device_info.wifi_password" />
+						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.wifi_password" />
 					</uni-forms-item>
 				</uni-group>
 				<uni-group title="设置 MQTT" top=0>
 					<uni-forms-item required name="mqtt_host" label="服务器" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_host" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_host" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_port" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_port" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_keepalive" label="KeepAlive" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_keepalive" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_keepalive" />
 					</uni-forms-item>
 					<uni-forms-item name="mqtt_bigiot_server" label="扇贝物联" :labelWidth="label_width" :labelAlign="label_align">
 						<switch v-model="device_info.mqtt_bigiot_server" @change="switch_to_bigiot"></switch>
@@ -39,13 +39,13 @@
 						<uni-easyinput type="text" v-model="device_info.mqtt_bigiot_username" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_client_id" label="客户端 ID" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_client_id" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_client_id" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_username" label="用户名" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_username" />
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_username" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_password" label="密码" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="password" v-model="device_info.mqtt_password" />
+						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.mqtt_password" />
 					</uni-forms-item>
 				</uni-group>
 				
@@ -66,6 +66,7 @@
 <script>
 	import test_data from '../../others/device_test_data.js'
 	import wifi_handler from '../../common/wifi_handler.js'
+	import settings_handler from '../../common/settings_handler.js'
 
 	export default {
 		data() {
@@ -76,7 +77,7 @@
 				popup_message: "成功",
 				label_width: 70,
 				label_align: "right",
-				device_info: null,
+				device_info: {},
 				event_channel: null,
 				rules: {
 					wifi_ssid: {
@@ -135,41 +136,58 @@
 			}
 		},
 		onLoad(options) {
-			// #ifdef APP-PLUS
-			const item = JSON.parse(decodeURIComponent(options.item))
-			// #endif
+			this.load_device_info(options);
 			
-			// #ifndef APP-PLUS
-			const item = JSON.parse('{"id":0,"ssid":"wol_246f289da320","bssid":"24:6f:28:9d:a3:21","level":-37}')
-			// #endif
-			
-			const event_channel = this.getOpenerEventChannel()
-			
+			this.$data.event_channel = this.getOpenerEventChannel();
 			// event_channel.emit('acceptDataFromOpenedPage', "feedback")
-			this.$data.device_info = item
-			this.$data.event_channel = event_channel
-			
-			this.$data.device_info.wifi_ssid = test_data.device_data.wifi_ssid
-			this.$data.device_info.wifi_password = test_data.device_data.wifi_password
-			this.$data.device_info.mqtt_host = test_data.device_data.mqtt_host
-			this.$data.device_info.mqtt_port = test_data.device_data.mqtt_port
-			this.$data.device_info.mqtt_keepalive = test_data.device_data.mqtt_keepalive
-			this.$data.device_info.mqtt_is_bigiot = false
-			this.$data.device_info.mqtt_bigiot_username = test_data.device_data.mqtt_bigiot_username
-			this.$data.device_info.mqtt_client_id = test_data.device_data.mqtt_client_id
-			this.$data.device_info.mqtt_username = test_data.device_data.mqtt_username
-			this.$data.device_info.mqtt_password = test_data.device_data.mqtt_password
-			this.$data.device_info.websocket_port = test_data.device_data.websocket_port
-			this.$data.device_info.websocket_path = test_data.device_data.websocket_path
 		},
 		onReady() {
 			// #ifdef APP-PLUS
 			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
 			// #endif
-			
-			// this.$refs.popup_message.open();
 		},
 		methods: {
+			load_device_info (options) {
+				var item;
+				var modify = true;
+
+				if (Object.keys(options).length !== 0) {
+					console.log("item data from prev page");
+					item = JSON.parse(decodeURIComponent(options.item));
+				} else {
+					console.log("item data from current page");
+					if (modify) {
+						options.modify = "1";
+						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":false,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}');
+					} else {
+						options.modify = "0";
+						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}');
+					}
+				}
+
+				if (options['modify'] === "0") {
+					console.log("device append");
+					this.$data.device_info.ssid = item.ssid
+					this.$data.device_info.bssid = item.bssid
+					this.$data.device_info.level = item.level
+					
+					this.$data.device_info.wifi_ssid = test_data.device_data.wifi_ssid
+					this.$data.device_info.wifi_password = test_data.device_data.wifi_password
+					this.$data.device_info.mqtt_host = test_data.device_data.mqtt_host
+					this.$data.device_info.mqtt_port = test_data.device_data.mqtt_port
+					this.$data.device_info.mqtt_keepalive = test_data.device_data.mqtt_keepalive
+					this.$data.device_info.mqtt_is_bigiot = false
+					this.$data.device_info.mqtt_bigiot_username = test_data.device_data.mqtt_bigiot_username
+					this.$data.device_info.mqtt_client_id = test_data.device_data.mqtt_client_id
+					this.$data.device_info.mqtt_username = test_data.device_data.mqtt_username
+					this.$data.device_info.mqtt_password = test_data.device_data.mqtt_password
+					this.$data.device_info.websocket_port = test_data.device_data.websocket_port
+					this.$data.device_info.websocket_path = test_data.device_data.websocket_path
+				} else {
+					console.log("device modify");
+					this.$data.device_info = item;
+				}
+			},
 			switch_to_bigiot (event) {
 				this.$data.is_bigiot_server = event.target.value;
 				this.$data.device_info.mqtt_is_bigiot = event.target.value;
@@ -177,7 +195,9 @@
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
 					// console.log("form info: ", result);
+					// #ifdef APP-PLUS
 					wifi_handler.connect(this.$data.device_info.ssid);
+					// #endif
 					this.start_test_websocket_client();
 				}).catch(error => {
 					console.log("form error: ", error);
@@ -200,7 +220,18 @@
 			},
 			start_save_websocket_client () {
 				var that = this;
+				// #ifdef APP-PLUS
 				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
+				// #endif
+				
+				// #ifndef APP-PLUS
+				var host_ip = "localhost";
+				// #endif
+				
+				uni.showLoading({
+					title: "请稍候...",
+					mask: true
+				});
 				
 				uni.closeSocket();
 				
@@ -235,9 +266,10 @@
 				
 				websocket.onError(function (res){
 					console.log("websocket error:", res);
+					uni.hideLoading();
 				});
 				
-				websocket.onMessage(function (res){
+				websocket.onMessage(function (res) {
 					const result = JSON.parse(res.data);
 					console.log("websocket message:", result);
 					
@@ -251,27 +283,45 @@
 								websocket.send({
 									data: JSON.stringify(params)
 								});
+
+								settings_handler.save_device_item(that.$data.device_info);
+
+								uni.hideLoading();
+								websocket.close();
 								
 								uni.navigateBack({
 									delta: 2,
 								});
 								
-								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
+								that.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
 							}
 							break;
 						default:
+							uni.hideLoading();
 							that.show_popup_message(`Unknown command: ${result.command}`);
 					}
 				});
 				
 				websocket.onClose(function (res){
+					uni.hideLoading();
 					console.log("websocket closed");
 					// that.show_popup_message("WebSocket Closed");
 				});
 			},
 			start_test_websocket_client () {
 				var that = this;
+				// #ifdef APP-PLUS
 				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
+				// #endif
+				
+				// #ifndef APP-PLUS
+				var host_ip = "localhost";
+				// #endif
+				
+				uni.showLoading({
+					title: "请稍候...",
+					mask: true
+				});
 				
 				uni.closeSocket();
 				
@@ -297,6 +347,7 @@
 				
 				websocket.onError(function (res){
 					console.log("websocket error:", res);
+					uni.hideLoading();
 				});
 				
 				websocket.onMessage(function (res){
@@ -320,6 +371,8 @@
 										data: JSON.stringify(params)
 									});
 								} else {
+									uni.hideLoading();
+									websocket.close();
 									that.show_popup_message('Device mac address not match');
 								}
 							}
@@ -329,6 +382,9 @@
 								// keep going
 							} else {
 								console.log("Device check wifi failed");
+								
+								uni.hideLoading();
+								websocket.close();
 								that.show_popup_message("Device check wifi failed");
 							}
 							break;
@@ -350,17 +406,24 @@
 									data: JSON.stringify(params)
 								});
 							} else {
+								uni.hideLoading();
+								websocket.close();
 								that.show_popup_message("Device check internet failed");
 							}
 							break;
 						case 'check_mqtt_result':
 							if (result.result === 'success') {
+								uni.hideLoading();
+								websocket.close();
 								that.show_popup_message("测试成功，请保存设置", "success");
 							} else {
+								uni.hideLoading();
+								websocket.close();
 								that.show_popup_message("Device check mqtt failed: " + result.error_msg)
 							}
 							break;
 						default:
+							uni.hideLoading();
 							that.show_popup_message(`Unknown command: ${result.command}`);
 					}
 				});
