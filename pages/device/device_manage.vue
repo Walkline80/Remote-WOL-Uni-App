@@ -8,16 +8,58 @@
 -->
 
 <template>
-	<view class="page_notice" v-show="show_notice">
-		<text>点击加号添加硬件</text>
+	<view>
+		<view class="page_notice" v-show="show_notice">
+			<text>点击加号添加硬件</text>
+		</view>
+		<!-- <view>
+			<uni-list v-for="(item, index) in device_list" :key="index" :border="false">
+				<uni-list-item
+					link="navigateTo"
+					thumb="/static/icons/device.png"
+					thumbSize="base"
+					:title="item.ssid"
+					:note="'mac: ' + item.bssid"
+					:rightText="item.status"
+					style="border: none;"
+					@click="device_detail_click(item)" />
+			</uni-list>
+		</view> -->
+		
+		<view>
+			<uni-swipe-action>
+				<uni-list v-for="(item, index) in device_list" :key="index" :border="false">
+					<uni-swipe-action-item :rightOptions="swipe_options" @click="swipe_click($event, index)">
+						<uni-list-item
+							link="navigateTo"
+							thumb="/static/icons/device.png"
+							thumbSize="base"
+							:title="item.ssid"
+							:note="'mac: ' + item.bssid"
+							:rightText="item.status"
+							style="border: none; width: 100%;"
+							@click="device_item_click(item)" />
+					</uni-swipe-action-item>
+				</uni-list>
+			</uni-swipe-action>
+		</view>
 	</view>
 </template>
 
 <script>
+	import settings_handler from '../../common/settings_handler.js'
+	
 	export default {
 		data() {
 			return {
-				show_notice: true
+				swipe_options: [{
+					text: "删除",
+					style: {
+						backgroundColor: '#ff0000'
+					}
+				}],
+				show_notice: true,
+				device_list: {}
 			}
 		},
 		onHide() {
@@ -25,6 +67,7 @@
 		},
 		onShow() {
 			// load device list from storage
+			this.reload_page();
 		},
 		onLoad(options) {
 		},
@@ -45,6 +88,44 @@
 			}
 		},
 		methods: {
+			device_item_click: function (item) {
+				var that = this;
+				
+				// console.log("item: " + JSON.stringify(item))
+				
+				uni.navigateTo({
+					url:"../device/device_detail?modify=1&item=" + encodeURIComponent(JSON.stringify(item)),
+					events:{
+						acceptDataFromOpenedPage(data) {
+							console.log(data);
+							
+							that.$data.wifi_list = [];
+							// uni.startPullDownRefresh();
+						}
+					}
+				})
+			},
+			swipe_click (e, index) {
+				var id = this.$data.device_list[index].id;
+				var title = this.$data.device_list[index].title || this.$data.device_list[index].ssid;
+
+				uni.showModal({
+					content: `是否删除设备 ${title}？`,
+					confirmText: "删除",
+					success: (result) => {
+						if (result.confirm) {
+							settings_handler.remove_device_item(id);
+							this.reload_page();
+							
+							// app 删除后还需要在设备上清除配置文件
+						}
+					}
+				})
+			},
+			reload_page () {
+				this.$data.device_list = settings_handler.load_device_items();
+				this.$data.show_notice = this.$data.device_list.length === 0 ? true : false;
+			}
 		}
 	}
 </script>
