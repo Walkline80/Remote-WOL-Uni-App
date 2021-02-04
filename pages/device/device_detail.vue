@@ -14,7 +14,7 @@
 				<uni-group title="硬件信息" top=-10>
 					<view>{{device_info.ssid}} ({{device_info.bssid}})</view>
 				</uni-group>
-				<uni-group title="设置 WIFI" top=0>
+				<uni-group title="WIFI 设置" top=0>
 					<uni-forms-item required label="名称" name="wifi_ssid" :labelWidth="label_width" :labelAlign="label_align">
 						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.wifi_ssid" />
 					</uni-forms-item>
@@ -22,21 +22,21 @@
 						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.wifi_password" />
 					</uni-forms-item>
 				</uni-group>
-				<uni-group title="设置 MQTT" top=0>
+				<uni-group title="MQTT 设置" top=0>
 					<uni-forms-item required name="mqtt_host" label="服务器" :labelWidth="label_width" :labelAlign="label_align">
 						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_host" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_port" />
+						<uni-easyinput type="text" :inputBorder="false" placeholder="1883" v-model="device_info.mqtt_port" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_keepalive" label="KeepAlive" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_keepalive" />
+						<uni-easyinput type="text" :inputBorder="false" placeholder="120" v-model="device_info.mqtt_keepalive" />
 					</uni-forms-item>
 					<uni-forms-item name="mqtt_bigiot_server" label="扇贝物联" :labelWidth="label_width" :labelAlign="label_align">
 						<switch v-model="device_info.mqtt_bigiot_server" @change="switch_to_bigiot"></switch>
 					</uni-forms-item>
-					<uni-forms-item name="mqtt_bigiot_username" v-show="is_bigiot_server" label="扇贝用户名" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" v-model="device_info.mqtt_bigiot_username" />
+					<uni-forms-item required name="mqtt_bigiot_username" v-show="is_bigiot_server" label="扇贝用户名" :labelWidth="label_width" :labelAlign="label_align">
+						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_bigiot_username" />
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_client_id" label="客户端 ID" :labelWidth="label_width" :labelAlign="label_align">
 						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_client_id" />
@@ -46,6 +46,14 @@
 					</uni-forms-item>
 					<uni-forms-item required name="mqtt_password" label="密码" :labelWidth="label_width" :labelAlign="label_align">
 						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.mqtt_password" />
+					</uni-forms-item>
+				</uni-group>
+				<uni-group title="交互设置 (WebSocket)" top=0>
+					<uni-forms-item required name="websocket_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
+						<uni-easyinput type="text" :inputBorder="false" placeholder="80" v-model="device_info.websocket_port" />
+					</uni-forms-item>
+					<uni-forms-item required name="websocket_path" label="路径" :labelWidth="label_width" :labelAlign="label_align">
+						<uni-easyinput type="text" :inputBorder="false" placeholder="/control" v-model="device_info.websocket_path" />
 					</uni-forms-item>
 				</uni-group>
 				
@@ -75,7 +83,7 @@
 				popup_type: "success",
 				popup_duration: 1000,
 				popup_message: "成功",
-				label_width: 70,
+				label_width: 80,
 				label_align: "right",
 				device_info: {},
 				event_channel: null,
@@ -111,6 +119,20 @@
 						}],
 						label: "MQTT 服务器端口"
 					},
+					mqtt_keepalive: {
+						rules: [{
+							required:  true,
+							errorMessage: "{label}不能为空"
+						}],
+						label: "KeepAlive"
+					},
+					mqtt_bigiot_username: {
+						rules: [{
+							required: false,
+							errorMessage: "{label}不能为空"
+						}],
+						label: "扇贝物联用户名"
+					},
 					mqtt_client_id: {
 						rules: [{
 							required: true,
@@ -131,6 +153,26 @@
 							errorMessage: "{label}不能为空"
 						}],
 						label: "MQTT 密码"
+					},
+					websocket_port: {
+						rules: [{
+							required: true,
+							errorMessage: "{label}不能为空"
+						}],
+						label: "WebSocket 端口"
+					},
+					websocket_path: {
+						rules: [
+							{
+								required: true,
+								errorMessage: "{label}不能为空"
+							},
+							{
+								pattern: /^[/].*/,
+								errorMessage: "{label}必须以 '/' 开头"
+							}
+						],
+						label: "WebSocket 路径"
 					}
 				}
 			}
@@ -191,6 +233,7 @@
 			switch_to_bigiot (event) {
 				this.$data.is_bigiot_server = event.target.value;
 				this.$data.device_info.mqtt_is_bigiot = event.target.value;
+				this.$refs.form.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
 			},
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
@@ -219,6 +262,11 @@
 				this.$refs.popup_message.open();				
 			},
 			start_save_websocket_client () {
+				uni.showLoading({
+					title: "请稍候...",
+					mask: true
+				});
+				
 				var that = this;
 				// #ifdef APP-PLUS
 				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
@@ -227,11 +275,6 @@
 				// #ifndef APP-PLUS
 				var host_ip = "localhost";
 				// #endif
-				
-				uni.showLoading({
-					title: "请稍候...",
-					mask: true
-				});
 				
 				uni.closeSocket();
 				
@@ -309,6 +352,11 @@
 				});
 			},
 			start_test_websocket_client () {
+				uni.showLoading({
+					title: "请稍候...",
+					mask: true
+				});
+				
 				var that = this;
 				// #ifdef APP-PLUS
 				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
@@ -317,11 +365,6 @@
 				// #ifndef APP-PLUS
 				var host_ip = "localhost";
 				// #endif
-				
-				uni.showLoading({
-					title: "请稍候...",
-					mask: true
-				});
 				
 				uni.closeSocket();
 				
