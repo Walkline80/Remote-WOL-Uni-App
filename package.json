@@ -1,0 +1,15 @@
+{
+  "name": "mqtt-demo",
+  "version": "1.0.3",
+  "description": "[MQTT.js](https://github.com/mqttjs/MQTT.js) 的使用示例",
+  "main": "main.js",
+  "dependencies": {
+    "mqtt": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
