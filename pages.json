@@ -75,7 +75,13 @@
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "设置",
-						"titleAlign": "left"
+						"titleAlign": "left",
+						"buttons": [{
+							"text": "\ue70e",
+							"fontSrc": "/static/iconfont.ttf",
+							"fontSize": "20px",
+							"float": "right"
+						}]
 					}
 				}
             }
