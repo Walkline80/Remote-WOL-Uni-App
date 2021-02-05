@@ -15,45 +15,144 @@
 					<view>{{device_info.ssid}} ({{device_info.bssid}})</view>
 				</uni-group>
 				<uni-group title="WIFI 设置" top=0>
-					<uni-forms-item required label="名称" name="wifi_ssid" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.wifi_ssid" />
+					<uni-forms-item
+						required
+						label="名称"
+						name="wifi_ssid"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.wifi_ssid" />
 					</uni-forms-item>
-					<uni-forms-item required label="密码" name="wifi_password" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.wifi_password" />
+					<uni-forms-item
+						required
+						label="密码"
+						name="wifi_password"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="password"
+							:inputBorder="false"
+							v-model="device_info.wifi_password" />
 					</uni-forms-item>
 				</uni-group>
 				<uni-group title="MQTT 设置" top=0>
-					<uni-forms-item required name="mqtt_host" label="服务器" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_host" />
+					<uni-forms-item
+						required
+						name="mqtt_host"
+						label="服务器"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.mqtt_host" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="1883" v-model="device_info.mqtt_port" />
+					<uni-forms-item
+						required
+						name="mqtt_port"
+						label="端口"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="1883"
+							v-model="device_info.mqtt_port" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_keepalive" label="KeepAlive" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="120" v-model="device_info.mqtt_keepalive" />
+					<uni-forms-item
+						required
+						name="mqtt_keepalive"
+						label="KeepAlive"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="120"
+							v-model="device_info.mqtt_keepalive" />
 					</uni-forms-item>
-					<uni-forms-item name="mqtt_bigiot_server" label="扇贝物联" :labelWidth="label_width" :labelAlign="label_align">
-						<switch v-model="device_info.mqtt_bigiot_server" @change="switch_to_bigiot"></switch>
+					<uni-forms-item
+						name="mqtt_is_bigiot"
+						label="扇贝物联"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<switch
+							:checked="device_info.mqtt_is_bigiot"
+							@change="switch_to_bigiot" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_bigiot_username" v-show="is_bigiot_server" label="扇贝用户名" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_bigiot_username" />
+					<uni-forms-item
+						required
+						name="mqtt_bigiot_username"
+						v-show="device_info.mqtt_is_bigiot"
+						label="扇贝用户名"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.mqtt_bigiot_username" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_client_id" label="客户端 ID" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_client_id" />
+					<uni-forms-item
+						required
+						name="mqtt_client_id"
+						label="客户端 ID"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.mqtt_client_id" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_username" label="用户名" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="device_info.mqtt_username" />
+					<uni-forms-item
+						required
+						name="mqtt_username"
+						label="用户名"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.mqtt_username" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_password" label="密码" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="password" :inputBorder="false" v-model="device_info.mqtt_password" />
+					<uni-forms-item
+						required
+						name="mqtt_password"
+						label="密码"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="password"
+							:inputBorder="false"
+							v-model="device_info.mqtt_password" />
 					</uni-forms-item>
 				</uni-group>
 				<uni-group title="交互设置 (WebSocket)" top=0>
-					<uni-forms-item required name="websocket_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="80" v-model="device_info.websocket_port" />
+					<uni-forms-item
+						required
+						name="websocket_port"
+						label="端口"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="80"
+							v-model="device_info.websocket_port" />
 					</uni-forms-item>
-					<uni-forms-item required name="websocket_path" label="路径" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="/control" v-model="device_info.websocket_path" />
+					<uni-forms-item
+						required
+						name="websocket_path"
+						label="路径"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="/control"
+							v-model="device_info.websocket_path" />
 					</uni-forms-item>
 				</uni-group>
 				
@@ -65,7 +164,10 @@
 	    </view>
 		<view>
 			<uni-popup ref="popup_message" type="message">
-				<uni-popup-message :type="popup_type" :message="popup_message" :duration="popup_duration" />
+				<uni-popup-message
+					:type="popup_type"
+					:message="popup_message"
+					:duration="popup_duration" />
 			</uni-popup>
 		</view>
 	</view>
@@ -79,7 +181,6 @@
 	export default {
 		data() {
 			return {
-				is_bigiot_server: false,
 				popup_type: "success",
 				popup_duration: 1000,
 				popup_message: "成功",
@@ -200,38 +301,27 @@
 					console.log("item data from current page");
 					if (modify) {
 						options.modify = "1";
-						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":false,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}');
+						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}');
 					} else {
 						options.modify = "0";
 						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}');
 					}
 				}
 
-				if (options['modify'] === "0") {
+				if (options.modify === "0") {
 					console.log("device append");
+					
+					this.$data.device_info = test_data.device_data
+					
 					this.$data.device_info.ssid = item.ssid
 					this.$data.device_info.bssid = item.bssid
 					this.$data.device_info.level = item.level
-					
-					this.$data.device_info.wifi_ssid = test_data.device_data.wifi_ssid
-					this.$data.device_info.wifi_password = test_data.device_data.wifi_password
-					this.$data.device_info.mqtt_host = test_data.device_data.mqtt_host
-					this.$data.device_info.mqtt_port = test_data.device_data.mqtt_port
-					this.$data.device_info.mqtt_keepalive = test_data.device_data.mqtt_keepalive
-					this.$data.device_info.mqtt_is_bigiot = false
-					this.$data.device_info.mqtt_bigiot_username = test_data.device_data.mqtt_bigiot_username
-					this.$data.device_info.mqtt_client_id = test_data.device_data.mqtt_client_id
-					this.$data.device_info.mqtt_username = test_data.device_data.mqtt_username
-					this.$data.device_info.mqtt_password = test_data.device_data.mqtt_password
-					this.$data.device_info.websocket_port = test_data.device_data.websocket_port
-					this.$data.device_info.websocket_path = test_data.device_data.websocket_path
 				} else {
 					console.log("device modify");
 					this.$data.device_info = item;
 				}
 			},
 			switch_to_bigiot (event) {
-				this.$data.is_bigiot_server = event.target.value;
 				this.$data.device_info.mqtt_is_bigiot = event.target.value;
 				this.$refs.form.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
 			},
