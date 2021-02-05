@@ -128,10 +128,19 @@ var remove_device_item = function (key) {
 	});
 }
 
+var remove_app_settings = function () {
+	uni.removeStorage({
+		key: app_settings_key,
+		success: () => {},
+		fail: () => {}
+	});
+}
+
 export default {
 	save_app_settings,
 	load_app_settings,
 	save_device_item,
 	load_device_items,
-	remove_device_item
+	remove_device_item,
+	remove_app_settings
 }
