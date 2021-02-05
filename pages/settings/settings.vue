@@ -12,29 +12,95 @@
 		<view class="">
 			<uni-forms :value="settings" ref="form_mqtt" :rules="rules">
 				<uni-group title="MQTT 设置" top=-10>
-					<uni-forms-item required name="mqtt_host" label="服务器" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="settings.mqtt_host" />
+					<uni-forms-item
+						required
+						name="mqtt_host"
+						label="服务器"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="settings.mqtt_host" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="1883" v-model="settings.mqtt_port" />
+					<uni-forms-item
+						required
+						name="mqtt_port"
+						label="端口"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="8083"
+							v-model="settings.mqtt_port" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_keepalive" label="KeepAlive" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="120" v-model="settings.mqtt_keepalive" />
+					<uni-forms-item
+						required
+						name="mqtt_keepalive"
+						label="KeepAlive"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="120"
+							v-model="settings.mqtt_keepalive" />
 					</uni-forms-item>
-					<uni-forms-item name="mqtt_is_bigiot" label="扇贝物联" :labelWidth="label_width" :labelAlign="label_align">
-						<switch :checked="settings.mqtt_is_bigiot"  @change="switch_to_bigiot"></switch>
+					<uni-forms-item
+						name="mqtt_is_bigiot"
+						label="扇贝物联"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<switch
+							:checked="settings.mqtt_is_bigiot"
+							@change="switch_to_bigiot">
+						</switch>
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_bigiot_username" label="扇贝用户名" v-show="settings.mqtt_is_bigiot" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="settings.mqtt_bigiot_username" />
+					<uni-forms-item
+						required
+						name="mqtt_bigiot_username"
+						label="扇贝用户名"
+						v-show="settings.mqtt_is_bigiot"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="settings.mqtt_bigiot_username" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_client_id" label="客户端 ID" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="settings.mqtt_client_id" />
+					<uni-forms-item
+						required
+						name="mqtt_client_id"
+						label="客户端 ID"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="settings.mqtt_client_id" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_username" label="用户名" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" v-model="settings.mqtt_username" />
+					<uni-forms-item
+						required
+						name="mqtt_username"
+						label="用户名"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="settings.mqtt_username" />
 					</uni-forms-item>
-					<uni-forms-item required name="mqtt_password" label="密码" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="password" :inputBorder="false" v-model="settings.mqtt_password" />
+					<uni-forms-item
+						required
+						name="mqtt_password"
+						label="密码"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="password"
+							:inputBorder="false"
+							v-model="settings.mqtt_password" />
 					</uni-forms-item>
 					<view class="button-group" style="margin-top: 30rpx;">
 						<button style="width: 100%;" type="primary" size="mini" @click="button_mqtt_test_click">测试 MQTT</button>
@@ -43,23 +109,53 @@
 			</uni-forms>
 			<uni-forms :value="settings" ref="form_others" :rules="rules">
 				<uni-group title="交互设置 (WebSocket)" top=0>
-					<uni-forms-item required name="websocket_port" label="端口" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="80" v-model="settings.websocket_port" />
+					<uni-forms-item
+						required
+						name="websocket_port"
+						label="端口"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="80"
+							v-model="settings.websocket_port" />
 					</uni-forms-item>
-					<uni-forms-item required name="websocket_path" label="路径" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="/control" v-model="settings.websocket_path" />
+					<uni-forms-item
+						required
+						name="websocket_path"
+						label="路径"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="/control"
+							v-model="settings.websocket_path" />
 					</uni-forms-item>
 				</uni-group>
 				<uni-group title="搜索设置" top=0>
-					<uni-forms-item required label="WIFI 前缀" name="interaction_ssid_prefix" :labelWidth="label_width" :labelAlign="label_align">
-						<uni-easyinput type="text" :inputBorder="false" placeholder="wol_" v-model="settings.interaction_ssid_prefix" />
+					<uni-forms-item
+						required
+						label="WIFI 前缀"
+						name="interaction_ssid_prefix"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							placeholder="wol_"
+							v-model="settings.interaction_ssid_prefix" />
 					</uni-forms-item>
 				</uni-group>
 			</uni-forms>
 		</view>
 		<view>
 			<uni-popup ref="popup_message" type="message">
-				<uni-popup-message :type="popup_type" :message="popup_message" :duration="popup_duration" />
+				<uni-popup-message
+					:type="popup_type"
+					:message="popup_message"
+					:duration="popup_duration" />
 			</uni-popup>
 		</view>
 	</view>
@@ -166,6 +262,7 @@
 			}
 		},
 		onLoad() {
+			// settings_handler.remove_app_settings();
 			this.load_app_settings();
 		},
 		onShow() {
@@ -191,18 +288,7 @@
 				
 				if (Object.keys(settings).length === 0) {
 					console.log('test data loaded');
-					
-					this.$data.settings.mqtt_host = test_data.app_data.mqtt_host
-					this.$data.settings.mqtt_port = test_data.app_data.mqtt_port
-					this.$data.settings.mqtt_keepalive = test_data.app_data.mqtt_keepalive
-					this.$data.settings.mqtt_is_bigiot = test_data.app_data.mqtt_is_bigiot
-					this.$data.settings.mqtt_bigiot_username = test_data.app_data.mqtt_bigiot_username
-					this.$data.settings.mqtt_client_id = test_data.app_data.mqtt_client_id
-					this.$data.settings.mqtt_username = test_data.app_data.mqtt_username
-					this.$data.settings.mqtt_password = test_data.app_data.mqtt_password
-					this.$data.settings.websocket_port = test_data.app_data.websocket_port
-					this.$data.settings.websocket_path = test_data.app_data.websocket_path
-					this.$data.settings.interaction_ssid_prefix = test_data.app_data.interaction_ssid_prefix
+					this.$data.settings = test_data.app_data;
 				} else {
 					console.log("settings loaded");
 					this.$data.settings = settings;
@@ -213,7 +299,7 @@
 				this.$refs.form_mqtt.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
 			},
 			button_mqtt_test_click () {
-				this.start_save_mqtt_client();
+				this.start_test_mqtt_client();
 				this.$refs.form_mqtt.submit().then(result => {
 					// console.log("form info: ", result);
 				}).catch(error => {
@@ -232,7 +318,7 @@
 					console.log("form_mnqtt error: ", error);
 				})
 			},
-			start_save_mqtt_client() {
+			start_test_mqtt_client() {
 				var settings = this.$data.settings;
 				var mqtt = require('mqtt/dist/mqtt.js');
 				var test_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/topic/mqtt_test';
