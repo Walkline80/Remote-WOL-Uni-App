@@ -164,6 +164,9 @@
 <script>
 	import test_data from '../../others/device_test_data.js'
 	import settings_handler from '../../common/settings_handler.js'
+	import mqtt from 'common/mqtt.min.js'
+	
+	var mqtt_client = null;
 	
 	export default {
 		data() {
@@ -261,6 +264,10 @@
 				this.button_save_click();
 			}
 		},
+		onUnload() {
+			this.end_mqtt_client();
+			uni.$emit('app_settings_update');
+		},
 		onLoad() {
 			// settings_handler.remove_app_settings();
 			this.load_app_settings();
@@ -277,6 +284,9 @@
 			// #endif
 		},
 		methods: {
+			end_mqtt_client () {
+				if (mqtt_client) {mqtt_client.end({force: true});}
+			},
 			show_popup_message (message, type="error", duration=3000) {
 				this.$data.popup_type = type;
 				this.$data.popup_message = message;
@@ -299,7 +309,7 @@
 				this.$refs.form_mqtt.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
 			},
 			button_mqtt_test_click () {
-				this.start_test_mqtt_client();
+				this.valiate_mqtt_settings();
 				this.$refs.form_mqtt.submit().then(result => {
 					// console.log("form info: ", result);
 				}).catch(error => {
@@ -318,9 +328,9 @@
 					console.log("form_mnqtt error: ", error);
 				})
 			},
-			start_test_mqtt_client() {
+			valiate_mqtt_settings() {
 				var settings = this.$data.settings;
-				var mqtt = require('mqtt/dist/mqtt.js');
+				// var mqtt = require('mqtt/dist/mqtt.js');
 				var test_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/topic/mqtt_test';
 				var options = {
 					keepalive: settings.mqtt_keepalive,
@@ -332,12 +342,15 @@
 					connectTimeout: 10 * 1000,
 				};
 
+				this.end_mqtt_client();
+				uni.$emit('app_settings_validate');
+				
 				// #ifdef APP-PLUS
-				var mqtt_client = mqtt.connect(`wx://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
+				mqtt_client = mqtt.connect(`wx://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
 				// #endif
 				
 				// #ifdef H5
-				var mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
+				mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
 				// #endif
 
 				mqtt_client.on('connect', function() {
@@ -360,7 +373,7 @@
 					
 					if (topic === test_topic) {
 						if (message.toString() === 'success') {
-							mqtt_client.end({forcus:true});
+							mqtt_client.end({force: true});
 							
 							this.show_popup_message("测试成功，请保存设置", 'success');
 						}
@@ -369,6 +382,8 @@
 					console.log("disconnect");
 				}).on('end', function () {
 					console.log('ended');
+				}).on('close', () => {
+					console.log('closed');
 				})
 			}
 		}
