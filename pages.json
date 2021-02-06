@@ -18,12 +18,22 @@
 		    			"titleColor": "#FFFFFF",
 		    			"titleText": "PC 设备",
 		    			"titleAlign": "left",
-		    			"buttons": [{
-		    				"text": "\ue868",
-		    				"fontSrc": "/static/iconfont.ttf",
-		    				"fontSize": "20px",
-		    				"float": "left"
-		    			}]
+		    			"buttons": [
+							{
+								"text": "\ue868",
+								"fontSrc": "/static/iconfont.ttf",
+								"fontSize": "20px",
+								"float": "left"
+							},
+							{
+								"text": "\ue629",
+								"fontSrc": "/static/iconfont.ttf",
+								"fontSize": "20px",
+								"float": "right",
+								"color":"#b4b4b4"
+								// "color":"#58ff74"
+							}
+						]
 		    		}
 		    	}
 		    }
