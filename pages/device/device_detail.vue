@@ -349,7 +349,7 @@
 					console.log("form_others error: ", error)
 				})
 			},
-			show_popup_message (message, type="error", duration=3000) {
+			show_popup_message (message, type="error", duration=2000) {
 				this.$data.popup_type = type
 				this.$data.popup_message = message
 				this.$data.popup_duration = duration
