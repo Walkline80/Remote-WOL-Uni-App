@@ -27,7 +27,7 @@
 							thumbSize="base"
 							:title="item.ssid"
 							:note="'mac: ' + item.bssid"
-							:rightText="item.status"
+							:rightText="item.status ? '在线' : '离线'"
 							style="border: none; width: 100%;"
 							@click="device_item_click(item)" />
 					</uni-swipe-action-item>
