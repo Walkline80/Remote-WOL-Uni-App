@@ -64,7 +64,6 @@ var load_app_settings = function () {
 };
 
 var save_device_item = function (item) {
-	var device_id_suffix = item.bssid;
 	var result = true;
 	
 	item.id = device_item_prefix + item.bssid;
@@ -136,11 +135,28 @@ var remove_app_settings = function () {
 	});
 }
 
+var is_app_settings_exist = function () {
+	var result = false;
+	
+	try {
+		const info = uni.getStorageInfoSync();
+		
+		info.keys.forEach(function (key, index) {
+			if (key.startsWith(app_settings_key)) {
+				result = true;
+			}
+		});
+	} catch (e) {}
+	
+	return result;
+}
+
 export default {
 	save_app_settings,
 	load_app_settings,
 	save_device_item,
 	load_device_items,
 	remove_device_item,
-	remove_app_settings
+	remove_app_settings,
+	is_app_settings_exist
 }
