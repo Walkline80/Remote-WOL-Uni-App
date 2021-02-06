@@ -18,21 +18,21 @@
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'list'}"
 						clickable
-						@click="open_device_manage_page"
+						@click="open_page('../device/device_manage')"
 						style="border: none;" />
 					<uni-list-item
 						title="设置"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'settings'}"
 						clickable
-						@click="open_settings_page"
+						@click="open_page('../settings/settings')"
 						style="border: none;" />
 					<uni-list-item
 						title="关于"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'info'}"
 						clickable
-						@click="open_about_page"
+						@click="open_page('../about/about')"
 						style="border: none;" />
 				</uni-list>
 			</uni-group>
@@ -77,8 +77,13 @@
 			// #ifdef APP-PLUS
 			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			// #endif
+			
+			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
+			mqtt_on_message (topic, message) {
+				console.log(`topic: ${topic}, message: ${message.toString()}`)
+			},
 			end_mqtt_client () {
 				if (mqtt_client) {mqtt_client.end({force: true})}
 			},
@@ -93,27 +98,10 @@
 				})
 				// #endif
 			},
-			open_settings_page () {
+			open_page (url) {
 				// this.$refs.drawer.close()
-				
 				uni.navigateTo({
-					url: "../settings/settings",
-					animationType: "slide-in-right"
-				})
-			},
-			open_device_manage_page () {
-				// this.$refs.drawer.close()
-				
-				uni.navigateTo({
-					url: "../device/device_manage",
-					animationType: "slide-in-right"
-				})
-			},
-			open_about_page () {
-				// this.$refs.drawer.close()
-				
-				uni.navigateTo({
-					url: "../about/about",
+					url: url,
 					animationType: "slide-in-right"
 				})
 			},
@@ -125,7 +113,7 @@
 				this.end_mqtt_client()
 				
 				// var mqtt = require('mqtt/dist/mqtt.js')
-				let mqtt_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/remove_wol_device/#',
+				let mqtt_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/remote_wol_device/+',
 					options = {
 						keepalive: settings.mqtt_keepalive,
 						clientId: settings.mqtt_client_id,
@@ -145,7 +133,7 @@
 				// #endif
 			
 				mqtt_client.on('connect', () => {
-					console.log("connected")
+					console.log("mqtt connected")
 					
 					mqtt_client.subscribe(mqtt_topic, (error, granted) => {
 						if (!error) {
@@ -160,15 +148,8 @@
 					this.set_mqtt_indicator_status(false)
 				}).on('error', (error) => {
 					console.log('on error', error)
-				}).on('message', (topic, message) => {
-					console.log(`topic: ${topic}, message: ${message.toString()}`)
-					
-					// if (topic === mqtt_topic) {
-					// 	if (message.toString() === 'success') {
-					// 		mqtt_client.end({forcus:true})
-					// 	}
-					// }
-				}).on('disconnect', () => {
+				}).on('message', this.mqtt_on_message // (topic, message)
+				).on('disconnect', () => {
 					console.log("disconnect")
 					this.set_mqtt_indicator_status(false)
 				}).on('end', () => {
