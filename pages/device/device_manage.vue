@@ -44,7 +44,7 @@
 		data() {
 			return {
 				swipe_options: [{
-					text: "删除",
+					text: '删除',
 					style: {
 						backgroundColor: '#ff0000'
 					}
@@ -73,20 +73,20 @@
 		onNavigationBarButtonTap(e) {
 			// add button click event
 			if (e.index == 0) {
-				console.log("adding")
+				console.log('adding')
 				
 				uni.navigateTo({
-					url: "./device_add",
-					animationType: "slide-in-right"
+					url: './device_add',
+					animationType: 'slide-in-right'
 				})
 			}
 		},
 		methods: {
 			device_item_click (item) {
-				// console.log("item: " + JSON.stringify(item))
+				// console.log('item: ' + JSON.stringify(item))
 				
 				uni.navigateTo({
-					url:"../device/device_detail?modify=1&item=" + encodeURIComponent(JSON.stringify(item)),
+					url:'../device/device_detail?modify=1&item=' + encodeURIComponent(JSON.stringify(item)),
 					events:{
 						acceptDataFromOpenedPage(data) {
 							console.log(data)
@@ -102,7 +102,7 @@
 
 				uni.showModal({
 					content: `是否删除设备 ${title}？`,
-					confirmText: "删除",
+					confirmText: '删除',
 					success: (result) => {
 						if (result.confirm) {
 							settings_handler.remove_device_item(id)

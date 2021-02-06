@@ -24,7 +24,7 @@ function isAndroidPlatform() {
 	var result = false
 	
 	switch (uni.getSystemInfoSync().platform) {
-		case "android":
+		case 'android':
 			result = true
 			break
 		default:

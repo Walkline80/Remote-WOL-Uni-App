@@ -6,12 +6,12 @@
  */
 
 // #ifdef APP-PLUS
-plus.android.importClass("java.util.List")
-plus.android.importClass("java.util.ArrayList")
-plus.android.importClass("android.net.wifi.WifiManager")
-// plus.android.importClass("android.net.wifi.ScanResult")
-// plus.android.importClass("android.net.wifi.WifiInfo")
-// plus.android.importClass("android.net.DhcpInfo")
+plus.android.importClass('java.util.List')
+plus.android.importClass('java.util.ArrayList')
+plus.android.importClass('android.net.wifi.WifiManager')
+// plus.android.importClass('android.net.wifi.ScanResult')
+// plus.android.importClass('android.net.wifi.WifiInfo')
+// plus.android.importClass('android.net.DhcpInfo')
 
 var PERMISSIONS = [
 	'android.permission.ACCESS_FINE_LOCATION',
@@ -22,9 +22,9 @@ var PERMISSIONS = [
 ]
 
 var MainActivity = plus.android.runtimeMainActivity()
-var Context = plus.android.importClass("android.content.Context")
+var Context = plus.android.importClass('android.content.Context')
 var wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE)
-// var WifiConfiguration = plus.android.importClass("android.net.wifi.WifiConfiguration")
+// var WifiConfiguration = plus.android.importClass('android.net.wifi.WifiConfiguration')
 
 /**
  * 请求获取所需系统权限
@@ -32,7 +32,7 @@ var wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE)
 const grant_wifi_permission = () => {
 	plus.android.requestPermissions(PERMISSIONS, function(e) {
 		if (e.granted.length > 0) {
-			console.log("permission granted: " + e.granted.toString())
+			console.log('permission granted', e.granted.toString())
 		}
 	}, function(e) {
 		console.log(JSON.stringify(e))
@@ -67,7 +67,7 @@ const is_wifi_config_exist = (ssid) => {
 	for (let count = 0; count < configs.size(); count++) {
 		let config = configs.get(count)
 		
-		if (config.plusGetAttribute("SSID") === "\"" + ssid + "\"") {return config}
+		if (config.plusGetAttribute('SSID') === '\"' + ssid + '\"') {return config}
 	}
 	
 	return null
@@ -80,24 +80,24 @@ const is_wifi_config_exist = (ssid) => {
  * @return {object}
  */
 const create_wifi_config = (ssid) => {
-	let config = plus.android.newObject("android.net.wifi.WifiConfiguration")
-	let bit_set = plus.android.newObject("java.util.BitSet")
+	let config = plus.android.newObject('android.net.wifi.WifiConfiguration')
+	let bit_set = plus.android.newObject('java.util.BitSet')
 	
-	plus.android.invoke(bit_set, "clear")
-	config.plusSetAttribute("allowedAuthAlgorithms", bit_set)
-	config.plusSetAttribute("allowedGroupCiphers", bit_set)
-	config.plusSetAttribute("allowedKeyManagement", bit_set)
-	config.plusSetAttribute("allowedPairwiseCiphers", bit_set)
-	config.plusSetAttribute("allowedProtocols", bit_set)
-	config.plusSetAttribute("SSID", "\"" + ssid + "\"")
+	plus.android.invoke(bit_set, 'clear')
+	config.plusSetAttribute('allowedAuthAlgorithms', bit_set)
+	config.plusSetAttribute('allowedGroupCiphers', bit_set)
+	config.plusSetAttribute('allowedKeyManagement', bit_set)
+	config.plusSetAttribute('allowedPairwiseCiphers', bit_set)
+	config.plusSetAttribute('allowedProtocols', bit_set)
+	config.plusSetAttribute('SSID', '\"' + ssid + '\"')
 	
-	plus.android.invoke(bit_set, "set", 0)
-	config.plusSetAttribute("allowedKeyManagement", bit_set)
+	plus.android.invoke(bit_set, 'set', 0)
+	config.plusSetAttribute('allowedKeyManagement', bit_set)
 
 	let last_config = is_wifi_config_exist(ssid)
 
 	if (last_config) {
-		console.log("remove network " + last_config.plusGetAttribute("SSID") + ": " + wifiManager.removeNetwork(last_config.plusGetAttribute("networkId")))
+		console.log('remove network ' + last_config.plusGetAttribute('SSID') + ': ' + wifiManager.removeNetwork(last_config.plusGetAttribute('networkId')))
 	}
 
 	return config
@@ -113,7 +113,7 @@ const connect = (ssid) => {
 	turn_on_wifi()
 	
 	let network_id = wifiManager.addNetwork(create_wifi_config(ssid))
-	console.log("new network id: " + network_id)
+	console.log('new network id', network_id)
 	
 	if (network_id !== -1) {
 		let enabled = wifiManager.enableNetwork(network_id, true)
@@ -122,10 +122,10 @@ const connect = (ssid) => {
 			sleep(1000)
 			return true
 		} else {
-			console.log("enable network failed")
+			console.log('enable network failed')
 		}
 	} else {
-		console.log("add network failed")
+		console.log('add network failed')
 	}
 	
 	return false
@@ -150,14 +150,14 @@ const get_dhcp_info = () => {
 	let info = wifiManager.getDhcpInfo()
 	let json_result = new Object()
 	
-	if (info.plusGetAttribute("ipAddress") === 0) {return null}
+	if (info.plusGetAttribute('ipAddress') === 0) {return null}
 	
-	json_result["ip"] = ip_to_string(info.plusGetAttribute("ipAddress"))
-	json_result["mask"] = ip_to_string(info.plusGetAttribute("netmask"))
-	json_result["gateway"] = ip_to_string(info.plusGetAttribute("gateway"))
-	json_result["server"] = ip_to_string(info.plusGetAttribute("serverAddress"))
-	json_result["dns1"] = ip_to_string(info.plusGetAttribute("dns1"))
-	json_result["dns2"] = ip_to_string(info.plusGetAttribute("dns2"))
+	json_result['ip'] = ip_to_string(info.plusGetAttribute('ipAddress'))
+	json_result['mask'] = ip_to_string(info.plusGetAttribute('netmask'))
+	json_result['gateway'] = ip_to_string(info.plusGetAttribute('gateway'))
+	json_result['server'] = ip_to_string(info.plusGetAttribute('serverAddress'))
+	json_result['dns1'] = ip_to_string(info.plusGetAttribute('dns1'))
+	json_result['dns2'] = ip_to_string(info.plusGetAttribute('dns2'))
 	
 	sleep()
 	return json_result
@@ -172,16 +172,16 @@ const get_ip_address = () => {
 	sleep()
 	
 	let info = wifiManager.getConnectionInfo()
-	let state = plus.android.invoke(info, "getSupplicantState")
+	let state = plus.android.invoke(info, 'getSupplicantState')
 	
 	if (state.toString() === 'COMPLETED') {
-		let ip_address = plus.android.invoke(info, "getIpAddress")
+		let ip_address = plus.android.invoke(info, 'getIpAddress')
 		
 		if (ip_address === 0) {return null}
 		
 		return ip_to_string(ip_address)
 	} else {
-		console.log("get info not completed")
+		console.log('get info not completed')
 	}
 	
 	return null
@@ -204,10 +204,10 @@ const scan_wifi = () => {
 
 		lists.push({
 			index: count,
-			ssid: obj.plusGetAttribute("SSID") !== "" ? obj.plusGetAttribute("SSID") : "(empty)",
-			bssid: obj.plusGetAttribute("BSSID"),
-			level: obj.plusGetAttribute("level").toString(),
-			capabilities: obj.plusGetAttribute("capabilities")
+			ssid: obj.plusGetAttribute('SSID') !== '' ? obj.plusGetAttribute('SSID') : '(empty)',
+			bssid: obj.plusGetAttribute('BSSID'),
+			level: obj.plusGetAttribute('level').toString(),
+			capabilities: obj.plusGetAttribute('capabilities')
 		})
 	}
 

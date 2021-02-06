@@ -173,86 +173,86 @@
 			return {
 				settings: {},
 				label_width: 80,
-				label_align: "right",
-				popup_type: "success",
+				label_align: 'right',
+				popup_type: 'success',
 				popup_duration: 1000,
-				popup_message: "成功",
+				popup_message: '成功',
 				rules: {
 					mqtt_host: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 服务器地址"
+						label: 'MQTT 服务器地址'
 					},
 					mqtt_port: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 服务器端口"
+						label: 'MQTT 服务器端口'
 					},
 					mqtt_keepalive: {
 						rules: [{
 							required:  true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "KeepAlive"
+						label: 'KeepAlive'
 					},
 					mqtt_bigiot_username: {
 						rules: [{
 							required: false,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "扇贝物联用户名"
+						label: '扇贝物联用户名'
 					},
 					mqtt_client_id: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 客户端 ID "
+						label: 'MQTT 客户端 ID '
 					},
 					mqtt_username: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 用户名"
+						label: 'MQTT 用户名'
 					},
 					mqtt_password: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 密码"
+						label: 'MQTT 密码'
 					},
 					websocket_port: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "WebSocket 端口"
+						label: 'WebSocket 端口'
 					},
 					websocket_path: {
 						rules: [
 							{
 								required: true,
-								errorMessage: "{label}不能为空"
+								errorMessage: '{label}不能为空'
 							},
 							{
 								pattern: /^[/].*/,
-								errorMessage: "{label}必须以 '/' 开头"
+								errorMessage: '{label}必须以 "/" 开头'
 							}
 						],
-						label: "WebSocket 路径"
+						label: 'WebSocket 路径'
 					},
 					interaction_ssid_prefix: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "WIFI 前缀"
+						label: 'WIFI 前缀'
 					}
 				}
 			}
@@ -287,7 +287,7 @@
 			end_mqtt_client () {
 				if (mqtt_client) {mqtt_client.end({force: true})}
 			},
-			show_popup_message (message, type="error", duration=3000) {
+			show_popup_message (message, type='error', duration=3000) {
 				this.$data.popup_type = type
 				this.$data.popup_message = message
 				this.$data.popup_duration = duration
@@ -300,7 +300,7 @@
 					console.log('test data loaded')
 					this.$data.settings = test_data.app_data
 				} else {
-					console.log("settings loaded")
+					console.log('settings loaded')
 					this.$data.settings = settings
 				}
 			},
@@ -311,9 +311,9 @@
 			button_mqtt_test_click () {
 				this.validate_mqtt_settings()
 				this.$refs.form_mqtt.submit().then(result => {
-					// console.log("form info: ", result)
+					// console.log('form info', result)
 				}).catch(error => {
-					console.log("form error: ", error)
+					console.log('form error', error)
 				})
 			},
 			button_save_click () {
@@ -322,10 +322,10 @@
 						settings_handler.save_app_settings(this.$data.settings)
 						this.show_popup_message('设置已保存', 'success', 1000)
 					}).catch(error => {
-						console.log("form_others error: ", error)
+						console.log('form_others error', error)
 					})
 				}).catch(error => {
-					console.log("form_mnqtt error: ", error)
+					console.log('form_mnqtt error', error)
 				})
 			},
 			validate_mqtt_settings() {
@@ -354,7 +354,7 @@
 				// #endif
 
 				mqtt_client.on('connect', () => {
-					console.log("connected")
+					console.log('mqtt connected')
 					
 					mqtt_client.subscribe(test_topic, (error, granted) => {
 						if (!error) {
@@ -374,11 +374,11 @@
 					if (topic === test_topic) {
 						if (message.toString() === 'success') {
 							mqtt_client.end({force: true})
-							this.show_popup_message("测试成功，请保存设置", 'success')
+							this.show_popup_message('测试成功，请保存设置', 'success')
 						}
 					}
 				}).on('disconnect', () => {
-					console.log("disconnect")
+					console.log('disconnect')
 				}).on('end', () => {
 					console.log('ended')
 				}).on('close', () => {

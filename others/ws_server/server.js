@@ -1,51 +1,51 @@
-const IDENTITY = "identity"
-const CHECK_MQTT = "check_mqtt"
-const CHECK_WIFI = "check_wifi"
-const SAVE_SETTINGS = "save_settings"
-const REBOOT_DEVICE = "reboot_device"
+const IDENTITY = 'identity'
+const CHECK_MQTT = 'check_mqtt'
+const CHECK_WIFI = 'check_wifi'
+const SAVE_SETTINGS = 'save_settings'
+const REBOOT_DEVICE = 'reboot_device'
 
 var identity_result = {
-	"command": "identity_result",
-	"result": "success"
+	'command': 'identity_result',
+	'result': 'success'
 }
 
 var save_settings_result_success = {
-	"command": "save_settings_result",
-	"result": "success"
+	'command': 'save_settings_result',
+	'result': 'success'
 }
 
 var save_settings_result_failed = {
-	"command": "save_settings_result",
-	"result": "failed"
+	'command': 'save_settings_result',
+	'result': 'failed'
 }
 
 var check_wifi_result = {
-	"command": "check_wifi_result"
+	'command': 'check_wifi_result'
 }
 
 var check_internet_result_success = {
-	"command": "check_internet_result",
-	"result": "success"
+	'command': 'check_internet_result',
+	'result': 'success'
 }
 
 var check_internet_result_failed = {
-	"command": "check_internet_result",
-	"result": "failed"
+	'command': 'check_internet_result',
+	'result': 'failed'
 }
 
 var check_mqtt_result_success = {
-	"command": "check_mqtt_result",
-	"result": "success"
+	'command': 'check_mqtt_result',
+	'result': 'success'
 }
 
 var check_mqtt_result_failed = {
-	"command": "check_mqtt_result",
-	"result": "failed"
+	'command': 'check_mqtt_result',
+	'result': 'failed'
 }
 
 var reboot_device_result = {
-	"command": "reboot_device_result",
-	"result": "success"
+	'command': 'reboot_device_result',
+	'result': 'success'
 }
 
 const url = require('url')

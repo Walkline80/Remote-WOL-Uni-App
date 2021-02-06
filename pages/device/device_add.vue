@@ -29,7 +29,7 @@
 </template>
 
 <script>
-	import wifi_handler from "../../common/wifi_handler.js"
+	import wifi_handler from '../../common/wifi_handler.js'
 		
 	export default {
 		data() {
@@ -52,7 +52,7 @@
 			// #endif
 		},
 		onPullDownRefresh () {
-			console.log("searching wifi...")
+			console.log('searching wifi...')
 			
 			// #ifdef APP-PLUS
 			this.$data.wifi_list = wifi_handler.scan_wifi()
@@ -89,11 +89,11 @@
 			device_detail_click: (item) => {
 				var that = this;
 				
-				console.log("item: " + JSON.stringify(item))
+				console.log('item: ' + JSON.stringify(item))
 				
 				uni.navigateTo({
-					url:"../device/device_detail?modify=0&item=" + encodeURIComponent(JSON.stringify(item)),
-					events:{
+					url: '../device/device_detail?modify=0&item=' + encodeURIComponent(JSON.stringify(item)),
+					events: {
 						acceptDataFromOpenedPage(data) {
 							console.log(data);
 							

@@ -46,7 +46,7 @@ const load_app_settings = () => {
 			}
 		})
 	} catch (error) {
-		console.log("load_app_setting error", error)
+		console.log('load_app_setting error', error)
 	}
 
 	return settings
@@ -91,7 +91,7 @@ const load_device_items = () => {
 			}
 		})
 	} catch (error) {
-		console.log("load_device_items error", error)
+		console.log('load_device_items error', error)
 	}
 
 	return items

@@ -133,7 +133,7 @@
 				// #endif
 			
 				mqtt_client.on('connect', () => {
-					console.log("mqtt connected")
+					console.log('mqtt connected')
 					
 					mqtt_client.subscribe(mqtt_topic, (error, granted) => {
 						if (!error) {
@@ -150,7 +150,7 @@
 					console.log('on error', error)
 				}).on('message', this.mqtt_on_message // (topic, message)
 				).on('disconnect', () => {
-					console.log("disconnect")
+					console.log('disconnect')
 					this.set_mqtt_indicator_status(false)
 				}).on('end', () => {
 					console.log('ended')

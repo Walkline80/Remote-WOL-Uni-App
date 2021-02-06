@@ -181,99 +181,99 @@
 	export default {
 		data() {
 			return {
-				popup_type: "success",
+				popup_type: 'success',
 				popup_duration: 1000,
-				popup_message: "成功",
+				popup_message: '成功',
 				label_width: 80,
-				label_align: "right",
+				label_align: 'right',
 				device_info: {},
 				event_channel: null,
 				rules: {
 					wifi_ssid: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "WIFI 名称"
+						label: 'WIFI 名称'
 					},
 					wifi_password: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						},{
 							minLength: 8,
-							message: "{label}长度不能少于8个字符"
+							message: '{label}长度不能少于8个字符'
 						}],
-						label: "WIFI 密码"
+						label: 'WIFI 密码'
 					},
 					mqtt_host: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 服务器地址"
+						label: 'MQTT 服务器地址'
 					},
 					mqtt_port: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 服务器端口"
+						label: 'MQTT 服务器端口'
 					},
 					mqtt_keepalive: {
 						rules: [{
 							required:  true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "KeepAlive"
+						label: 'KeepAlive'
 					},
 					mqtt_bigiot_username: {
 						rules: [{
 							required: false,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "扇贝物联用户名"
+						label: '扇贝物联用户名'
 					},
 					mqtt_client_id: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 客户端 ID "
+						label: 'MQTT 客户端 ID '
 					},
 					mqtt_username: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 用户名"
+						label: 'MQTT 用户名'
 					},
 					mqtt_password: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "MQTT 密码"
+						label: 'MQTT 密码'
 					},
 					websocket_port: {
 						rules: [{
 							required: true,
-							errorMessage: "{label}不能为空"
+							errorMessage: '{label}不能为空'
 						}],
-						label: "WebSocket 端口"
+						label: 'WebSocket 端口'
 					},
 					websocket_path: {
 						rules: [
 							{
 								required: true,
-								errorMessage: "{label}不能为空"
+								errorMessage: '{label}不能为空'
 							},
 							{
 								pattern: /^[/].*/,
-								errorMessage: "{label}必须以 '/' 开头"
+								errorMessage: '{label}必须以 '/' 开头'
 							}
 						],
-						label: "WebSocket 路径"
+						label: 'WebSocket 路径'
 					}
 				}
 			}
@@ -284,7 +284,7 @@
 		onLoad(options) {
 			this.load_device_info(options)
 			this.$data.event_channel = this.getOpenerEventChannel()
-			// event_channel.emit('acceptDataFromOpenedPage', "feedback")
+			// event_channel.emit('acceptDataFromOpenedPage', 'feedback')
 		},
 		onReady() {
 			// #ifdef APP-PLUS
@@ -297,22 +297,22 @@
 				const modify = true
 
 				if (Object.keys(options).length !== 0) {
-					console.log("item data from prev page")
+					console.log('item data from prev page')
 					item = JSON.parse(decodeURIComponent(options.item))
 				} else {
-					console.log("item data from current page")
+					console.log('item data from current page')
 					
 					if (modify) {
-						options.modify = "1"
+						options.modify = '1'
 						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}')
 					} else {
-						options.modify = "0"
+						options.modify = '0'
 						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}')
 					}
 				}
 
-				if (options.modify === "0") {
-					console.log("device append")
+				if (options.modify === '0') {
+					console.log('device append')
 					
 					this.$data.device_info = test_data.device_data
 					
@@ -320,7 +320,7 @@
 					this.$data.device_info.bssid = item.bssid
 					this.$data.device_info.level = item.level
 				} else {
-					console.log("device modify")
+					console.log('device modify')
 					this.$data.device_info = item
 				}
 			},
@@ -330,26 +330,26 @@
 			},
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
-					// console.log("form info: ", result)
+					// console.log('form info: ', result)
 					// #ifdef APP-PLUS
 					wifi_handler.connect(this.$data.device_info.ssid)
 					// #endif
 					
 					this.start_test_websocket_client()
 				}).catch(error => {
-					console.log("form_mqtt error: ", error)
+					console.log('form_mqtt error: ', error)
 				})
 			},
 			button_save_click (form) {
 				this.$refs.form.submit().then(result => {
-					// console.log("form info: ", result)
+					// console.log('form info: ', result)
 
 					this.start_save_websocket_client()
 				}).catch(error => {
-					console.log("form_others error: ", error)
+					console.log('form_others error: ', error)
 				})
 			},
-			show_popup_message (message, type="error", duration=2000) {
+			show_popup_message (message, type='error', duration=2000) {
 				this.$data.popup_type = type
 				this.$data.popup_message = message
 				this.$data.popup_duration = duration
@@ -357,7 +357,7 @@
 			},
 			start_save_websocket_client () {
 				uni.showLoading({
-					title: "请稍候...",
+					title: '请稍候...',
 					mask: true
 				})
 				
@@ -366,23 +366,23 @@
 				// #endif
 				
 				// #ifndef APP-PLUS
-				const host_ip = "localhost"
+				const host_ip = 'localhost'
 				// #endif
 				
 				uni.closeSocket()
 				
 				let websocket = uni.connectSocket({
-					url: "ws://"  + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
+					url: 'ws://'  + host_ip + ':' + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
-						console.log("websocket completed")
+						console.log('websocket completed')
 					}
 				})
 				
 				websocket.onOpen((res) => {
-					console.log("websocket opened")
+					console.log('websocket opened')
 					
 					const params = {
-						command: "save_settings",
+						command: 'save_settings',
 						wifi_ssid: this.$data.device_info.wifi_ssid,
 						wifi_password: this.$data.device_info.wifi_password,
 						mqtt_host: this.$data.device_info.mqtt_host,
@@ -401,19 +401,19 @@
 				})
 				
 				websocket.onError((res) => {
-					console.log("websocket error", res)
+					console.log('websocket error', res)
 					uni.hideLoading()
 				})
 				
 				websocket.onMessage((res) => {
 					const result = JSON.parse(res.data)
-					console.log("websocket message", result)
+					console.log('websocket message', result)
 					
 					switch (result.command) {
 						case 'save_settings_result':
 							if (result.result === 'success') {
 								const params = {
-									command: "reboot_device",
+									command: 'reboot_device',
 								}
 								
 								websocket.send({
@@ -440,13 +440,13 @@
 				
 				websocket.onClose((res) => {
 					uni.hideLoading()
-					console.log("websocket closed")
-					// this.show_popup_message("WebSocket Closed")
+					console.log('websocket closed')
+					// this.show_popup_message('WebSocket Closed')
 				})
 			},
 			start_test_websocket_client () {
 				uni.showLoading({
-					title: "请稍候...",
+					title: '请稍候...',
 					mask: true
 				})
 				
@@ -455,23 +455,23 @@
 				// #endif
 				
 				// #ifndef APP-PLUS
-				const host_ip = "localhost"
+				const host_ip = 'localhost'
 				// #endif
 				
 				uni.closeSocket()
 				
 				var websocket = uni.connectSocket({
-					url: "ws://" + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
+					url: 'ws://' + host_ip + ':' + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
-						console.log("websocket completed")
+						console.log('websocket completed')
 					}
 				})
 				
 				websocket.onOpen((res) => {
-					console.log("websocket opened")
+					console.log('websocket opened')
 					
 					const params = {
-						command: "identity",
+						command: 'identity',
 					}
 					
 					websocket.send({
@@ -480,13 +480,13 @@
 				})
 				
 				websocket.onError((res) => {
-					console.log("websocket error", res)
+					console.log('websocket error', res)
 					uni.hideLoading()
 				})
 				
 				websocket.onMessage((res) => {
 					const result = JSON.parse(res.data)
-					console.log("websocket message", result)
+					console.log('websocket message', result)
 					
 					switch (result.command) {
 						case 'identity_result':
@@ -496,7 +496,7 @@
 									this.$data.device_info.hardware_version = result.hardware_version
 									
 									const params = {
-										command: "check_wifi",
+										command: 'check_wifi',
 										wifi_ssid: this.$data.device_info.wifi_ssid,
 										wifi_password: this.$data.device_info.wifi_password,
 									}
@@ -515,17 +515,17 @@
 							if (result.result_code === 1010) {
 								// keep going
 							} else {
-								console.log("Device check wifi failed")
+								console.log('Device check wifi failed')
 								
 								uni.hideLoading()
 								websocket.close()
-								this.show_popup_message("Device check wifi failed")
+								this.show_popup_message('Device check wifi failed')
 							}
 							break
 						case 'check_internet_result':
 							if (result.result === 'success') {
 								const params = {
-									command: "check_mqtt",
+									command: 'check_mqtt',
 									client_id: this.$data.device_info.mqtt_client_id,
 									host: this.$data.device_info.mqtt_host,
 									port: this.$data.device_info.mqtt_port,
@@ -542,18 +542,18 @@
 							} else {
 								uni.hideLoading()
 								websocket.close()
-								that.show_popup_message("Device check internet failed")
+								that.show_popup_message('Device check internet failed')
 							}
 							break
 						case 'check_mqtt_result':
 							if (result.result === 'success') {
 								uni.hideLoading()
 								websocket.close()
-								this.show_popup_message("测试成功，请保存设置", "success")
+								this.show_popup_message('测试成功，请保存设置', 'success')
 							} else {
 								uni.hideLoading()
 								websocket.close()
-								that.show_popup_message("Device check mqtt failed", result.error_msg)
+								that.show_popup_message('Device check mqtt failed', result.error_msg)
 							}
 							break
 						default:
@@ -563,8 +563,8 @@
 				})
 				
 				websocket.onClose((res) => {
-					console.log("websocket closed")
-					// this.show_popup_message("WebSocket Closed")
+					console.log('websocket closed')
+					// this.show_popup_message('WebSocket Closed')
 				})
 			}
 		}
