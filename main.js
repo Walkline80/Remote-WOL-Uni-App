@@ -21,15 +21,15 @@ const app = new Vue({
 app.$mount()
 
 function isAndroidPlatform() {
-	var result = false;
+	var result = false
 	
 	switch (uni.getSystemInfoSync().platform) {
 		case "android":
-			result = true;
-			break;
+			result = true
+			break
 		default:
-			break;
+			break
 	}
 	
-	return result;
+	return result
 }

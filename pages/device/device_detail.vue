@@ -278,38 +278,41 @@
 				}
 			}
 		},
-		onLoad(options) {
-			this.load_device_info(options);
+		onUnload() {
 			
-			this.$data.event_channel = this.getOpenerEventChannel();
+		},
+		onLoad(options) {
+			this.load_device_info(options)
+			this.$data.event_channel = this.getOpenerEventChannel()
 			// event_channel.emit('acceptDataFromOpenedPage', "feedback")
 		},
 		onReady() {
 			// #ifdef APP-PLUS
-			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
+			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			// #endif
 		},
 		methods: {
 			load_device_info (options) {
-				var item;
-				var modify = true;
+				let item
+				const modify = true
 
 				if (Object.keys(options).length !== 0) {
-					console.log("item data from prev page");
-					item = JSON.parse(decodeURIComponent(options.item));
+					console.log("item data from prev page")
+					item = JSON.parse(decodeURIComponent(options.item))
 				} else {
-					console.log("item data from current page");
+					console.log("item data from current page")
+					
 					if (modify) {
-						options.modify = "1";
-						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}');
+						options.modify = "1"
+						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}')
 					} else {
-						options.modify = "0";
-						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}');
+						options.modify = "0"
+						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}')
 					}
 				}
 
 				if (options.modify === "0") {
-					console.log("device append");
+					console.log("device append")
 					
 					this.$data.device_info = test_data.device_data
 					
@@ -317,254 +320,252 @@
 					this.$data.device_info.bssid = item.bssid
 					this.$data.device_info.level = item.level
 				} else {
-					console.log("device modify");
-					this.$data.device_info = item;
+					console.log("device modify")
+					this.$data.device_info = item
 				}
 			},
 			switch_to_bigiot (event) {
-				this.$data.device_info.mqtt_is_bigiot = event.target.value;
-				this.$refs.form.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
+				this.$data.device_info.mqtt_is_bigiot = event.target.value
+				this.$refs.form.rules.mqtt_bigiot_username.rules[0].required = event.target.value
 			},
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
-					// console.log("form info: ", result);
+					// console.log("form info: ", result)
 					// #ifdef APP-PLUS
-					wifi_handler.connect(this.$data.device_info.ssid);
+					wifi_handler.connect(this.$data.device_info.ssid)
 					// #endif
-					this.start_test_websocket_client();
+					
+					this.start_test_websocket_client()
 				}).catch(error => {
-					console.log("form error: ", error);
+					console.log("form_mqtt error: ", error)
 				})
 			},
 			button_save_click (form) {
 				this.$refs.form.submit().then(result => {
-					// console.log("form info: ", result);
+					// console.log("form info: ", result)
 
-					this.start_save_websocket_client();
+					this.start_save_websocket_client()
 				}).catch(error => {
-					console.log("form error: ", error);
+					console.log("form_others error: ", error)
 				})
 			},
 			show_popup_message (message, type="error", duration=3000) {
-				this.$data.popup_type = type;
-				this.$data.popup_message = message;
-				this.$data.popup_duration = duration;
-				this.$refs.popup_message.open();				
+				this.$data.popup_type = type
+				this.$data.popup_message = message
+				this.$data.popup_duration = duration
+				this.$refs.popup_message.open()
 			},
 			start_save_websocket_client () {
 				uni.showLoading({
 					title: "请稍候...",
 					mask: true
-				});
+				})
 				
-				var that = this;
 				// #ifdef APP-PLUS
-				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
+				const host_ip = wifi_handler.get_dhcp_info()['gateway']
 				// #endif
 				
 				// #ifndef APP-PLUS
-				var host_ip = "localhost";
+				const host_ip = "localhost"
 				// #endif
 				
-				uni.closeSocket();
+				uni.closeSocket()
 				
-				var websocket = uni.connectSocket({
+				let websocket = uni.connectSocket({
 					url: "ws://"  + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
-						console.log("websocket completed");
+						console.log("websocket completed")
 					}
-				});
+				})
 				
-				websocket.onOpen(function (res){
-					console.log("websocket opened");
+				websocket.onOpen((res) => {
+					console.log("websocket opened")
 					
-					var params = {
+					const params = {
 						command: "save_settings",
-						wifi_ssid: that.$data.device_info.wifi_ssid,
-						wifi_password: that.$data.device_info.wifi_password,
-						mqtt_host: that.$data.device_info.mqtt_host,
-						mqtt_port: that.$data.device_info.mqtt_port,
-						mqtt_keepalive: that.$data.device_info.mqtt_keepalive,
-						mqtt_bigiot_username: that.$data.device_info.mqtt_bigiot_username,
-						mqtt_is_bigiot: that.$data.device_info.mqtt_is_bigiot,
-						mqtt_client_id: that.$data.device_info.mqtt_client_id,
-						mqtt_username: that.$data.device_info.mqtt_username,
-						mqtt_password: that.$data.device_info.mqtt_password,
-					};
+						wifi_ssid: this.$data.device_info.wifi_ssid,
+						wifi_password: this.$data.device_info.wifi_password,
+						mqtt_host: this.$data.device_info.mqtt_host,
+						mqtt_port: this.$data.device_info.mqtt_port,
+						mqtt_keepalive: this.$data.device_info.mqtt_keepalive,
+						mqtt_bigiot_username: this.$data.device_info.mqtt_bigiot_username,
+						mqtt_is_bigiot: this.$data.device_info.mqtt_is_bigiot,
+						mqtt_client_id: this.$data.device_info.mqtt_client_id,
+						mqtt_username: this.$data.device_info.mqtt_username,
+						mqtt_password: this.$data.device_info.mqtt_password,
+					}
 					
 					websocket.send({
 						data: JSON.stringify(params)
-					});
-				});
+					})
+				})
 				
-				websocket.onError(function (res){
-					console.log("websocket error:", res);
-					uni.hideLoading();
-				});
+				websocket.onError((res) => {
+					console.log("websocket error", res)
+					uni.hideLoading()
+				})
 				
-				websocket.onMessage(function (res) {
-					const result = JSON.parse(res.data);
-					console.log("websocket message:", result);
+				websocket.onMessage((res) => {
+					const result = JSON.parse(res.data)
+					console.log("websocket message", result)
 					
 					switch (result.command) {
 						case 'save_settings_result':
 							if (result.result === 'success') {
-								var params = {
+								const params = {
 									command: "reboot_device",
-								};
+								}
 								
 								websocket.send({
 									data: JSON.stringify(params)
-								});
+								})
 
-								settings_handler.save_device_item(that.$data.device_info);
+								settings_handler.save_device_item(this.$data.device_info)
 
-								uni.hideLoading();
-								websocket.close();
+								uni.hideLoading()
+								websocket.close()
 								
 								uni.navigateBack({
 									delta: 2,
-								});
+								})
 								
-								that.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added');
+								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added')
 							}
-							break;
+							break
 						default:
-							uni.hideLoading();
-							that.show_popup_message(`Unknown command: ${result.command}`);
+							uni.hideLoading()
+							that.show_popup_message(`Unknown command: ${result.command}`)
 					}
-				});
+				})
 				
-				websocket.onClose(function (res){
-					uni.hideLoading();
-					console.log("websocket closed");
-					// that.show_popup_message("WebSocket Closed");
-				});
+				websocket.onClose((res) => {
+					uni.hideLoading()
+					console.log("websocket closed")
+					// this.show_popup_message("WebSocket Closed")
+				})
 			},
 			start_test_websocket_client () {
 				uni.showLoading({
 					title: "请稍候...",
 					mask: true
-				});
+				})
 				
-				var that = this;
 				// #ifdef APP-PLUS
-				var host_ip = wifi_handler.get_dhcp_info()['gateway'];
+				const host_ip = wifi_handler.get_dhcp_info()['gateway']
 				// #endif
 				
 				// #ifndef APP-PLUS
-				var host_ip = "localhost";
+				const host_ip = "localhost"
 				// #endif
 				
-				uni.closeSocket();
+				uni.closeSocket()
 				
-				// console.log("host: ws://" + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path);
 				var websocket = uni.connectSocket({
 					url: "ws://" + host_ip + ":" + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
-						console.log("websocket completed");
+						console.log("websocket completed")
 					}
-				});
+				})
 				
-				websocket.onOpen(function (res){
-					console.log("websocket opened");
+				websocket.onOpen((res) => {
+					console.log("websocket opened")
 					
-					var params = {
+					const params = {
 						command: "identity",
-					};
+					}
 					
 					websocket.send({
 						data: JSON.stringify(params)
-					});
-				});
+					})
+				})
 				
-				websocket.onError(function (res){
-					console.log("websocket error:", res);
-					uni.hideLoading();
-				});
+				websocket.onError((res) => {
+					console.log("websocket error", res)
+					uni.hideLoading()
+				})
 				
-				websocket.onMessage(function (res){
-					const result = JSON.parse(res.data);
-					console.log("websocket message:", result);
+				websocket.onMessage((res) => {
+					const result = JSON.parse(res.data)
+					console.log("websocket message", result)
 					
 					switch (result.command) {
 						case 'identity_result':
 							if (result.result === 'success') {
-								if (that.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address.toLowerCase()) {
-									that.$data.device_info.hardware_name = result.hardware_name;
-									that.$data.device_info.hardware_version = result.hardware_version;
+								if (this.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address.toLowerCase()) {
+									this.$data.device_info.hardware_name = result.hardware_name
+									this.$data.device_info.hardware_version = result.hardware_version
 									
-									var params = {
+									const params = {
 										command: "check_wifi",
-										wifi_ssid: that.$data.device_info.wifi_ssid,
-										wifi_password: that.$data.device_info.wifi_password,
-									};
+										wifi_ssid: this.$data.device_info.wifi_ssid,
+										wifi_password: this.$data.device_info.wifi_password,
+									}
 									
 									websocket.send({
 										data: JSON.stringify(params)
-									});
+									})
 								} else {
-									uni.hideLoading();
-									websocket.close();
-									that.show_popup_message('Device mac address not match');
+									uni.hideLoading()
+									websocket.close()
+									this.show_popup_message('Device mac address not match')
 								}
 							}
-							break;
+							break
 						case 'check_wifi_result':
 							if (result.result_code === 1010) {
 								// keep going
 							} else {
-								console.log("Device check wifi failed");
+								console.log("Device check wifi failed")
 								
-								uni.hideLoading();
-								websocket.close();
-								that.show_popup_message("Device check wifi failed");
+								uni.hideLoading()
+								websocket.close()
+								this.show_popup_message("Device check wifi failed")
 							}
-							break;
+							break
 						case 'check_internet_result':
 							if (result.result === 'success') {
-								var params = {
+								const params = {
 									command: "check_mqtt",
-									client_id: that.$data.device_info.mqtt_client_id,
-									host: that.$data.device_info.mqtt_host,
-									port: that.$data.device_info.mqtt_port,
-									is_bigiot: that.$data.device_info.mqtt_is_bigiot,
-									bigiot_username: that.$data.device_info.mqtt_bigiot_username,
-									username: that.$data.device_info.mqtt_username,
-									password: that.$data.device_info.mqtt_password,
-									keepalive: that.$data.device_info.mqtt_keepalive,
-								};
+									client_id: this.$data.device_info.mqtt_client_id,
+									host: this.$data.device_info.mqtt_host,
+									port: this.$data.device_info.mqtt_port,
+									is_bigiot: this.$data.device_info.mqtt_is_bigiot,
+									bigiot_username: this.$data.device_info.mqtt_bigiot_username,
+									username: this.$data.device_info.mqtt_username,
+									password: this.$data.device_info.mqtt_password,
+									keepalive: this.$data.device_info.mqtt_keepalive,
+								}
 								
 								websocket.send({
 									data: JSON.stringify(params)
-								});
+								})
 							} else {
-								uni.hideLoading();
-								websocket.close();
-								that.show_popup_message("Device check internet failed");
+								uni.hideLoading()
+								websocket.close()
+								that.show_popup_message("Device check internet failed")
 							}
-							break;
+							break
 						case 'check_mqtt_result':
 							if (result.result === 'success') {
-								uni.hideLoading();
-								websocket.close();
-								that.show_popup_message("测试成功，请保存设置", "success");
+								uni.hideLoading()
+								websocket.close()
+								this.show_popup_message("测试成功，请保存设置", "success")
 							} else {
-								uni.hideLoading();
-								websocket.close();
-								that.show_popup_message("Device check mqtt failed: " + result.error_msg)
+								uni.hideLoading()
+								websocket.close()
+								that.show_popup_message("Device check mqtt failed", result.error_msg)
 							}
-							break;
+							break
 						default:
-							uni.hideLoading();
-							that.show_popup_message(`Unknown command: ${result.command}`);
+							uni.hideLoading()
+							that.show_popup_message(`Unknown command: ${result.command}`)
 					}
-				});
+				})
 				
-				websocket.onClose(function (res){
-					console.log("websocket closed");
-					// that.show_popup_message("WebSocket Closed");
-				});
+				websocket.onClose((res) => {
+					console.log("websocket closed")
+					// this.show_popup_message("WebSocket Closed")
+				})
 			}
 		}
 	}

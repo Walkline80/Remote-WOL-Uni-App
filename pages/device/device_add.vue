@@ -38,18 +38,21 @@
 				show_notice: true
 			}
 		},
+		onUnload() {
+			
+		},
 		onShow() {
-			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false;
+			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false
 		},
 		onLoad(options) {
 		},
 		onReady() {
 			// #ifdef APP-PLUS
-			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
+			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			// #endif
 		},
 		onPullDownRefresh () {
-			console.log("searching")
+			console.log("searching wifi...")
 			
 			// #ifdef APP-PLUS
 			this.$data.wifi_list = wifi_handler.scan_wifi()
@@ -78,11 +81,12 @@
 				"level": -58
 			}]
 			// #endif
-			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false;
-			uni.stopPullDownRefresh();
+			
+			this.$data.show_notice = this.$data.wifi_list.length === 0 ? true : false
+			uni.stopPullDownRefresh()
 		},
 		methods: {
-			device_detail_click: function (item) {
+			device_detail_click: (item) => {
 				var that = this;
 				
 				console.log("item: " + JSON.stringify(item))

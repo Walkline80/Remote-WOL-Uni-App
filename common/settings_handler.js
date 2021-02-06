@@ -9,8 +9,8 @@ const settings_filename = 'remote_wol_config.json'
 const app_settings_key = 'remote_wol_app_settings'
 const device_item_prefix = 'remote_wol_device_'
 
-var save_app_settings = function (settings) {
-	var result = true;
+const save_app_settings = (settings) => {
+	let result = true
 	
 	uni.setStorage({
 		key: app_settings_key,
@@ -18,137 +18,98 @@ var save_app_settings = function (settings) {
 		success: () => {
 		},
 		fail: () => {
-			result = false;
+			result = false
 		}
-	});
+	})
 	
-	return result;
-};
+	return result
+}
 
-var load_app_settings = function () {
-	var settings = {};
+const load_app_settings = () => {
+	let settings = {}
 	
 	try {
-		const info = uni.getStorageInfoSync();
+		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach(function (key, index) {
+		info.keys.forEach((key) => {
 			if (key === app_settings_key) {
-				const item = uni.getStorageSync(key);
-				settings = item;
+				const item = uni.getStorageSync(key)
+				settings = item
 			}
-		});
+		})
 	} catch (e) {
-		console.log("load_app_setting error", e);
+		console.log("load_app_setting error", e)
 	}
 
-	// uni.getStorageInfo({
-	// 	success: (result) => {
-	// 		result.keys.forEach(function (key, index) {
-	// 			if (key.startsWith(app_settings_key)) {
-	// 				uni.getStorage({
-	// 					key: key,
-	// 					success: (result) => {
-	// 						settings = result.data
-	// 					},
-	// 					fail: () => {
-	// 					}
-	// 				});
-	// 			}
-	// 		});
-	// 	},
-	// 	fail: () => {
-	// 	}
-	// });
-	
-	return settings;
-};
+	return settings
+}
 
-var save_device_item = function (item) {
-	var result = true;
+const save_device_item = (item) => {
+	let result = true
 	
-	item.id = device_item_prefix + item.bssid;
+	item.id = device_item_prefix + item.bssid
 	
 	uni.setStorage({
 		key: item.id,
 		data: item,
 		success: () => {},
 		fail: () => {
-			result = false;
+			result = false
 		}
-	});
+	})
 	
-	return result;
-};
+	return result
+}
 
-var load_device_items = function () {
-	var items = [];
+const load_device_items = () => {
+	let items = []
 	
 	try {
-		const info = uni.getStorageInfoSync();
+		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach(function (key, index) {
+		info.keys.forEach((key) => {
 			if (key.startsWith(device_item_prefix)) {
-				const item = uni.getStorageSync(key);
-				items.push(item);
+				const item = uni.getStorageSync(key)
+				items.push(item)
 			}
-		});
+		})
 	} catch (e) {
-		console.log("load_device_items error", e);
+		console.log("load_device_items error", e)
 	}
-	
-	// uni.getStorageInfo({
-	// 	success: (result) => {
-	// 		result.keys.forEach(function (key, index) {
-	// 			if (key.startsWith(device_item_prefix)) {
-	// 				uni.getStorage({
-	// 					key: key,
-	// 					success: (result) => {
-	// 						items.push(result.data)
-	// 						console.log(items);
-	// 					},
-	// 					fail: () => {
-	// 					}
-	// 				});
-	// 			}
-	// 		});
-	// 	},
-	// 	fail: () => {
-	// 	}
-	// });
-	
-	return items;
-};
 
-var remove_device_item = function (key) {
+	return items
+}
+
+const remove_device_item = (key) => {
 	uni.removeStorage({
 		key: key,
 		success: () => {},
 		fail: () => {}
-	});
+	})
 }
 
-var remove_app_settings = function () {
+const remove_app_settings = () => {
 	uni.removeStorage({
 		key: app_settings_key,
 		success: () => {},
 		fail: () => {}
-	});
+	})
 }
 
-var is_app_settings_exist = function () {
-	var result = false;
+const is_app_settings_exist = () => {
+	let result = false
 	
 	try {
-		const info = uni.getStorageInfoSync();
+		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach(function (key, index) {
-			if (key.startsWith(app_settings_key)) {
-				result = true;
+		info.keys.forEach((key) => {
+			if (key === app_settings_key) {
+				result = true
 			}
-		});
+		})
 	} catch (e) {}
 	
-	return result;
+	return result
 }
 
 export default {

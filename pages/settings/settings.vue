@@ -166,7 +166,7 @@
 	import settings_handler from '../../common/settings_handler.js'
 	import mqtt from 'common/mqtt.min.js'
 	
-	var mqtt_client = null;
+	var mqtt_client = null
 	
 	export default {
 		data() {
@@ -260,17 +260,17 @@
 		onNavigationBarButtonTap(e) {
 			// save button click event
 			if (e.index == 0) {
-				uni.hideKeyboard();
-				this.button_save_click();
+				uni.hideKeyboard()
+				this.button_save_click()
 			}
 		},
 		onUnload() {
-			this.end_mqtt_client();
-			uni.$emit('app_settings_update');
+			this.end_mqtt_client()
+			uni.$emit('app_settings_update')
 		},
 		onLoad() {
-			// settings_handler.remove_app_settings();
-			this.load_app_settings();
+			// settings_handler.remove_app_settings()
+			this.load_app_settings()
 		},
 		onShow() {
 			
@@ -280,110 +280,109 @@
 		},
 		onReady() {
 			// #ifdef APP-PLUS
-			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(),"setForceDarkAllowed",false)')
+			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			// #endif
 		},
 		methods: {
 			end_mqtt_client () {
-				if (mqtt_client) {mqtt_client.end({force: true});}
+				if (mqtt_client) {mqtt_client.end({force: true})}
 			},
 			show_popup_message (message, type="error", duration=3000) {
-				this.$data.popup_type = type;
-				this.$data.popup_message = message;
-				this.$data.popup_duration = duration;
-				this.$refs.popup_message.open();				
+				this.$data.popup_type = type
+				this.$data.popup_message = message
+				this.$data.popup_duration = duration
+				this.$refs.popup_message.open()
 			},
 			load_app_settings () {
-				var settings = settings_handler.load_app_settings();
+				const settings = settings_handler.load_app_settings()
 				
 				if (Object.keys(settings).length === 0) {
-					console.log('test data loaded');
-					this.$data.settings = test_data.app_data;
+					console.log('test data loaded')
+					this.$data.settings = test_data.app_data
 				} else {
-					console.log("settings loaded");
-					this.$data.settings = settings;
+					console.log("settings loaded")
+					this.$data.settings = settings
 				}
 			},
 			switch_to_bigiot (event) {
-				this.$data.settings.mqtt_is_bigiot = event.target.value;
-				this.$refs.form_mqtt.rules.mqtt_bigiot_username.rules[0].required = event.target.value;
+				this.$data.settings.mqtt_is_bigiot = event.target.value
+				this.$refs.form_mqtt.rules.mqtt_bigiot_username.rules[0].required = event.target.value
 			},
 			button_mqtt_test_click () {
-				this.valiate_mqtt_settings();
+				this.validate_mqtt_settings()
 				this.$refs.form_mqtt.submit().then(result => {
-					// console.log("form info: ", result);
+					// console.log("form info: ", result)
 				}).catch(error => {
-					console.log("form error: ", error);
+					console.log("form error: ", error)
 				})
 			},
 			button_save_click () {
 				this.$refs.form_mqtt.submit().then(result => {
 					this.$refs.form_others.submit().then(result => {
-						settings_handler.save_app_settings(this.$data.settings);
-						this.show_popup_message('设置已保存', 'success', 1000);
+						settings_handler.save_app_settings(this.$data.settings)
+						this.show_popup_message('设置已保存', 'success', 1000)
 					}).catch(error => {
-						console.log("form_others error: ", error);
-					});
+						console.log("form_others error: ", error)
+					})
 				}).catch(error => {
-					console.log("form_mnqtt error: ", error);
+					console.log("form_mnqtt error: ", error)
 				})
 			},
-			valiate_mqtt_settings() {
-				var settings = this.$data.settings;
-				// var mqtt = require('mqtt/dist/mqtt.js');
-				var test_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/topic/mqtt_test';
-				var options = {
-					keepalive: settings.mqtt_keepalive,
-					clientId: settings.mqtt_client_id,
-					username: settings.mqtt_username,
-					password: settings.mqtt_password,
-					clean: true,
-					reconnectPeriod: 0,
-					connectTimeout: 10 * 1000,
-				};
+			validate_mqtt_settings() {
+				// var mqtt = require('mqtt/dist/mqtt.js')
+				const settings = this.$data.settings,
+					test_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/topic/mqtt_test',
+					options = {
+						keepalive: settings.mqtt_keepalive,
+						clientId: settings.mqtt_client_id,
+						username: settings.mqtt_username,
+						password: settings.mqtt_password,
+						clean: true,
+						reconnectPeriod: 0,
+						connectTimeout: 10 * 1000,
+					}
 
-				this.end_mqtt_client();
-				uni.$emit('app_settings_validate');
+				this.end_mqtt_client()
+				uni.$emit('app_settings_validate')
 				
 				// #ifdef APP-PLUS
-				mqtt_client = mqtt.connect(`wx://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
+				mqtt_client = mqtt.connect(`wx://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options)
 				// #endif
 				
 				// #ifdef H5
-				mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options);
+				mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options)
 				// #endif
 
-				mqtt_client.on('connect', function() {
-					console.log("connected");
+				mqtt_client.on('connect', () => {
+					console.log("connected")
 					
-					mqtt_client.subscribe(test_topic, function (error, granted) {
+					mqtt_client.subscribe(test_topic, (error, granted) => {
 						if (!error) {
-							console.log('no error');
-							mqtt_client.publish(test_topic, 'success');
+							console.log('no error')
+							mqtt_client.publish(test_topic, 'success')
 						} else {
-							console.log('got error', error);
+							console.log('got error', error)
 						}
-					});
-				}).on('reconnect', function() {
-					console.log('reconnecting...');
-				}).on('error', function(error) {
-					console.log('on error', error);
+					})
+				}).on('reconnect', () => {
+					console.log('reconnecting...')
+				}).on('error', (error) => {
+					console.log('on error', error)
 				}).on('message', (topic, message) => {
-					console.log(`topic: ${topic}, message: ${message.toString()}`);
+					console.log(`topic: ${topic}, message: ${message.toString()}`)
 					
 					if (topic === test_topic) {
 						if (message.toString() === 'success') {
-							mqtt_client.end({force: true});
-							
-							this.show_popup_message("测试成功，请保存设置", 'success');
+							mqtt_client.end({force: true})
+							this.show_popup_message("测试成功，请保存设置", 'success')
 						}
 					}
-				}).on('disconnect', function () {
-					console.log("disconnect");
-				}).on('end', function () {
-					console.log('ended');
+				}).on('disconnect', () => {
+					console.log("disconnect")
+				}).on('end', () => {
+					console.log('ended')
 				}).on('close', () => {
-					console.log('closed');
+					console.log('closed')
 				})
 			}
 		}
