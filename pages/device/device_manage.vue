@@ -64,6 +64,9 @@
 			
 		},
 		onLoad(options) {
+			uni.$on('device_status_update', () => {
+				this.reload_page()
+			})
 		},
 		onReady() {
 			// #ifdef APP-PLUS
