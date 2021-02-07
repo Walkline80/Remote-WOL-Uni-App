@@ -304,7 +304,7 @@
 					
 					if (modify) {
 						options.modify = '1'
-						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_24:6f:28:9d:a3:21"}')
+						item = JSON.parse('{"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37,"wifi_ssid":"duoduohome","wifi_password":"8888888888","mqtt_host":"47.102.44.223","mqtt_port":1883,"mqtt_keepalive":120,"mqtt_is_bigiot":true,"mqtt_bigiot_username":"walkline","mqtt_client_id":"walkline_remote_wol","mqtt_username":"24","mqtt_password":"o9tkA75GL","websocket_port":"80","websocket_path":"/control","id":"remote_wol_device_246f289da321"}')
 					} else {
 						options.modify = '0'
 						item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}')
@@ -491,7 +491,7 @@
 					switch (result.command) {
 						case 'identity_result':
 							if (result.result === 'success') {
-								if (this.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address.toLowerCase()) {
+								if (this.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address) {
 									this.$data.device_info.hardware_name = result.hardware_name
 									this.$data.device_info.hardware_version = result.hardware_version
 									
