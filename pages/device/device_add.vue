@@ -71,7 +71,7 @@
 				"level": -38
 			}, {
 				"index": 2,
-				"ssid": "wol_246F289DA320",
+				"ssid": "wol_246f289da321",
 				"bssid": "24:6f:28:9d:a3:21",
 				"level": -39
 			}, {
@@ -87,21 +87,19 @@
 		},
 		methods: {
 			device_detail_click: (item) => {
-				var that = this;
-				
 				console.log('item: ' + JSON.stringify(item))
 				
 				uni.navigateTo({
 					url: '../device/device_detail?modify=0&item=' + encodeURIComponent(JSON.stringify(item)),
 					events: {
 						acceptDataFromOpenedPage(data) {
-							console.log(data);
+							console.log('data from prev page', data)
 							
-							that.$data.wifi_list = [];
-							// uni.startPullDownRefresh();
+							// this.$data.wifi_list = []
+							// uni.startPullDownRefresh()
 						}
 					}
-				});
+				})
 			}
 		}
 	}
