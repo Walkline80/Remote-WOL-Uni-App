@@ -5,9 +5,9 @@
  * https://gitee.com/walkline/remote-wol-uni-app
  */
 
-const settings_filename = 'remote_wol_config.json'
-const app_settings_key = 'remote_wol_app_settings'
-const device_item_prefix = 'remote_wol_device_'
+// const settings_filename = 'remote_wol_config.json'
+const APP_SETTINGS_KEY = 'remote_wol_app_settings'
+const DEVICE_ITEM_PREFIX = 'remote_wol_device_'
 
 /**
  * 保存 app 设置
@@ -19,7 +19,7 @@ const save_app_settings = (settings) => {
 	let result = true
 	
 	try {
-		uni.setStorageSync(app_settings_key, settings)
+		uni.setStorageSync(APP_SETTINGS_KEY, settings)
 	} catch (error) {
 		console.log('save_app_settings error', error)
 		result = false
@@ -40,9 +40,10 @@ const load_app_settings = () => {
 		const info = uni.getStorageInfoSync()
 		
 		info.keys.forEach((key) => {
-			if (key === app_settings_key) {
+			if (key === APP_SETTINGS_KEY) {
 				const item = uni.getStorageSync(key)
 				settings = item
+				settings.mqtt_topic_prefix = (item.mqtt_is_bigiot ? item.mqtt_bigiot_username : item.mqtt_client_id)
 			}
 		})
 	} catch (error) {
@@ -61,7 +62,7 @@ const load_app_settings = () => {
 const save_device_item = (item) => {
 	let result = true
 	
-	item.id = device_item_prefix + item.bssid.replace(new RegExp(':', 'g'), '')
+	item.id = DEVICE_ITEM_PREFIX + item.bssid.replace(new RegExp(':', 'g'), '')
 	
 	try {
 		uni.setStorageSync(item.id, item)
@@ -85,7 +86,7 @@ const load_device_items = () => {
 		const info = uni.getStorageInfoSync()
 		
 		info.keys.forEach((key) => {
-			if (key.startsWith(device_item_prefix)) {
+			if (key.startsWith(DEVICE_ITEM_PREFIX)) {
 				const item = uni.getStorageSync(key)
 				items.push(item)
 			}
@@ -107,14 +108,38 @@ const get_device_item = (key) => {
 	let item = {}
 	
 	try {
-		item = uni.getStorageSync(device_item_prefix + key)
+		item = uni.getStorageSync(DEVICE_ITEM_PREFIX + key)
 
-		if (!item) {item = {}}
+		if (!item) {item = null}
 	} catch (error) {
 		console.log('get_device_item error', error)
 	}
 	
 	return item
+}
+
+/**
+ * 读取硬件设备设置数量
+ * 
+ * @return {int} 返回硬件设备设置总数
+ */
+const get_device_item_counts = () => {
+	let items = []
+	
+	try {
+		const info = uni.getStorageInfoSync()
+		
+		info.keys.forEach((key) => {
+			if (key.startsWith(DEVICE_ITEM_PREFIX)) {
+				const item = uni.getStorageSync(key)
+				items.push(item)
+			}
+		})
+	} catch (error) {
+		console.log('load_device_items error', error)
+	}
+
+	return items.length
 }
 
 /**
@@ -124,9 +149,11 @@ const get_device_item = (key) => {
  * @param {boolean} status - 在线状态布尔值
  */
 const update_device_item_status = (key, status) => {
-	let item = get_device_item(key)
+	if (get_device_item_counts() === 0) {return}
 	
-	if (typeof(item) === 'object') {
+	let item = get_device_item(key)
+
+	if (item && typeof(item) === 'object') {
 		item.status = status
 		save_device_item(item)
 	}
@@ -151,7 +178,7 @@ const remove_device_item = (key) => {
  */
 const remove_app_settings = () => {
 	try {
-		uni.removeStorageSync(app_settings_key)
+		uni.removeStorageSync(APP_SETTINGS_KEY)
 	} catch (error) {
 		console.log('remove_app_settings error', error)
 	}
@@ -169,7 +196,7 @@ const is_app_settings_exist = () => {
 		const info = uni.getStorageInfoSync()
 		
 		info.keys.forEach((key) => {
-			if (key === app_settings_key) {
+			if (key === APP_SETTINGS_KEY) {
 				result = true
 			}
 		})
@@ -189,5 +216,6 @@ export default {
 	remove_app_settings,
 	is_app_settings_exist,
 	update_device_item_status,
-	get_device_item
+	get_device_item,
+	get_device_item_counts
 }
