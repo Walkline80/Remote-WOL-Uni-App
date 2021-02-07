@@ -70,6 +70,7 @@
 			})
 			
 			uni.$on('app_settings_validate', () => {
+				// 设置页面进行 mqtt 验证的时候需要暂时结束本页面 mqtt 连接
 				this.end_mqtt_client()
 			})
 		},
@@ -83,6 +84,37 @@
 		methods: {
 			mqtt_on_message (topic, message) {
 				console.log(`topic: ${topic}, message: ${message.toString()}`)
+				
+				if (Object.keys(message).length === 0) {return}
+				
+				try {
+					const json_obj = JSON.parse(decodeURIComponent(message))
+					let msg_obj = {}
+					
+					msg_obj.command = json_obj.command
+					msg_obj.result = json_obj.result
+					msg_obj.mac = json_obj.mac_address
+					msg_obj.publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + msg_obj.mac
+
+					switch (msg_obj.command) {
+						case 'device_status_indicator':
+							settings_handler.update_device_item_status(msg_obj.mac, (msg_obj.result === 'online' ? true : false));
+							
+							// 清除硬件设备在线状态 retain 消息 
+							mqtt_client.publish(
+								msg_obj.publish_topic,
+								new Buffer([]),
+								{retain: true},
+							)
+							
+							uni.$emit('device_status_update')
+							break
+						default:
+							break
+					}
+				} catch (error) {
+					console.log('mqtt_on_message error', error)
+				}
 			},
 			end_mqtt_client () {
 				if (mqtt_client) {mqtt_client.end({force: true})}
@@ -113,7 +145,7 @@
 				this.end_mqtt_client()
 				
 				// var mqtt = require('mqtt/dist/mqtt.js')
-				let mqtt_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/remote_wol_device/+',
+				let mqtt_topic = settings.mqtt_topic_prefix + '/remote_wol_device/+',
 					options = {
 						keepalive: settings.mqtt_keepalive,
 						clientId: settings.mqtt_client_id,
@@ -131,7 +163,7 @@
 				// #ifdef H5
 				mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options)
 				// #endif
-			
+
 				mqtt_client.on('connect', () => {
 					console.log('mqtt connected')
 					
