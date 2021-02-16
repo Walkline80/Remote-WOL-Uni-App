@@ -39,7 +39,7 @@
 		    }
 		},
 		{
-		    "path" : "pages/computer/commputer_add",
+		    "path" : "pages/computer/computer_add",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "添加 PC",
@@ -49,12 +49,7 @@
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加 PC",
-						"titleAlign": "left",
-						"buttons":[{
-							"text":"\ue63e",
-							"fontSrc":"/static/iconfont.ttf",
-							"fontSize":"20px"
-						}]
+						"titleAlign": "left"
 					}
 				}
 		    }
