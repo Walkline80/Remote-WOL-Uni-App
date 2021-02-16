@@ -9,34 +9,70 @@
 
 <template>
 	<view class="content">
-		<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
-			<uni-group title="Remote WOL" top=0>
-				<uni-list :border="false">
-					<uni-list-item
-						title="硬件列表"
-						note="硬件设备管理"
-						:showExtraIcon="true"
-						:extraIcon="{size: '22',type: 'list'}"
-						clickable
-						@click="open_page('../device/device_manage')"
-						style="border: none;" />
-					<uni-list-item
-						title="设置"
-						:showExtraIcon="true"
-						:extraIcon="{size: '22',type: 'settings'}"
-						clickable
-						@click="open_page('../settings/settings')"
-						style="border: none;" />
-					<uni-list-item
-						title="关于"
-						:showExtraIcon="true"
-						:extraIcon="{size: '22',type: 'info'}"
-						clickable
-						@click="open_page('../about/about')"
-						style="border: none;" />
+		<view>
+			<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
+				<uni-group title="Remote WOL" top=0>
+					<uni-list :border="false">
+						<uni-list-item
+							title="硬件列表"
+							note="硬件设备管理"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'list'}"
+							clickable
+							@click="open_page('../device/device_manage')"
+							style="border: none;" />
+						<uni-list-item
+							title="设置"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'settings'}"
+							clickable
+							@click="open_page('../settings/settings')"
+							style="border: none;" />
+						<uni-list-item
+							title="关于"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'info'}"
+							clickable
+							@click="open_page('../about/about')"
+							style="border: none;" />
+					</uni-list>
+				</uni-group>
+			</uni-drawer>
+		</view>
+		
+		<view>
+			<uni-swipe-action>
+				<uni-list
+					v-for="(item, index) in pc_list"
+					:key="index"
+					:border="false">
+					<uni-swipe-action-item
+						:rightOptions="swipe_options"
+						@click="swipe_click($event, index, item)">
+						<uni-list-item
+							clickable
+							:disabled="!mqtt_status"
+							thumb="/static/icons/pc.png"
+							thumbSize="base"
+							:title="item.title"
+							:note="'mac: ' + item.mac_address"
+							style="border: none; width: 100%;"
+							@click="pc_item_click(item)" />
+					</uni-swipe-action-item>
 				</uni-list>
-			</uni-group>
-		</uni-drawer>
+			</uni-swipe-action>
+		</view>
+		
+		<view>
+			<uni-fab
+				:pattern="fab_settings.pattern"
+				:content = "fab_settings.content"
+				:horizontal="fab_settings.horizontal"
+				:vertical="fab_settings.bottom"
+				:direction="fab_settings.direction"
+				@trigger="fab_trigger"
+				:popMenu="true" />
+		</view>
 	</view>
 </template>
 <script>
@@ -48,7 +84,47 @@
 	export default {
 		data() {
 			return {
-				app_settings: {}
+				mqtt_status: false,
+				swipe_options: [
+					{
+						text: '删除',
+						style: {
+							backgroundColor: '#ff0000'
+						}
+					},
+					{
+						text: '编辑',
+						style: {
+							backgroundColor: '#00aa00'
+						}
+					}
+				],
+				pc_list: {},
+				app_settings: {},
+				fab_settings: {
+					horizontal: 'right',
+					vertical: 'bottom',
+					direction: 'vertical',
+					content: [
+						{
+							text: '手动输入',
+							iconPath: "/static/icons/input.png",
+						},
+						{
+							text: '导入',
+							iconPath: "/static/icons/import.png",
+						},
+						{
+							text: '扫描',
+							iconPath: "/static/icons/search.png",
+						},
+					],
+					pattern: {
+						// color: '#ff0000',
+						buttonColor: "#1e88e5",
+						// backgroundColor: "#ff0000"
+					}
+				}
 			}
 		},
 		onNavigationBarButtonTap(e) {
@@ -62,6 +138,7 @@
 		},
 		onLoad(options) {
 			this.$data.app_settings = settings_handler.load_app_settings()
+			this.reload_page()
 			this.start_mqtt_client()
 			
 			uni.$on('app_settings_update', () => {
@@ -73,6 +150,24 @@
 				// 设置页面进行 mqtt 验证的时候需要暂时结束本页面 mqtt 连接
 				this.end_mqtt_client()
 			})
+			
+			uni.$on('pc_items_update', () => {
+				this.reload_page()
+			})
+			
+			uni.$on('device_remove', (device) => {
+				let msg_obj = {},
+					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+
+				msg_obj.command = 'device_remove'
+				msg_obj.title = encodeURIComponent(device.title || device.ssid)
+				msg_obj.mac = device.bssid.replace(new RegExp(':', 'g'), '')
+				
+				mqtt_client.publish(
+					publish_topic,
+					JSON.stringify(msg_obj)
+				)
+			})
 		},
 		onReady() {
 			// #ifdef APP-PLUS
@@ -82,6 +177,71 @@
 			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
+			pc_item_click (item) {
+				// wake up pc
+				if (this.$data.mqtt_status) {
+					const device_items = settings_handler.load_device_items()
+					
+					device_items.forEach((device, index) => {
+						let msg_obj = {},
+							publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+						// 00:11:32:2C:A6:03
+						msg_obj.command = 'wake_up_pc'
+						msg_obj.title = encodeURIComponent(item.title)
+						msg_obj.mac = item.mac_address
+						
+						mqtt_client.publish(
+							publish_topic,
+							JSON.stringify(msg_obj)
+						)
+					})
+				}
+			},
+			reload_page () {
+				this.$data.pc_list = settings_handler.load_pc_items()
+			},
+			// event: 滑动按钮事件，event.index：滑动后按钮索引
+			// index：list item 索引
+			// item：点击的 list item
+			swipe_click (event, index, item) {
+				if (event.index === 0) {
+					const id = item.id,
+						title = item.title
+								
+					uni.showModal({
+						content: `是否删除 ${title}？`,
+						confirmText: '删除',
+						success: (result) => {
+							if (result.confirm) {
+								settings_handler.remove_pc_item(id)
+								this.reload_page()
+							}
+						}
+					})
+				} else {
+					console.log('modify pc item ' + index)
+					uni.navigateTo({
+						url: 'computer_detail?modify=1&item=' + encodeURIComponent(JSON.stringify(item)),
+						animationType: "slide-in-right"
+					})
+				}
+			},
+			fab_trigger (event) {
+				if (event.index === 0) {
+					uni.navigateTo({
+						url: 'computer_detail?modify=0&item={}',
+						animationType: "slide-in-right"
+					})
+				}
+			},
+			open_add_page () {
+				uni.navigateTo({
+					url: 'commputer_add'
+				})
+			},
+			mqtt_query (topic, command) {
+				
+			},
 			mqtt_on_message (topic, message) {
 				console.log(`topic: ${topic}, message: ${message.toString()}`)
 				
@@ -109,6 +269,24 @@
 							
 							uni.$emit('device_status_update')
 							break
+						case 'wake_up_pc_result':
+							if (msg_obj.result === 'success') {
+								uni.showToast({
+									title: `${json_obj.title} 已唤醒`,
+									icon: 'none',
+									duration: 3000
+								})
+							}
+							break
+						case 'device_remove_result':
+							if (msg_obj.result === 'success') {
+								uni.showToast({
+									title: `${json_obj.title} 已删除`,
+									icon: 'none',
+									duration: 3000
+								})
+							}
+							break
 						default:
 							break
 					}
@@ -129,6 +307,8 @@
 					color: color
 				})
 				// #endif
+				
+				this.$data.mqtt_status = status
 			},
 			open_page (url) {
 				// this.$refs.drawer.close()
@@ -144,7 +324,6 @@
 				
 				this.end_mqtt_client()
 				
-				// var mqtt = require('mqtt/dist/mqtt.js')
 				let mqtt_topic = settings.mqtt_topic_prefix + '/remote_wol_device/+',
 					options = {
 						keepalive: settings.mqtt_keepalive,
@@ -197,29 +376,10 @@
 </script>
 
 <style>
-	.content {
+/* 	.content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		/* color: #8f8f94; */
-	}
+	} */
 </style>
