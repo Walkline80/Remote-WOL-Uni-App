@@ -30,7 +30,7 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
 							placeholder="8083"
 							v-model="settings.mqtt_port" />
@@ -42,9 +42,9 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
-							placeholder="120"
+							placeholder="30"
 							v-model="settings.mqtt_keepalive" />
 					</uni-forms-item>
 					<uni-forms-item
@@ -116,7 +116,7 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
 							placeholder="80"
 							v-model="settings.websocket_port" />
@@ -164,7 +164,7 @@
 <script>
 	import test_data from '../../others/device_test_data.js'
 	import settings_handler from '../../common/settings_handler.js'
-	import mqtt from 'common/mqtt.min.js'
+	import mqtt from '../../common/mqtt.min.js'
 	
 	var mqtt_client = null
 	
@@ -172,7 +172,12 @@
 		data() {
 			return {
 				settings: {
-					mqtt_is_bigiot: false
+					mqtt_is_bigiot: false,
+					mqtt_port: 8083,
+					mqtt_keepalive: 30,
+					websocket_port: 80,
+					websocket_path: '/control',
+					interaction_ssid_prefix: 'wol_'
 				},
 				label_width: 80,
 				label_align: 'right',
@@ -331,11 +336,10 @@
 				})
 			},
 			validate_mqtt_settings() {
-				// var mqtt = require('mqtt/dist/mqtt.js')
 				const settings = this.$data.settings,
 					test_topic = (settings.mqtt_is_bigiot ? settings.mqtt_bigiot_username : settings.mqtt_client_id) + '/topic/mqtt_test',
 					options = {
-						keepalive: settings.mqtt_keepalive,
+						keepalive: parseInt(settings.mqtt_keepalive),
 						clientId: settings.mqtt_client_id,
 						username: settings.mqtt_username,
 						password: settings.mqtt_password,
@@ -346,7 +350,7 @@
 
 				this.end_mqtt_client()
 				uni.$emit('app_settings_validate')
-				
+
 				// #ifdef APP-PLUS
 				mqtt_client = mqtt.connect(`wx://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options)
 				// #endif
@@ -370,6 +374,7 @@
 					console.log('reconnecting...')
 				}).on('error', (error) => {
 					console.log('on error', error)
+					this.show_popup_message(error, 'error')
 				}).on('message', (topic, message) => {
 					console.log(`topic: ${topic}, message: ${message.toString()}`)
 					
