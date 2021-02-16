@@ -326,7 +326,7 @@
 				
 				let mqtt_topic = settings.mqtt_topic_prefix + '/remote_wol_device/+',
 					options = {
-						keepalive: settings.mqtt_keepalive,
+						keepalive: parseInt(settings.mqtt_keepalive),
 						clientId: settings.mqtt_client_id,
 						username: settings.mqtt_username,
 						password: settings.mqtt_password,
