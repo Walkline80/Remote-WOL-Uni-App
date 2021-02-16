@@ -171,7 +171,9 @@
 	export default {
 		data() {
 			return {
-				settings: {},
+				settings: {
+					mqtt_is_bigiot: false
+				},
 				label_width: 80,
 				label_align: 'right',
 				popup_type: 'success',

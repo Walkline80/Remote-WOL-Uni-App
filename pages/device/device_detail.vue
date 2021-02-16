@@ -186,7 +186,9 @@
 				popup_message: '成功',
 				label_width: 80,
 				label_align: 'right',
-				device_info: {},
+				device_info: {
+					mqtt_is_bigiot: false
+				},
 				event_channel: null,
 				rules: {
 					wifi_ssid: {
