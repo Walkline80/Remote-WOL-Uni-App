@@ -298,7 +298,7 @@
 				
 				if (Object.keys(settings).length === 0) {
 					console.log('test data loaded')
-					this.$data.settings = test_data.app_data
+					if (this.DEV) {this.$data.settings = test_data.app_data}
 				} else {
 					console.log('settings loaded')
 					this.$data.settings = settings

@@ -314,7 +314,7 @@
 				if (options.modify === '0') {
 					console.log('device append')
 					
-					this.$data.device_info = test_data.device_data
+					if (this.DEV) {this.$data.device_info = test_data.device_data}
 					
 					this.$data.device_info.ssid = item.ssid
 					this.$data.device_info.bssid = item.bssid

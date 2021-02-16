@@ -121,7 +121,7 @@
 				if (options.modify === '0') {
 					console.log('pc append')
 					
-					this.$data.pc_info = test_data.pc_data
+					if (this.DEV) {this.$data.pc_info = test_data.pc_data}
 				} else {
 					console.log('pc modify')
 					this.$data.pc_info = item
