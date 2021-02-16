@@ -337,16 +337,15 @@
 					
 					this.start_test_websocket_client()
 				}).catch(error => {
-					console.log('form_mqtt error: ', error)
+					console.log('form error: ', error)
 				})
 			},
 			button_save_click (form) {
 				this.$refs.form.submit().then(result => {
 					// console.log('form info: ', result)
-
 					this.start_save_websocket_client()
 				}).catch(error => {
-					console.log('form_others error: ', error)
+					console.log('form error: ', error)
 				})
 			},
 			show_popup_message (message, type='error', duration=2000) {
@@ -572,7 +571,7 @@
 </script>
 
 <style>
-.button-group {
-	display: flex;
-}
+	.button-group {
+		display: flex;
+	}
 </style>
