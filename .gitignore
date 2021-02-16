@@ -9,3 +9,4 @@ package-lock.json
 /others/device_test_data.js
 /.hbuilderx/launch.json
 /remote_wol.keystore
+.vscode/
