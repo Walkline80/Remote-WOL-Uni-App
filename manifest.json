@@ -1,9 +1,9 @@
 {
     "name" : "Remote WOL",
     "appid" : "__UNI__605F8E1",
-    "description" : "",
+    "description" : "通过软硬件结合的方式实现通过互联网远程唤醒局域网中的电脑",
     "versionName" : "0.0.1",
-    "versionCode" : "100",
+    "versionCode" : 1,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -36,7 +36,9 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "ad" : {}
+            }
         }
     },
     /* 快应用特有相关 */
@@ -61,7 +63,7 @@
     "uniStatistics" : {
         "enable" : false
     },
-	"networkTimeout" : {
-		"connectSocket" : 10000
-	}
+    "networkTimeout" : {
+        "connectSocket" : 10000
+    }
 }
