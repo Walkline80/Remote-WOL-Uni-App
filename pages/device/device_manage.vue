@@ -20,7 +20,7 @@
 					:border="false">
 					<uni-swipe-action-item
 						:rightOptions="swipe_options"
-						@click="swipe_click($event, index)">
+						@click="swipe_click($event, index, item)">
 						<uni-list-item
 							link="navigateTo"
 							thumb="/static/icons/device.png"
@@ -99,9 +99,9 @@
 					}
 				})
 			},
-			swipe_click (event, index) {
-				const id = this.$data.device_list[index].id,
-					title = this.$data.device_list[index].title || this.$data.device_list[index].ssid
+			swipe_click (event, index, item) {
+				const id = item.id,
+					title = item.title || item.ssid
 
 				uni.showModal({
 					content: `是否删除设备 ${title}？`,
@@ -112,6 +112,7 @@
 							this.reload_page()
 							
 							// app 删除后还需要在设备上清除配置文件
+							uni.$emit('device_remove', item)
 						}
 					}
 				})
