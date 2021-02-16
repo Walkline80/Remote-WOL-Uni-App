@@ -57,7 +57,7 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
 							placeholder="1883"
 							v-model="device_info.mqtt_port" />
@@ -69,9 +69,9 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
-							placeholder="120"
+							placeholder="30"
 							v-model="device_info.mqtt_keepalive" />
 					</uni-forms-item>
 					<uni-forms-item
@@ -137,7 +137,7 @@
 						:labelWidth="label_width"
 						:labelAlign="label_align">
 						<uni-easyinput
-							type="text"
+							type="number"
 							:inputBorder="false"
 							placeholder="80"
 							v-model="device_info.websocket_port" />
@@ -187,7 +187,11 @@
 				label_width: 80,
 				label_align: 'right',
 				device_info: {
-					mqtt_is_bigiot: false
+					mqtt_is_bigiot: false,
+					mqtt_port: 1883,
+					mqtt_keepalive: 30,
+					websocket_port: 80,
+					websocket_path: '/control'
 				},
 				event_channel: null,
 				rules: {
