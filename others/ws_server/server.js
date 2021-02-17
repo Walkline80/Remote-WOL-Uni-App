@@ -80,8 +80,8 @@ wss.on('connection', function connection(ws, req) {
 			
 			switch (json_object.command) {
 				case IDENTITY:
-					identity_result.hardware_version = 'Version0'
-					identity_result.hardware_name = 'Remote WOL v0'
+					identity_result.hardware_version = 'Version1'
+					identity_result.hardware_name = 'Remote WOL v1'
 					identity_result.mac_address = '246f289da321'
 					identity_result.ip_address = '192.168.66.1'
 					
