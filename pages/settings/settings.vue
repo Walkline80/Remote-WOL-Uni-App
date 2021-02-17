@@ -148,6 +148,18 @@
 							v-model="settings.interaction_ssid_prefix" />
 					</uni-forms-item>
 				</uni-group>
+				<uni-group title="数据点查看设置" top=0>
+					<uni-forms-item
+						label="URL"
+						name="data_point_url"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="settings.data_point_url" />
+					</uni-forms-item>
+				</uni-group>
 			</uni-forms>
 		</view>
 		<view>
