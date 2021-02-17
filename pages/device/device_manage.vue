@@ -22,10 +22,10 @@
 						:rightOptions="swipe_options"
 						@click="swipe_click($event, index, item)">
 						<uni-list-item
-							link="navigateTo"
+							clickable
 							thumb="/static/icons/device.png"
 							thumbSize="base"
-							:title="item.ssid"
+							:title="item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== '' ? ' (' + item.hardware_memo + ')' : '') || item.ssid"
 							:note="'mac: ' + item.bssid"
 							:rightText="item.status ? '在线' : '离线'"
 							style="border: none; width: 100%;"
@@ -94,14 +94,14 @@
 						acceptDataFromOpenedPage(data) {
 							console.log(data)
 							
-							this.$data.wifi_list = []
+							// this.$data.wifi_list = []
 						}
 					}
 				})
 			},
 			swipe_click (event, index, item) {
 				const id = item.id,
-					title = item.title || item.ssid
+					title = item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== "" ? ' (' + item.hardware_memo + ')' : '') || item.ssid
 
 				uni.showModal({
 					content: `是否删除设备 ${title}？`,
