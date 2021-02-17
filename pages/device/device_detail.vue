@@ -12,9 +12,20 @@
 		<view class="">
 			<uni-forms :value="device_info" ref="form" :rules="rules">
 				<uni-group title="硬件信息" top=-10>
-					<view>{{device_info.ssid}} ({{device_info.bssid}})</view>
+					<view>
+						<h3>{{device_info.hardware_name}}</h3>
+						<h4>{{device_info.ssid}} ({{device_info.bssid}})</h4>
+					</view>
+					<uni-forms-item>
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							prefixIcon="compose"
+							placeholder="设备备注"
+							v-model="device_info.hardware_memo" />
+					</uni-forms-item>
 				</uni-group>
-				<uni-group title="WIFI 设置" top=0>
+				<uni-group title="WIFI 设置" top=-30>
 					<uni-forms-item
 						required
 						label="名称"
@@ -128,6 +139,18 @@
 							:inputBorder="false"
 							v-model="device_info.mqtt_password" />
 					</uni-forms-item>
+					<uni-forms-item
+						required
+						name="mqtt_data_point"
+						label="数据点"
+						v-show="device_info.hardware_version === 'Version1'"
+						:labelWidth="label_width"
+						:labelAlign="label_align">
+						<uni-easyinput
+							type="text"
+							:inputBorder="false"
+							v-model="device_info.mqtt_data_point" />
+					</uni-forms-item>
 				</uni-group>
 				<uni-group title="交互设置 (WebSocket)" top=0>
 					<uni-forms-item
@@ -158,7 +181,7 @@
 				
 				<view class="button-group" style="margin-top: 30rpx;">
 					<button style="width: 50%;" type="primary" @click="button_test_click">测试</button>
-					<button style="width: 30%;" type="warn" @click="button_save_click">保存</button>
+					<button style="width: 30%;" type="warn" :plain="!test_success" :disabled="!test_success" @click="button_save_click">保存</button>
 				</view>
 			</uni-forms>
 	    </view>
@@ -181,15 +204,20 @@
 	export default {
 		data() {
 			return {
+				test_success: false,
 				popup_type: 'success',
 				popup_duration: 1000,
 				popup_message: '成功',
 				label_width: 80,
 				label_align: 'right',
 				device_info: {
+					hardware_name: '',
+					hardware_version: '',
+					hardware_memo: '',
 					mqtt_is_bigiot: false,
 					mqtt_port: 1883,
 					mqtt_keepalive: 30,
+					mqtt_data_point: '',
 					websocket_port: 80,
 					websocket_path: '/control'
 				},
@@ -261,6 +289,19 @@
 						}],
 						label: 'MQTT 密码'
 					},
+					mqtt_data_point: {
+						rules: [
+							{
+								required: false,
+								errorMessage: '{label}不能为空'
+							},
+							{
+								pattern: /^[A-Za-z,]+$/,
+								errorMessage: '{label}只能输入字母和逗号'
+							}
+						],
+						label: 'MQTT 数据点'
+					},
 					websocket_port: {
 						rules: [{
 							required: true,
@@ -327,6 +368,7 @@
 					this.$data.device_info.level = item.level
 				} else {
 					console.log('device modify')
+					this.$data.test_success = true
 					this.$data.device_info = item
 				}
 			},
@@ -398,6 +440,7 @@
 						mqtt_client_id: this.$data.device_info.mqtt_client_id,
 						mqtt_username: this.$data.device_info.mqtt_username,
 						mqtt_password: this.$data.device_info.mqtt_password,
+						mqtt_data_point: this.$data.device_info.mqtt_data_point
 					}
 					
 					websocket.send({
@@ -431,7 +474,7 @@
 								websocket.close()
 								
 								uni.navigateBack({
-									delta: 2,
+									delta: getCurrentPages().length > 3 ? 2 : 1,
 								})
 								
 								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added')
@@ -554,6 +597,8 @@
 							if (result.result === 'success') {
 								uni.hideLoading()
 								websocket.close()
+								this.$data.test_success = true
+								this.$refs.form.rules.mqtt_data_point.rules[0].required = this.$data.device_info.hardware_version === 'Version1'
 								this.show_popup_message('测试成功，请保存设置', 'success')
 							} else {
 								uni.hideLoading()
