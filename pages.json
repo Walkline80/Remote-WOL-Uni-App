@@ -8,17 +8,17 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-		    "path" : "pages/computer/computer_manage",
-		    "style": {
-		    	"navigationBarTitleText": "Remote WOL",
-		    	"app-plus":{
-		    		"backgroundColor": "#F8F8F8",
-		    		"titleNView": {
-		    			"backgroundColor": "#1e88e5",
-		    			"titleColor": "#FFFFFF",
-		    			"titleText": "PC 设备",
-		    			"titleAlign": "left",
-		    			"buttons": [
+			"path": "pages/computer/computer_manage",
+			"style": {
+				"navigationBarTitleText": "Remote WOL",
+				"app-plus": {
+					"backgroundColor": "#F8F8F8",
+					"titleNView": {
+						"backgroundColor": "#1e88e5",
+						"titleColor": "#FFFFFF",
+						"titleText": "PC 设备",
+						"titleAlign": "left",
+						"buttons": [
 							{
 								"text": "\ue868",
 								"fontSrc": "/static/iconfont.ttf",
@@ -34,32 +34,30 @@
 								// "color":"#58ff74"
 							}
 						]
-		    		}
-		    	}
-		    }
+					}
+				}
+			}
 		},
 		{
-		    "path" : "pages/computer/computer_add",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "添加 PC",
-		        "enablePullDownRefresh": false,
-				"app-plus":{
-					"titleNView":{
+			"path": "pages/computer/computer_add",
+			"style": {
+				"navigationBarTitleText": "添加 PC",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加 PC",
 						"titleAlign": "left"
 					}
 				}
-		    }
+			}
 		},
 		{
-			"path" : "pages/computer/computer_detail",
-			"style" :                                                                                    
-			{
-			    "navigationBarTitleText": "PC 信息",
-			    "enablePullDownRefresh": false,
+			"path": "pages/computer/computer_detail",
+			"style": {
+				"navigationBarTitleText": "PC 信息",
+				"enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":{
 						"backgroundColor": "#1e88e5",
@@ -70,11 +68,11 @@
 				}
 			}
 		},
-        {
-            "path": "pages/settings/settings",
-            "style": {
-                "navigationBarTitleText": "设置",
-                "enablePullDownRefresh": false,
+		{
+			"path": "pages/settings/settings",
+			"style": {
+				"navigationBarTitleText": "设置",
+				"enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":{
 						"backgroundColor": "#1e88e5",
@@ -89,35 +87,34 @@
 						}]
 					}
 				}
-            }
-        },
+			}
+		},
 		{
-			"path":"pages/device/device_manage",
+			"path": "pages/device/device_manage",
 			"style": {
-				"navigationBarTitleText":"硬件设备管理",
-				"app-plus":{
-					"titleNView":{
+				"navigationBarTitleText": "硬件设备管理",
+				"app-plus": {
+					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件设备管理",
 						"titleAlign": "left",
-						"buttons":[{
-							"text":"\ue66d",
-							"fontSrc":"/static/iconfont.ttf",
-							"fontSize":"20px"
+						"buttons": [{
+							"text": "\ue66d",
+							"fontSrc": "/static/iconfont.ttf",
+							"fontSize": "20px"
 						}]
 					}
 				}
 			}
 		},
-        {
-            "path" : "pages/device/device_add",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "添加硬件",
-                "enablePullDownRefresh": true,
-				"app-plus":{
-					"titleNView":{
+		{
+			"path": "pages/device/device_add",
+			"style": {
+				"navigationBarTitleText": "添加硬件",
+				"enablePullDownRefresh": true,
+				"app-plus": {
+					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加硬件",
@@ -129,17 +126,15 @@
 						// }]
 					}
 				}
-            }
-            
-        },
+			}
+		},
 		{
-			"path" : "pages/device/device_detail",
-			"style" :                                                                                    
-			{
-			    "navigationBarTitleText": "硬件信息",
-			    "enablePullDownRefresh": false,
-				"app-plus":{
-					"titleNView":{
+			"path": "pages/device/device_detail",
+			"style": {
+				"navigationBarTitleText": "硬件信息",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件信息",
@@ -149,23 +144,36 @@
 			}
 		},
 		{
-            "path" : "pages/about/about",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "关于",
-                "enablePullDownRefresh": false,
-				"app-plus":{
-					"titleNView":{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "关于",
 						"titleAlign": "left"
 					}
 				}
-            }
-            
-        }
-    ],
+			}
+		}
+		,{
+			"path": "pages/data/data",
+			"style": {
+				"navigationBarTitleText": "查看数据点",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"backgroundColor": "#1e88e5",
+						"titleColor": "#FFFFFF",
+						"titleText": "查看数据点",
+						"titleAlign": "center"
+					}
+				}
+			}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "Remote WOL",
