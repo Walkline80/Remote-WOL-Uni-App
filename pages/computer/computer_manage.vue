@@ -21,13 +21,29 @@
 							clickable
 							@click="open_page('../device/device_manage')"
 							style="border: none;" />
+					</uni-list>
+					<uni-list :border="false">
 						<uni-list-item
 							title="设置"
 							:showExtraIcon="true"
 							:extraIcon="{size: '22',type: 'settings'}"
 							clickable
 							@click="open_page('../settings/settings')"
-							style="border: none;" />
+							style="border-top: 1px solid #c8c7cc;" />
+					</uni-list>
+					<uni-list :border="false">
+						<uni-list-item
+							title="查看数据点"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'eye'}"
+							clickable
+							@click="open_page('../data/data')"
+							style="border-top: 1px solid #c8c7cc;" />
+					</uni-list>
+					<uni-list :border="false">
+						<uni-list-item />
+					</uni-list>
+					<uni-list :border="false">
 						<uni-list-item
 							title="关于"
 							:showExtraIcon="true"
@@ -163,10 +179,12 @@
 				msg_obj.title = encodeURIComponent(device.title || device.ssid)
 				msg_obj.mac = device.bssid.replace(new RegExp(':', 'g'), '')
 				
-				mqtt_client.publish(
-					publish_topic,
-					JSON.stringify(msg_obj)
-				)
+				if (mqtt_client) {
+					mqtt_client.publish(
+						publish_topic,
+						JSON.stringify(msg_obj)
+					)	
+				}
 			})
 		},
 		onReady() {
@@ -311,11 +329,12 @@
 				this.$data.mqtt_status = status
 			},
 			open_page (url) {
-				// this.$refs.drawer.close()
 				uni.navigateTo({
 					url: url,
 					animationType: "slide-in-right"
 				})
+				
+				this.$refs.drawer.close()
 			},
 			start_mqtt_client () {
 				const settings = this.$data.app_settings
