@@ -285,7 +285,6 @@
 		},
 		onUnload() {
 			this.end_mqtt_client()
-			uni.$emit('app_settings_update')
 		},
 		onLoad() {
 			// settings_handler.remove_app_settings()
@@ -340,6 +339,7 @@
 					this.$refs.form_others.submit().then(result => {
 						settings_handler.save_app_settings(this.$data.settings)
 						this.show_popup_message('设置已保存', 'success', 1000)
+						uni.$emit('app_settings_update')
 					}).catch(error => {
 						console.log('form_others error', error)
 					})
