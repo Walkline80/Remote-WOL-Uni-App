@@ -56,6 +56,69 @@
 			</uni-drawer>
 		</view>
 		
+<!-- 		<view>
+			<uni-card
+				v-for="(device, index) in device_list"
+				:key="index"
+				:title="device.hardware_name + (device.hardware_memo !== undefined && device.hardware_memo !== '' ? ' (' + device.hardware_memo + ')' : '') || device.ssid"
+				:isShadow="true"
+				extra=""
+				note=""
+				mode="title"
+				thumbnail="/static/icons/device.png">
+				<uni-swipe-action>
+					<uni-list
+						v-for="(pc, index) in pc_list"
+						:key="index"
+						:border="false">
+						<uni-swipe-action-item>
+							<uni-list-item
+								v-if="pc.assigned_device === device.id"
+								:title="pc.title"
+								:note="'mac: ' + pc.mac_address"
+								clickable
+								:disabled="!mqtt_status"
+								thumb="/static/icons/pc.png"
+								thumbSize="base"
+								style="border: none; width: 100%;" />
+						</uni-swipe-action-item>
+					</uni-list>
+				</uni-swipe-action>
+				<template v-slot:footer>
+					<view style="color: #ff0000; display: flex; float: right;">
+						<view>全部唤醒</view>
+					</view>
+				</template>
+			</uni-card>
+		</view>
+		
+		<view>
+			<uni-card
+				title="未分类"
+				extra=""
+				note="未分类 PC 将通过所有设备进行唤醒"
+				:isShadow="true">
+				<uni-swipe-action>
+					<uni-list
+						v-for="(pc, index) in pc_list"
+						:index="index"
+						:border="false">
+						<uni-swipe-action-item :rightOptions="swipe_options">
+							<uni-list-item
+								v-if="pc.assigned_device === undefined || pc.assigned_device === ''"
+								:title="pc.title"
+								:note="pc.mac_address"
+								clickable
+								:disabled="!mqtt_status"
+								thumb="/static/icons/pc.png"
+								thumbSize="base"
+								style="border: none; width: 100%;" />
+						</uni-swipe-action-item>
+					</uni-list>
+				</uni-swipe-action>
+			</uni-card>
+		</view> -->
+		
 		<view>
 			<uni-swipe-action>
 				<uni-list
@@ -92,8 +155,8 @@
 	</view>
 </template>
 <script>
-	import settings_handler from '../../common/settings_handler.js'
-	import mqtt from 'common/mqtt.min.js'
+	import settings_handler from '@/common/settings_handler.js'
+	import mqtt from '@/common/mqtt.min.js'
 	
 	var mqtt_client = null;
 	
@@ -116,6 +179,7 @@
 					}
 				],
 				pc_list: {},
+				device_list: {},
 				app_settings: {},
 				fab_settings: {
 					horizontal: 'right',
@@ -154,6 +218,7 @@
 		},
 		onLoad(options) {
 			this.$data.app_settings = settings_handler.load_app_settings()
+			this.$data.device_list = settings_handler.load_device_items()
 			this.reload_page()
 			this.start_mqtt_client()
 			
