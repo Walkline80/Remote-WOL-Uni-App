@@ -422,6 +422,11 @@
 					url: 'ws://'  + host_ip + ':' + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
 						console.log('websocket completed')
+					},
+					fail () {
+						console.log('WebSocket open failed')
+						uni.hideLoading()
+						this.show_popup_message('WebSocket open failed')
 					}
 				})
 				
@@ -482,7 +487,7 @@
 							break
 						default:
 							uni.hideLoading()
-							that.show_popup_message(`Unknown command: ${result.command}`)
+							this.show_popup_message(`Unknown command: ${result.command}`)
 					}
 				})
 				
@@ -512,6 +517,11 @@
 					url: 'ws://' + host_ip + ':' + this.$data.device_info.websocket_port + this.$data.device_info.websocket_path,
 					success () {
 						console.log('websocket completed')
+					},
+					fail() {
+						console.log('WebSocket open failed')
+						uni.hideLoading()
+						this.show_popup_message('WebSocket open failed')
 					}
 				})
 				
@@ -590,7 +600,7 @@
 							} else {
 								uni.hideLoading()
 								websocket.close()
-								that.show_popup_message('Device check internet failed')
+								this.show_popup_message('Device check internet failed')
 							}
 							break
 						case 'check_mqtt_result':
@@ -603,12 +613,12 @@
 							} else {
 								uni.hideLoading()
 								websocket.close()
-								that.show_popup_message('Device check mqtt failed', result.error_msg)
+								this.show_popup_message('Device check mqtt failed' + result.error_msg)
 							}
 							break
 						default:
 							uni.hideLoading()
-							that.show_popup_message(`Unknown command: ${result.command}`)
+							this.show_popup_message(`Unknown command: ${result.command}`)
 					}
 				})
 				
