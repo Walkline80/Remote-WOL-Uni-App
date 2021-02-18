@@ -9,7 +9,8 @@
 
 <template>
 	<view>
-		
+		<!-- <u-parse :content="readme"></u-parse> -->
+		<web-view :src="about_src"></web-view>
 	</view>
 </template>
 
@@ -17,11 +18,10 @@
 	export default {
 		data() {
 			return {
-				
+				about_src: 'https://gitee.com/walkline/remote-wol/blob/master/README.md'
 			}
 		},
 		onLoad(options) {
-			
 		},
 		onShow() {
 			
@@ -41,5 +41,4 @@
 </script>
 
 <style>
-
 </style>
