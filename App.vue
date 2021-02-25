@@ -8,8 +8,8 @@
 -->
 
 <script>
-	import wifi_handler from 'common/wifi_handler.js'
-	
+	import wifi_handler from '@/common/wifi_handler.js'
+
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
