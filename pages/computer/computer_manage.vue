@@ -11,7 +11,7 @@
 	<view class="content">
 		<view>
 			<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
-				<uni-group title="Remote WOL" top=0>
+				<uni-group :title="'Remote WOL v' + version" top=0>
 					<uni-list :border="false">
 						<uni-list-item
 							title="硬件列表"
@@ -156,13 +156,15 @@
 </template>
 <script>
 	import settings_handler from '@/common/settings_handler.js'
+	import update_handler from '@/common/update_handler.js'
 	import mqtt from '@/common/mqtt.min.js'
-	
+
 	var mqtt_client = null;
 	
 	export default {
 		data() {
 			return {
+				version: '',
 				mqtt_status: false,
 				swipe_options: [
 					{
@@ -217,6 +219,12 @@
 			this.end_mqtt_client()
 		},
 		onLoad(options) {
+			// #ifdef APP-PLUS
+			plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+				this.$data.version = wgtinfo.version
+			})
+			// #endif
+			
 			this.$data.app_settings = settings_handler.load_app_settings()
 			this.$data.device_list = settings_handler.load_device_items()
 			this.reload_page()
@@ -255,8 +263,9 @@
 		onReady() {
 			// #ifdef APP-PLUS
 			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
+			update_handler.check_update()
 			// #endif
-			
+
 			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
