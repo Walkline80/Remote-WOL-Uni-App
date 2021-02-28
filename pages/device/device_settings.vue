@@ -358,7 +358,11 @@
 						console.log('add device, a few data from prev page')
 
 						view_mode = false
-						this.$data.device_info = JSON.parse(decodeURIComponent(options.device_item))
+						
+						const item = JSON.parse(decodeURIComponent(options.device_item))
+						this.$data.device_info.ssid = item.ssid
+						this.$data.device_info.bssid = item.bssid
+						this.$data.device_info.level = item.level
 					}
 				}
 
