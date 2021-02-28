@@ -106,6 +106,8 @@
 				if (Object.keys(options).length !== 0) {
 					if (options.device_id) {
 						this.$data.device_info = settings_handler.get_device_item_by_id(options.device_id)
+						
+						if (!this.$data.device_info.hardware_memo) {this.$data.device_info.hardware_memo = ''}
 					} else {
 						if (this.DEV) {
 							this.$data.device_info = test_data.device_data
