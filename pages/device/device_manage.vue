@@ -13,56 +13,40 @@
 			<text>点击加号添加硬件</text>
 		</view>
 		<view>
-			<uni-swipe-action>
-				<uni-list
-					v-for="(item, index) in device_list"
-					:key="index"
-					:border="false">
-					<uni-swipe-action-item
-						:rightOptions="swipe_options"
-						@click="swipe_click($event, index, item)">
-						<uni-list-item
-							clickable
-							thumb="/static/icons/device.png"
-							thumbSize="base"
-							:title="item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== '' ? ' (' + item.hardware_memo + ')' : '') || item.ssid"
-							:note="'mac: ' + item.bssid"
-							:rightText="item.status ? '在线' : '离线'"
-							style="border: none; width: 100%;"
-							@click="device_item_click(item)" />
-					</uni-swipe-action-item>
-				</uni-list>
-			</uni-swipe-action>
+			<uni-list
+				v-for="(item, index) in device_list"
+				:key="index"
+				:border="false">
+				<uni-list-item
+						link
+						thumb="/static/icons/device.png"
+						thumbSize="base"
+						:title="item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== '' ? ' (' + item.hardware_memo + ')' : '') || item.ssid"
+						:note="'mac: ' + item.bssid"
+						:rightText="item.status ? '在线' : '离线'"
+						style="border: none; width: 100%;"
+						@click="device_item_click(item)" />
+			</uni-list>
 		</view>
 	</view>
 </template>
 
 <script>
-	import settings_handler from '../../common/settings_handler.js'
+	import settings_handler from '@/common/settings_handler.js'
 	
 	export default {
 		data() {
 			return {
-				swipe_options: [{
-					text: '删除',
-					style: {
-						backgroundColor: '#ff0000'
-					}
-				}],
 				show_notice: true,
 				device_list: {}
 			}
 		},
-		onHide() {
-			
-		},
+		onHide() {},
 		onShow() {
 			// load device list from storage
 			this.reload_page()
 		},
-		onUnload() {
-			
-		},
+		onUnload() {},
 		onLoad(options) {
 			uni.$on('device_status_update', () => {
 				this.reload_page()
@@ -87,34 +71,8 @@
 		methods: {
 			device_item_click (item) {
 				// console.log('item: ' + JSON.stringify(item))
-				
 				uni.navigateTo({
-					url:'../device/device_detail?modify=1&item=' + encodeURIComponent(JSON.stringify(item)),
-					events:{
-						acceptDataFromOpenedPage(data) {
-							console.log(data)
-							
-							// this.$data.wifi_list = []
-						}
-					}
-				})
-			},
-			swipe_click (event, index, item) {
-				const id = item.id,
-					title = item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== "" ? ' (' + item.hardware_memo + ')' : '') || item.ssid
-
-				uni.showModal({
-					content: `是否删除设备 ${title}？`,
-					confirmText: '删除',
-					success: (result) => {
-						if (result.confirm) {
-							settings_handler.remove_device_item(id)
-							this.reload_page()
-							
-							// app 删除后还需要在设备上清除配置文件
-							uni.$emit('device_remove', item)
-						}
-					}
+					url:`../device/device_detail?device_id=${item.id}`
 				})
 			},
 			reload_page () {
