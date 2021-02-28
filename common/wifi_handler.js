@@ -104,6 +104,19 @@ const create_wifi_config = (ssid) => {
 }
 
 /**
+ * 删除指定的 wifi 热点
+ * 
+ * @param {string} ssid - 需要删除的 wifi 热点名称
+ */
+const remove_last_wifi_config = (ssid) => {
+	let last_config = is_wifi_config_exist(ssid)
+	
+	if (last_config) {
+		console.log('remove network ' + last_config.plusGetAttribute('SSID') + ': ' + wifiManager.removeNetwork(last_config.plusGetAttribute('networkId')))
+	}
+}
+
+/**
  * 连接到指定的 wifi 热点
  * 
  * @param {string} ssid - 需要连接的 wifi 热点名称
@@ -254,6 +267,7 @@ export default {
 	connect,
 	disconnect,
 	get_ip_address,
-	get_dhcp_info
+	get_dhcp_info,
+	remove_last_wifi_config
 }
 // #endif
