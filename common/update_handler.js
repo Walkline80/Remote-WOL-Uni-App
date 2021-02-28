@@ -18,24 +18,25 @@ const bytes_to_size = (bytes) => {
 }
 
 // #ifdef APP-PLUS
-var MainActivity = plus.android.runtimeMainActivity()
-var app_version = null
-	
+var MainActivity = plus.android.runtimeMainActivity(),
+	package_name = MainActivity.getApplicationContext().getPackageName(),
+	app_version = null
+
 plus.runtime.getProperty(plus.runtime.appid, function (wgtinfo) {
 	app_version = wgtinfo.version
 })
+// #endif
 
 const check_update = () => {
-	const package_name = MainActivity.getApplicationContext().getPackageName()
-	
+	// #ifdef APP-PLUS
 	console.log('checking update...')
 	console.log('current version: ' + app_version)
 
 	uni.request({
 		url: CHECK_UPDATE_URI,
 		data: {
-			'package_name': package_name, // plus.runtime.appid,
-			'app_version': app_version // plus.runtime.version
+			package_name: package_name, // plus.runtime.appid,
+			app_version: app_version // plus.runtime.version
 		},
 		header: {
 			'content-type': 'application/x-www-form-urlencoded'
@@ -51,10 +52,10 @@ const check_update = () => {
 					force_update = result.data.force_update,
 					date = result.data.date
 
-				if  (result.data.status === 1) {
+				if (status === 1) {
 					if (force_update) {
 						uni.showToast({
-							title: `发现新版本 (${version})，正在下载更新文件...`,
+							title: `发现新版本 (${version})，正在下载安装新版本...`,
 							duration: 5000,
 							position: 'center',
 							icon: 'none'
@@ -80,7 +81,7 @@ const check_update = () => {
 							}
 						})
 					}
-				} else if (result.data.status === 2) {
+				} else if (status === 2) {
 					console.log('found wgt file with version:' + version)
 					download_and_install_update(url, 2)
 				} else {
@@ -92,6 +93,7 @@ const check_update = () => {
 			console.log('request failed: ', result)
 		}
 	})
+	// #endif
 }
 
 const download_and_install_update = (url, method=1) => {
@@ -131,7 +133,6 @@ const download_and_install_update = (url, method=1) => {
 		}
 	})
 }
-// #endif
 
 export default {
 	// CHECK_UPDATE_URI,
