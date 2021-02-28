@@ -165,6 +165,26 @@ const get_device_item = (key) => {
 }
 
 /**
+ * 读取指定硬件设备设置
+ * 
+ * @param {string} id - 要读取的硬件设备的 id
+ * @return {object} 返回指定的硬件设备设置
+ */
+const get_device_item_by_id = (id) => {
+	let item = {}
+	
+	try {
+		item = uni.getStorageSync(id)
+
+		if (!item) {item = null}
+	} catch (error) {
+		console.log('get_device_item error', error)
+	}
+	
+	return item
+}
+
+/**
  * 读取指定 pc 设备设置
  * 
  * @param {string} key - 要读取的 pc 设备的 mac 地址（包含 mac 地址分隔符）
@@ -325,5 +345,6 @@ export default {
 	load_pc_items,
 	get_pc_item,
 	get_pc_item_counts,
-	remove_pc_item
+	remove_pc_item,
+	get_device_item_by_id
 }
