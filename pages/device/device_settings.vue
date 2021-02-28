@@ -391,12 +391,21 @@
 			},
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
+					let connect_result = false
 					// console.log('form info: ', result)
 					// #ifdef APP-PLUS
-					wifi_handler.connect(this.$data.device_info.ssid)
+					connect_result = wifi_handler.connect(this.$data.device_info.ssid)
 					// #endif
 					
-					this.start_test_websocket_client()
+					if (connect_result) {
+						this.start_test_websocket_client()
+					} else {
+						uni.showModal({
+							showCancel: false,
+							title: '连接硬件热点失败',
+							content: `请尝试手动删除系统 WIFI 中已保存的同名热点\n\n热点名称：${this.$data.device_info.ssid}`
+						})
+					}
 				}).catch(error => {
 					console.log('form error: ', error)
 				})
@@ -495,6 +504,7 @@
 									delta: getCurrentPages().length > 3 ? 2 : 1,
 								})
 								
+								wifi_handler.remove_last_wifi_config(this.$data.device_info.ssid)
 								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added')
 							}
 							break
