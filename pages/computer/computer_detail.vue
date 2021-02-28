@@ -46,8 +46,8 @@
 </template>
 
 <script>
-	import test_data from '../../others/device_test_data.js'
-	import settings_handler from '../../common/settings_handler.js'
+	import test_data from '@/others/device_test_data.js'
+	import settings_handler from '@/common/settings_handler.js'
 	
 	export default {
 		data() {

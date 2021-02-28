@@ -19,7 +19,7 @@
 </template>
 
 <script>
-	import settings_handler from '../../common/settings_handler.js'
+	import settings_handler from '@/common/settings_handler.js'
 	
 	export default {
 		data () {

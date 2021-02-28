@@ -22,14 +22,14 @@
 					:title="item.ssid"
 					:note="'mac: ' + item.bssid + ' level: ' + item.level"
 					style="border: none;"
-					@click="device_detail_click(item)" />
+					@click="device_settings_click(item)" />
 			</uni-list>
 		</view>
 	</view>
 </template>
 
 <script>
-	import wifi_handler from '../../common/wifi_handler.js'
+	import wifi_handler from '@/common/wifi_handler.js'
 		
 	export default {
 		data() {
@@ -86,11 +86,11 @@
 			uni.stopPullDownRefresh()
 		},
 		methods: {
-			device_detail_click: (item) => {
+			device_settings_click: (item) => {
 				console.log('item: ' + JSON.stringify(item))
 				
 				uni.navigateTo({
-					url: '../device/device_detail?modify=0&item=' + encodeURIComponent(JSON.stringify(item)),
+					url: '../device/device_settings?device_item=' + encodeURIComponent(JSON.stringify(item)),
 					events: {
 						acceptDataFromOpenedPage(data) {
 							console.log('data from prev page', data)
