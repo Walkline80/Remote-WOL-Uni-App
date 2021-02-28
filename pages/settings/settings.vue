@@ -174,9 +174,9 @@
 </template>
 
 <script>
-	import test_data from '../../others/device_test_data.js'
-	import settings_handler from '../../common/settings_handler.js'
-	import mqtt from '../../common/mqtt.min.js'
+	import test_data from '@/others/device_test_data.js'
+	import settings_handler from '@/common/settings_handler.js'
+	import mqtt from '@/common/mqtt.min.js'
 	
 	var mqtt_client = null
 	
