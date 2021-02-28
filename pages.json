@@ -129,15 +129,31 @@
 			}
 		},
 		{
-			"path": "pages/device/device_detail",
+			"path": "pages/device/device_settings",
 			"style": {
-				"navigationBarTitleText": "硬件信息",
+				"navigationBarTitleText": "硬件设置",
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
-						"titleText": "硬件信息",
+						"titleText": "硬件设置",
+						"titleAlign": "left"
+					}
+				}
+			}
+		},
+		{
+			"path" : "pages/device/device_detail",
+			"style" :
+			{
+				"navigationBarTitleText": "硬件详情",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"backgroundColor": "#1e88e5",
+						"titleColor": "#FFFFFF",
+						"titleText": "硬件详情",
 						"titleAlign": "left"
 					}
 				}
