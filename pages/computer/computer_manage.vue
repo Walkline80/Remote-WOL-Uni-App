@@ -258,6 +258,8 @@
 						JSON.stringify(msg_obj)
 					)	
 				}
+				
+				settings_handler.remove_device_item(device.id)
 			})
 		},
 		onReady() {
