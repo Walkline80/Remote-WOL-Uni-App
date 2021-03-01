@@ -11,48 +11,50 @@
 	<view class="content">
 		<view>
 			<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
-				<uni-group :title="'Remote WOL v' + version" top=0>
-					<uni-list :border="false">
-						<uni-list-item
-							title="硬件列表"
-							note="硬件设备管理"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'list'}"
-							clickable
-							@click="open_page('../device/device_manage')"
-							style="border: none;" />
-					</uni-list>
-					<uni-list :border="false">
-						<uni-list-item
-							title="设置"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'settings'}"
-							clickable
-							@click="open_page('../settings/settings')"
-							style="border-top: 1px solid #c8c7cc;" />
-					</uni-list>
-					<uni-list :border="false">
-						<uni-list-item
-							title="查看数据点"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'eye'}"
-							clickable
-							@click="open_page('../data/data')"
-							style="border-top: 1px solid #c8c7cc;" />
-					</uni-list>
-					<uni-list :border="false">
-						<uni-list-item />
-					</uni-list>
-					<uni-list :border="false">
-						<uni-list-item
-							title="关于"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'info'}"
-							clickable
-							@click="open_page('../about/about')"
-							style="border: none;" />
-					</uni-list>
-				</uni-group>
+				<view class="drawer_header">
+					<image src="@/static/header.png" mode="aspectFill"></image>
+					<text class="drawer_title">Remote WOL</text>
+					<text class="drawer_version">v0.0.10</text>
+				</view>
+				<!-- <uni-group :title="'Remote WOL v' + version" top=0> -->
+				<uni-list :border="false">
+					<uni-list-item
+						title="硬件列表"
+						note="硬件设备管理"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'list'}"
+						clickable
+						@click="open_page('../device/device_manage')" />
+
+					<uni-list-item
+						title="设置"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'settings'}"
+						clickable
+						@click="open_page('../settings/settings')" />
+
+					<uni-list-item
+						title="查看数据点"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'eye'}"
+						clickable
+						@click="open_page('../webview/data_point')" />
+
+					<uni-list-item
+						title="更新记录"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'compose'}"
+						clickable
+						@click="open_page('../webview/changelog')" />
+
+					<uni-list-item
+						title="关于"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'info'}"
+						clickable
+						@click="open_page('../about/about')" />
+				</uni-list>
+				<!-- </uni-group> -->
 			</uni-drawer>
 		</view>
 		
@@ -474,10 +476,36 @@
 </script>
 
 <style>
-/* 	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	} */
+	.drawer_header {
+		background-color: darkcyan;
+		width: 100%;
+		height: 150px;
+		line-height: 150px;
+		vertical-align: middle;
+	}
+	
+	.drawer_header image {
+		width: 100%;
+		height: 150px;
+	}
+
+	.drawer_title {
+		position: fixed;
+		top: 0;
+		left: 0;
+		font-size: 22px;
+		color: white;
+		width: 100%;
+		margin-left: 20px;
+		font-weight: bold;
+		text-shadow: 2px 2px grey;
+	}
+
+	.drawer_version {
+		position: fixed;
+		top: 25px;
+		right: 20px;
+		color: gainsboro;
+		font-size: 14px;
+	}
 </style>
