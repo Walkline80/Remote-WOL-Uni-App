@@ -270,6 +270,26 @@ const update_device_item_status = (key, status) => {
 }
 
 /**
+ * 更新指定硬件设备的 IP 地址
+ * 
+ * @param {string} key - 要读取的硬件设备的 mac 地址（不包含 mac 地址分隔符）
+ * @param {boolean} ipaddress - IP 地址值
+ */
+const update_device_item_ip_address = (key, ip_address) => {
+	if (get_device_item_counts() === 0) {return}
+	
+	console.log(ip_address)
+	let item = get_device_item(key)
+
+	if (item && typeof(item) === 'object') {
+		item.ip_address = ip_address
+		save_device_item(item)
+	}
+	
+	console.log('success')
+}
+
+/**
  * 删除指定硬件设备设置
  * 
  * @param {string} key - 要删除的硬件设备的 mac 地址（不包含 mac 地址分隔符）
@@ -346,5 +366,6 @@ export default {
 	get_pc_item,
 	get_pc_item_counts,
 	remove_pc_item,
-	get_device_item_by_id
+	get_device_item_by_id,
+	update_device_item_ip_address
 }
