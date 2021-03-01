@@ -178,7 +178,7 @@
 			}
 		}
 		,{
-			"path": "pages/data/data",
+			"path": "pages/webview/data_point",
 			"style": {
 				"navigationBarTitleText": "查看数据点",
 				"enablePullDownRefresh": false,
@@ -187,6 +187,21 @@
 						"backgroundColor": "#1e88e5",
 						"titleColor": "#FFFFFF",
 						"titleText": "查看数据点",
+						"titleAlign": "center"
+					}
+				}
+			}
+		}
+		,{
+			"path" : "pages/webview/changelog",
+			"style": {
+				"navigationBarTitleText": "更新记录",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"backgroundColor": "#1e88e5",
+						"titleColor": "#FFFFFF",
+						"titleText": "更新记录",
 						"titleAlign": "center"
 					}
 				}
