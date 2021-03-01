@@ -85,7 +85,8 @@
 							"fontSize": "20px",
 							"float": "right"
 						}]
-					}
+					},
+					"softinputMode": "adjustResize"
 				}
 			}
 		},
@@ -139,7 +140,8 @@
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件设置",
 						"titleAlign": "left"
-					}
+					},
+					"softinputMode": "adjustResize"
 				}
 			}
 		},
@@ -155,7 +157,8 @@
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件详情",
 						"titleAlign": "left"
-					}
+					},
+					"softinputMode": "adjustResize"
 				}
 			}
 		},
