@@ -159,7 +159,7 @@
 	import update_handler from '@/common/update_handler.js'
 	import mqtt from '@/common/mqtt.min.js'
 
-	var mqtt_client = null;
+	var mqtt_client = null
 	
 	export default {
 		data() {
@@ -347,12 +347,15 @@
 					
 					msg_obj.command = json_obj.command
 					msg_obj.result = json_obj.result
-					msg_obj.mac = json_obj.mac_address
-					msg_obj.publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + msg_obj.mac
+					msg_obj.mac_address = json_obj.mac_address || ''
+					msg_obj.ip_address = json_obj.ip_address || '无'
+					
+					msg_obj.publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + msg_obj.mac_address
 
 					switch (msg_obj.command) {
 						case 'device_status_indicator':
-							settings_handler.update_device_item_status(msg_obj.mac, (msg_obj.result === 'online' ? true : false));
+							settings_handler.update_device_item_status(msg_obj.mac_address, (msg_obj.result === 'online' ? true : false))
+							settings_handler.update_device_item_ip_address(msg_obj.mac_address, msg_obj.ip_address)
 							
 							// 清除硬件设备在线状态 retain 消息 
 							mqtt_client.publish(
