@@ -9,69 +9,78 @@
 
 <template>
 	<view>
-		<uni-forms>
-			<uni-group title="关于" top=-10>
-				<uni-list :border="false">
-					<uni-list-item
-						:rightText="device_info.hardware_name"
-						title="硬件名称"
-						:showExtraIcon="false"
-						:extraIcon="{size: '22',type: 'compose'}"
-						@click="open_page('../device/device_manage')">
-					</uni-list-item>
-					<uni-list-item
-						:rightText="device_info.hardware_version"
-						title="固件版本"
-						:showExtraIcon="false"
-						:extraIcon="{size: '22',type: 'compose'}"
-						@click="open_page('../device/device_manage')">
-					</uni-list-item>
-					<uni-list-item
-						:rightText="device_info.ssid"
-						title="热点名称"
-						:showExtraIcon="false"
-						:extraIcon="{size: '22',type: 'compose'}"
-						@click="open_page('../device/device_manage')">
-					</uni-list-item>
-					<uni-list-item
-						:rightText="device_info.bssid"
-						title="MAC 地址"
-						:showExtraIcon="false"
-						:extraIcon="{size: '22',type: 'compose'}"
-						@click="open_page('../device/device_manage')">
-					</uni-list-item>
-					<uni-list-item
-						link
-						:rightText="device_info.hardware_memo"
-						title="备注"
-						:showExtraIcon="true"
-						:extraIcon="{size: '22',type: 'compose'}"
-						@click="popup_show">
-					</uni-list-item>
-					<uni-list-item
-						link
-						title="查看设置"
-						:showExtraIcon="true"
-						:extraIcon="{size: '22',type: 'list'}"
-						@click="device_item_click()">
-					</uni-list-item>
-				</uni-list>
+		<view class="header">
+			<image src="@/static/icons/chip.png" mode="aspectFit" />
+		</view>
+		<view>
+			<uni-forms>
+				<!-- <uni-group title="关于" top=-10> -->
+					<uni-list :border="false">
+						<uni-list-item
+							:rightText="device_info.hardware_name"
+							title="硬件名称"
+							:showExtraIcon="false"
+							:extraIcon="{size: '22',type: 'compose'}">
+						</uni-list-item>
+						<uni-list-item
+							:rightText="device_info.hardware_version"
+							title="固件版本"
+							:showExtraIcon="false"
+							:extraIcon="{size: '22',type: 'compose'}"
+							@click="open_page('../device/device_manage')">
+						</uni-list-item>
+						<uni-list-item
+							:rightText="device_info.ssid"
+							title="热点名称"
+							:showExtraIcon="false"
+							:extraIcon="{size: '22',type: 'compose'}">
+						</uni-list-item>
+						<uni-list-item
+							:rightText="device_info.ip_address"
+							title="IP 地址"
+							:showExtraIcon="false"
+							:extraIcon="{size: '22',type: 'compose'}">
+						</uni-list-item>
+						<uni-list-item
+							:rightText="device_info.bssid"
+							title="MAC 地址"
+							:showExtraIcon="false"
+							:extraIcon="{size: '22',type: 'compose'}">
+						</uni-list-item>
+						<uni-list-item
+							link
+							:rightText="device_info.hardware_memo"
+							title="备注"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'compose'}"
+							@click="popup_show">
+						</uni-list-item>
+						<uni-list-item
+							link
+							title="查看设置"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'list'}"
+							@click="device_item_click()">
+						</uni-list-item>
+					</uni-list>
+				<!-- </uni-group> -->
+			</uni-forms>
+			
+			<uni-group style="width: 100%; position: fixed; bottom: 0">
+				<button type="warn" @click="delete_device">删除硬件</button>
 			</uni-group>
-		</uni-forms>
-		
-		<uni-group style="width: 100%; position: fixed; bottom: 0">
-			<button type="warn" @click="delete_device">删除硬件</button>
-		</uni-group>
-		
-		<uni-popup ref="popup" type="dialog">
-			<uni-popup-dialog
-				type="success"
-				mode="input"
-				title="修改备注"
-				:value="device_info.hardware_memo"
-				@confirm="popup_confirm"
-				/>
-		</uni-popup>
+		</view>
+		<view>
+			<uni-popup ref="popup" type="dialog">
+				<uni-popup-dialog
+					type="success"
+					mode="input"
+					title="修改备注"
+					:value="device_info.hardware_memo"
+					@confirm="popup_confirm"
+					/>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -83,7 +92,8 @@
 		data() {
 			return {
 				device_info: {
-					hardware_memo: ''
+					hardware_memo: '',
+					ip_address: ''
 				},
 				event_channel: null
 			}
@@ -106,8 +116,8 @@
 				if (Object.keys(options).length !== 0) {
 					if (options.device_id) {
 						this.$data.device_info = settings_handler.get_device_item_by_id(options.device_id)
-						
 						if (!this.$data.device_info.hardware_memo) {this.$data.device_info.hardware_memo = ''}
+						if (!this.$data.device_info.ip_address) {this.$data.device_info.ip_address = ''}
 					} else {
 						if (this.DEV) {
 							this.$data.device_info = test_data.device_data
@@ -169,10 +179,16 @@
 </script>
 
 <style>
-	.button-group {
-		display: flex;
-		width: 100%;
-		position: fixed;
-		bottom: 20px;
+	.header {
+		line-height: 150px;
+		height: 150px;
+		background-color: #006390;
+		text-align: center;
+	}
+	
+	.header image {
+		vertical-align: middle;
+		width: 100px;
+		height: 100px;
 	}
 </style>
