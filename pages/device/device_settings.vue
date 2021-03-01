@@ -222,6 +222,7 @@
 				device_info: {
 					hardware_name: '',
 					hardware_version: '',
+					ip_address: '',
 					mqtt_is_bigiot: false,
 					mqtt_port: 1883,
 					mqtt_keepalive: 30,
@@ -391,8 +392,8 @@
 			},
 			button_test_click (form) {
 				this.$refs.form.submit().then(result => {
-					let connect_result = false
-					// console.log('form info: ', result)
+					let connect_result = true
+
 					// #ifdef APP-PLUS
 					connect_result = wifi_handler.connect(this.$data.device_info.ssid)
 					// #endif
@@ -575,6 +576,7 @@
 								if (this.$data.device_info.bssid.replace(new RegExp(':', 'g'), '') === result.mac_address) {
 									this.$data.device_info.hardware_name = result.hardware_name
 									this.$data.device_info.hardware_version = result.hardware_version
+									this.$data.device_info.ip_address = result.ip_address
 									
 									const params = {
 										command: 'check_wifi',
