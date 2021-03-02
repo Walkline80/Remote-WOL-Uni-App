@@ -11,7 +11,10 @@
 	<view>
 		<view>
 			<uni-forms :value="device_info" ref="form" :rules="rules">
-				<uni-group title="硬件信息" top=-10>
+				<uni-group
+					title="硬件信息"
+					v-show="!view_mode"
+					top=0>
 					<view>
 						<h3>{{device_info.hardware_name}}</h3>
 						<h4>{{device_info.ssid}} ({{device_info.bssid}})</h4>
@@ -186,8 +189,7 @@
 				
 				<view
 					v-show="!view_mode"
-					class="button-group"
-					style="margin-top: 30rpx;">
+					class="button-group">
 					<button style="width: 50%;" type="primary" @click="button_test_click">测试</button>
 					<button style="width: 30%;" type="warn" :plain="!test_success" :disabled="!test_success" @click="button_save_click">保存</button>
 				</view>
@@ -219,6 +221,9 @@
 				popup_message: '成功',
 				label_width: 80,
 				label_align: 'right',
+				// is_keyboard_shown: false,
+				// keyboard_height: 0,
+				// last_scroll_top: 0,
 				device_info: {
 					hardware_name: '',
 					hardware_version: '',
@@ -334,8 +339,23 @@
 				}
 			}
 		},
-		onUnload() {},
+		// onPageScroll(event) {
+		// 	this.$data.last_scroll_top = event.scrollTop
+		// 	console.log(event.scrollTop)
+			
+		// 	if (this.$data.is_keyboard_shown) {
+		// 		console.log(event.scrollTop + ' - ' + this.$data.keyboard_height) // + ' - ' +  this.$data.last_scroll_top)
+		// 		if (Math.abs(event.scrollTop - this.$data.keyboard_height) > 20) { // - this.$data.last_scroll_top) > 20) {
+		// 			uni.hideKeyboard()
+		// 		}
+		// 	}
+		// },
+		onUnload() {
+			// uni.offKeyboardHeightChange(() => {})
+		},
 		onLoad(options) {
+			// uni.onKeyboardHeightChange(this.on_keyboard_height_change)
+
 			this.load_device_info(options)
 			this.$data.event_channel = this.getOpenerEventChannel()
 			// event_channel.emit('acceptDataFromOpenedPage', 'feedback')
@@ -385,6 +405,15 @@
 				}
 
 				this.$data.view_mode = view_mode
+			},
+			// on_keyboard_height_change (event) {
+			// 	this.$data.keyboard_height = event.height
+			// 	this.$data.is_keyboard_shown = event.height > 10
+			// 	console.log(this.$data.is_keyboard_shown ? 'open' : 'close')
+			// },
+			hide_keyboard (event) {
+				event.preventDefault()
+				// uni.hideKeyboard()
 			},
 			switch_to_bigiot (event) {
 				this.$data.device_info.mqtt_is_bigiot = event.target.value
@@ -657,7 +686,7 @@
 </script>
 
 <style>
-	.button-group {
-		display: flex;
+	.uni-forms {
+		padding: 0 15px;
 	}
 </style>

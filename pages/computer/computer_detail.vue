@@ -11,7 +11,7 @@
 	<view>
 		<view class="">
 			<uni-forms :value="pc_info" ref="form" :rules="rules">
-				<uni-group title="PC 设置" top=-10>
+				<uni-group title="PC 设置" top=0>
 					<uni-forms-item
 						required
 						label="名称"
@@ -37,7 +37,7 @@
 					</uni-forms-item>
 				</uni-group>
 				
-				<view class="button-group" style="margin-top: 30rpx;">
+				<view class="button-group">
 					<button style="width: 100%;" type="warn" @click="button_save_click">保存</button>
 				</view>
 			</uni-forms>
@@ -147,4 +147,7 @@
 </script>
 
 <style>
+	.uni-forms {
+		padding: 0 15px;
+	}
 </style>

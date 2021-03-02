@@ -14,7 +14,7 @@
 				<view class="drawer_header">
 					<image src="@/static/header.png" mode="aspectFill"></image>
 					<text class="drawer_title">Remote WOL</text>
-					<text class="drawer_version">v0.0.10</text>
+					<text class="drawer_version">v{{version}}</text>
 				</view>
 				<!-- <uni-group :title="'Remote WOL v' + version" top=0> -->
 				<uni-list :border="false">
@@ -24,35 +24,41 @@
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'list'}"
 						clickable
-						@click="open_page('../device/device_manage')" />
-
+						@click="open_page('../device/device_manage')">
+					</uni-list-item>
 					<uni-list-item
 						title="设置"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'settings'}"
 						clickable
-						@click="open_page('../settings/settings')" />
-
+						@click="open_page('../settings/settings')">
+					</uni-list-item>
 					<uni-list-item
 						title="查看数据点"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'eye'}"
 						clickable
-						@click="open_page('../webview/data_point')" />
-
+						@click="open_page('../webview/data_point')">
+					</uni-list-item>
 					<uni-list-item
 						title="更新记录"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'compose'}"
 						clickable
-						@click="open_page('../webview/changelog')" />
-
+						@click="open_page('../webview/changelog')">
+					</uni-list-item>
+				</uni-list>
+				
+				<view class="gap-lg" style="background-color: white;"></view>
+				
+				<uni-list :border="false">
 					<uni-list-item
 						title="关于"
 						:showExtraIcon="true"
 						:extraIcon="{size: '22',type: 'info'}"
 						clickable
-						@click="open_page('../about/about')" />
+						@click="open_page('../about/about')">
+					</uni-list-item>
 				</uni-list>
 				<!-- </uni-group> -->
 			</uni-drawer>
@@ -156,6 +162,7 @@
 		</view>
 	</view>
 </template>
+
 <script>
 	import settings_handler from '@/common/settings_handler.js'
 	import update_handler from '@/common/update_handler.js'

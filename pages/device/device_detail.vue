@@ -13,7 +13,7 @@
 			<image src="@/static/icons/chip.png" mode="aspectFit" />
 		</view>
 		<view>
-			<uni-forms>
+			<uni-forms style="padding: 0;">
 				<!-- <uni-group title="关于" top=-10> -->
 					<uni-list :border="false">
 						<uni-list-item
@@ -47,6 +47,11 @@
 							:showExtraIcon="false"
 							:extraIcon="{size: '22',type: 'compose'}">
 						</uni-list-item>
+					</uni-list>
+					
+					<view class="gap"></view>
+					
+					<uni-list :border="false">
 						<uni-list-item
 							link
 							:rightText="device_info.hardware_memo"
@@ -66,9 +71,10 @@
 				<!-- </uni-group> -->
 			</uni-forms>
 			
-			<uni-group style="width: 100%; position: fixed; bottom: 0">
-				<button type="warn" @click="delete_device">删除硬件</button>
-			</uni-group>
+			<view class="gap"></view>
+			<view class="footer">
+				<button type="warn" style="margin: 15px;" @click="delete_device">删除硬件</button>
+			</view>
 		</view>
 		<view>
 			<uni-popup ref="popup" type="dialog">
@@ -190,5 +196,10 @@
 		vertical-align: middle;
 		width: 100px;
 		height: 100px;
+	}
+	
+	.footer {
+		width: 100%;
+		background-color: #efefef;
 	}
 </style>

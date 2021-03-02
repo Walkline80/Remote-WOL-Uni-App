@@ -11,7 +11,7 @@
 	<view>
 		<view class="">
 			<uni-forms :value="settings" ref="form_mqtt" :rules="rules">
-				<uni-group title="MQTT 设置" top=-10>
+				<uni-group title="MQTT 设置" top=0>
 					<uni-forms-item
 						required
 						name="mqtt_host"
@@ -409,5 +409,7 @@
 </script>
 
 <style>
-
+	.uni-forms {
+		padding: 0 15px;
+	}
 </style>
