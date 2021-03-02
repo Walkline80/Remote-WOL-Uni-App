@@ -14,7 +14,7 @@
 				"app-plus": {
 					"backgroundColor": "#F8F8F8",
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "PC 设备",
 						"titleAlign": "left",
@@ -45,7 +45,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加 PC",
 						"titleAlign": "left"
@@ -60,7 +60,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":{
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "PC 信息",
 						"titleAlign": "left"
@@ -75,7 +75,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":{
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "设置",
 						"titleAlign": "left",
@@ -96,7 +96,7 @@
 				"navigationBarTitleText": "硬件设备管理",
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件设备管理",
 						"titleAlign": "left",
@@ -116,7 +116,7 @@
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "添加硬件",
 						"titleAlign": "left"
@@ -136,7 +136,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件设置",
 						"titleAlign": "left"
@@ -153,7 +153,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件详情",
 						"titleAlign": "left"
@@ -169,7 +169,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "关于",
 						"titleAlign": "left"
@@ -184,7 +184,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "查看数据点",
 						"titleAlign": "center"
@@ -199,7 +199,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
-						"backgroundColor": "#1e88e5",
+						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "更新记录",
 						"titleAlign": "center"
