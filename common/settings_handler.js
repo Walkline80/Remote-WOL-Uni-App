@@ -16,7 +16,7 @@ const PC_ITEM_PREFIX = 'remote_wol_pc_'
  * @param {object} settings - 要保存的设置对象
  * @return {boolean}
  */
-const save_app_settings = (settings) => {
+function save_app_settings = (settings) => {
 	let result = true
 	
 	try {
@@ -34,7 +34,7 @@ const save_app_settings = (settings) => {
  * 
  * @return {object} 返回 app 设置对象
  */
-const load_app_settings = () => {
+function load_app_settings = () => {
 	let settings = {}
 	
 	try {
@@ -60,7 +60,7 @@ const load_app_settings = () => {
  * @param {object} item - 要保存的硬件设备设置对象
  * @return {boolean}
  */
-const save_device_item = (item) => {
+function save_device_item = (item) => {
 	let result = true
 	
 	item.id = DEVICE_ITEM_PREFIX + item.bssid.replace(new RegExp(':', 'g'), '')
@@ -81,7 +81,7 @@ const save_device_item = (item) => {
  * @param {object} item - 要保存的 pc 设备设置对象
  * @return {boolean}
  */
-const save_pc_item = (item) => {
+function save_pc_item = (item) => {
 	let result = true
 	
 	item.id = PC_ITEM_PREFIX + item.mac_address
@@ -101,7 +101,7 @@ const save_pc_item = (item) => {
  * 
  * @return {array} 返回包含所有硬件设备设置的数组
  */
-const load_device_items = () => {
+function load_device_items = () => {
 	let items = []
 	
 	try {
@@ -125,7 +125,7 @@ const load_device_items = () => {
  * 
  * @return {array} 返回包含所有 pc 设备设置的数组
  */
-const load_pc_items = () => {
+function load_pc_items = () => {
 	let items = []
 	
 	try {
@@ -150,7 +150,7 @@ const load_pc_items = () => {
  * @param {string} key - 要读取的硬件设备的 mac 地址（不包含 mac 地址分隔符）
  * @return {object} 返回指定的硬件设备设置
  */
-const get_device_item = (key) => {
+function get_device_item = (key) => {
 	let item = {}
 	
 	try {
@@ -170,7 +170,7 @@ const get_device_item = (key) => {
  * @param {string} id - 要读取的硬件设备的 id
  * @return {object} 返回指定的硬件设备设置
  */
-const get_device_item_by_id = (id) => {
+function get_device_item_by_id = (id) => {
 	let item = {}
 	
 	try {
@@ -190,7 +190,7 @@ const get_device_item_by_id = (id) => {
  * @param {string} key - 要读取的 pc 设备的 mac 地址（包含 mac 地址分隔符）
  * @return {object} 返回指定的 pc 设备设置
  */
-const get_pc_item = (key) => {
+function get_pc_item = (key) => {
 	let item = {}
 	
 	try {
@@ -209,7 +209,7 @@ const get_pc_item = (key) => {
  * 
  * @return {int} 返回硬件设备设置总数
  */
-const get_device_item_counts = () => {
+function get_device_item_counts = () => {
 	let items = []
 	
 	try {
@@ -233,7 +233,7 @@ const get_device_item_counts = () => {
  * 
  * @return {int} 返回 pc 设备设置总数
  */
-const get_pc_item_counts = () => {
+function get_pc_item_counts = () => {
 	let items = []
 	
 	try {
@@ -258,7 +258,7 @@ const get_pc_item_counts = () => {
  * @param {string} key - 要读取的硬件设备的 mac 地址（不包含 mac 地址分隔符）
  * @param {boolean} status - 在线状态布尔值
  */
-const update_device_item_status = (key, status) => {
+function update_device_item_status = (key, status) => {
 	if (get_device_item_counts() === 0) {return}
 	
 	let item = get_device_item(key)
@@ -275,7 +275,7 @@ const update_device_item_status = (key, status) => {
  * @param {string} key - 要读取的硬件设备的 mac 地址（不包含 mac 地址分隔符）
  * @param {boolean} ipaddress - IP 地址值
  */
-const update_device_item_ip_address = (key, ip_address) => {
+function update_device_item_ip_address = (key, ip_address) => {
 	if (get_device_item_counts() === 0) {return}
 	
 	console.log(ip_address)
@@ -294,7 +294,7 @@ const update_device_item_ip_address = (key, ip_address) => {
  * 
  * @param {string} key - 要删除的硬件设备的 mac 地址（不包含 mac 地址分隔符）
  */
-const remove_device_item = (key) => {
+function remove_device_item = (key) => {
 	try {
 		uni.removeStorageSync(key)
 	} catch (error) {
@@ -307,7 +307,7 @@ const remove_device_item = (key) => {
  * 
  * @param {string} key - 要删除的 pc 设备的 mac 地址（包含 mac 地址分隔符）
  */
-const remove_pc_item = (key) => {
+function remove_pc_item = (key) => {
 	try {
 		uni.removeStorageSync(key)
 	} catch (error) {
@@ -319,7 +319,7 @@ const remove_pc_item = (key) => {
  * 删除 app 设置
  * 
  */
-const remove_app_settings = () => {
+function remove_app_settings = () => {
 	try {
 		uni.removeStorageSync(APP_SETTINGS_KEY)
 	} catch (error) {
@@ -332,7 +332,7 @@ const remove_app_settings = () => {
  * 
  * @return {boolean}
  */
-const is_app_settings_exist = () => {
+function is_app_settings_exist = () => {
 	let result = false
 	
 	try {

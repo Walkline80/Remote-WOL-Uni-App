@@ -29,7 +29,7 @@ var wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE)
 /**
  * 请求获取所需系统权限
  */
-const grant_wifi_permission = () => {
+function grant_wifi_permission = () => {
 	plus.android.requestPermissions(PERMISSIONS, function(e) {
 		if (e.granted.length > 0) {
 			console.log('permission granted', e.granted.toString())
@@ -41,17 +41,19 @@ const grant_wifi_permission = () => {
 
 /**
  * 检查手机 wifi 功能是否开启
+ * 
  * @return {boolean}
  */
-const is_wifi_enabled = () => {
+function is_wifi_enabled = () => {
 	return wifiManager.isWifiEnabled()
 }
 
 /**
  * 开启/关闭 手机 wifi 功能
+ * 
  * @param {boolean} enabled - 启用或禁用
  */
-const set_wifi_enabled = (enabled) => {
+function set_wifi_enabled = (enabled) => {
 	wifiManager.setWifiEnabled(enabled)
 }
 
@@ -61,7 +63,7 @@ const set_wifi_enabled = (enabled) => {
  * @param {string} ssid - 需要查找的 wifi 热点名称
  * @return {object} 如果查找到则返回配置参数实例对象，否则返回 null
  */
-const is_wifi_config_exist = (ssid) => {
+function is_wifi_config_exist = (ssid) => {
 	let configs = wifiManager.getConfiguredNetworks()
 
 	for (let count = 0; count < configs.size(); count++) {
@@ -79,7 +81,7 @@ const is_wifi_config_exist = (ssid) => {
  * @param {string} ssid - 需要连接的 wifi 热点名称
  * @return {object}
  */
-const create_wifi_config = (ssid) => {
+function create_wifi_config = (ssid) => {
 	let config = plus.android.newObject('android.net.wifi.WifiConfiguration')
 	let bit_set = plus.android.newObject('java.util.BitSet')
 	
@@ -108,7 +110,7 @@ const create_wifi_config = (ssid) => {
  * 
  * @param {string} ssid - 需要删除的 wifi 热点名称
  */
-const remove_last_wifi_config = (ssid) => {
+function remove_last_wifi_config = (ssid) => {
 	let last_config = is_wifi_config_exist(ssid)
 	
 	if (last_config) {
@@ -122,7 +124,7 @@ const remove_last_wifi_config = (ssid) => {
  * @param {string} ssid - 需要连接的 wifi 热点名称
  * @return {boolean}
  */
-const connect = (ssid) => {
+function connect = (ssid) => {
 	turn_on_wifi()
 	
 	let network_id = wifiManager.addNetwork(create_wifi_config(ssid))
@@ -146,17 +148,19 @@ const connect = (ssid) => {
 
 /**
  * 断开当前已连接的 wifi 热点
+ * 
  * @return {boolean}
  */
-const disconnect = () => {
+function disconnect = () => {
 	return wifiManager.disconnect()
 }
 
 /**
  * 获取当前设备 dhcp 信息（通过 getDhcpInfo）
+ * 
  * @return {object} 返回获取到的 dhcp 信息，否则返回 null
  */
-const get_dhcp_info = () => {
+function get_dhcp_info = () => {
 	turn_on_wifi()
 	sleep(1000)
 	
@@ -178,9 +182,10 @@ const get_dhcp_info = () => {
 
 /**
  * 获取当前设备 ip 地址（通过 getConnectionInfo）
+ * 
  * @return {string} 返回获取到的 ip 地址，否则返回 null
  */
-const get_ip_address = () => {
+function get_ip_address = () => {
 	turn_on_wifi()
 	sleep()
 	
@@ -205,7 +210,7 @@ const get_ip_address = () => {
  * 
  * @return {array}
  */
-const scan_wifi = () => {
+function scan_wifi = () => {
 	turn_on_wifi()
 	wifiManager.startScan()
 
@@ -230,7 +235,7 @@ const scan_wifi = () => {
 /**
  * 开启手机 wifi
  */
-const turn_on_wifi = () => {
+function turn_on_wifi = () => {
 	if (!is_wifi_enabled()) {set_wifi_enabled(true)}
 }
 
@@ -240,7 +245,7 @@ const turn_on_wifi = () => {
  * @param {number} ip_address - 要转换的 ip 地址或其它网络信息数值
  * @return {string}
  */
-const ip_to_string = (ip_address) => {
+function ip_to_string = (ip_address) => {
 	return `${ip_address & 0xff}.${ip_address >> 8 & 0xff}.${ip_address >> 16 & 0xff}.${ip_address >> 24 & 0xff}`
 }
 
@@ -249,7 +254,7 @@ const ip_to_string = (ip_address) => {
  * 
  * @param {number} duration - 延时时长，单位 毫秒，默认值 500
  */
-const sleep = (duration=500) => {
+function sleep = (duration=500) => {
 	let time = Number(new Date())
 	while (time + duration > Number(new Date())) {}
 }
