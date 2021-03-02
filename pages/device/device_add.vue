@@ -17,10 +17,10 @@
 				<uni-list-item
 					v-if="item.ssid.startsWith('wol_')"
 					link="navigateTo"
-					thumb="/static/icons/wifi.png"
+					:thumb="'/static/icons/wifi_level/' + calculate_signal_level(item.level) + '.png'"
 					thumbSize="base"
 					:title="item.ssid"
-					:note="'mac: ' + item.bssid + ' level: ' + item.level"
+					:note="'mac: ' + item.bssid"
 					style="border: none;"
 					@click="device_settings_click(item)" />
 			</uni-list>
@@ -73,7 +73,7 @@
 				"index": 2,
 				"ssid": "wol_246f289da321",
 				"bssid": "24:6f:28:9d:a3:21",
-				"level": -39
+				"level": -73
 			}, {
 				"index": 3,
 				"ssid": "TP-LINK_3470",
@@ -100,6 +100,20 @@
 						}
 					}
 				})
+			},
+			calculate_signal_level: (rssi, num_levels=5) => {
+				const MIN_RSSI = -100,
+					MAX_RSSI = -55,
+					input_range = MAX_RSSI - MIN_RSSI,
+					output_range = num_levels - 1
+
+				if (rssi <= MIN_RSSI) {
+					return 0
+				} else if (rssi >= MAX_RSSI) {
+					return num_levels - 1
+				} else {
+					return parseInt((rssi - MIN_RSSI) * output_range / input_range)
+				}
 			}
 		}
 	}
