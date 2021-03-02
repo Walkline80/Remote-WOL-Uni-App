@@ -18,7 +18,7 @@
 	export default {
 		data() {
 			return {
-				about_src: 'https://gitee.com/walkline/remote-wol/blob/master/README.md'
+				about_src: 'https://gitee.com/walkline/remote-wol'
 			}
 		},
 		onLoad(options) {
