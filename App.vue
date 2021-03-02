@@ -35,4 +35,23 @@
 		font-size: 40rpx;
 		color: #C8C7CC;
 	}
+	
+	page{
+		background-color: #efefef;
+	}
+	
+	.button-group {
+		display: flex;
+		margin: 15px 0;
+	}
+
+	.gap {
+		background-color: #efefef;
+		height: 14px;
+	}
+	
+	.gap-lg {
+		background-color: #efefef;
+		height: 30px;
+	}
 </style>
