@@ -687,6 +687,6 @@
 
 <style>
 	.uni-forms {
-		padding: 0 15px;
+		padding: 0 15px!important;
 	}
 </style>
