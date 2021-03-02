@@ -9,15 +9,16 @@
 
 <template>
 	<view>
-		<web-view
-			src="https://gitee.com/walkline/remote-wol-uni-app#%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95" />
+		<web-view :src="changelog_src" />
 	</view>
 </template>
 
 <script>
 	export default {
 		data() {
-			return {}
+			return {
+				changelog_src: 'https://gitee.com/walkline/remote-wol-uni-app'
+			}
 		},
 		methods: {}
 	}
