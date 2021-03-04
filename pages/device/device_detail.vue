@@ -64,8 +64,16 @@
 							link
 							title="查看设置"
 							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'list'}"
+							:extraIcon="{size: '22',type: 'gear'}"
 							@click="device_item_click()">
+						</uni-list-item>
+						<uni-list-item
+							link
+							:rightText="device_info.hardware_memo"
+							title="日志记录"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'list'}"
+							@click="get_device_logs">
 						</uni-list-item>
 					</uni-list>
 					
@@ -73,7 +81,7 @@
 					
 					<uni-list :border="false">
 						<uni-list-item
-							link
+							clickable
 							:rightText="device_info.hardware_memo"
 							title="重新启动"
 							:showExtraIcon="true"
@@ -195,6 +203,9 @@
 			},
 			device_reboot () {
 				uni.$emit('device_reboot', this.$data.device_info)
+			},
+			get_device_logs () {
+				uni.$emit('get_device_logs', this.$data.device_info)
 			}
 		}
 	}
