@@ -534,7 +534,9 @@
 									delta: getCurrentPages().length > 3 ? 2 : 1,
 								})
 								
+								// #ifdef APP-PLUS
 								wifi_handler.remove_last_wifi_config(this.$data.device_info.ssid)
+								// #endif
 								this.$data.event_channel.emit('acceptDataFromOpenedPage', 'device_added')
 							}
 							break
