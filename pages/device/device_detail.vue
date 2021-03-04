@@ -68,6 +68,19 @@
 							@click="device_item_click()">
 						</uni-list-item>
 					</uni-list>
+					
+					<view class="gap"></view>
+					
+					<uni-list :border="false">
+						<uni-list-item
+							link
+							:rightText="device_info.hardware_memo"
+							title="重新启动"
+							:showExtraIcon="true"
+							:extraIcon="{size: '22',type: 'reload'}"
+							@click="device_reboot">
+						</uni-list-item>
+					</uni-list>
 				<!-- </uni-group> -->
 			</uni-forms>
 			
@@ -179,6 +192,9 @@
 						}
 					}
 				})
+			},
+			device_reboot () {
+				uni.$emit('device_reboot', this.$data.device_info)
 			}
 		}
 	}
