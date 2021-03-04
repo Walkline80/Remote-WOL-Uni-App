@@ -259,7 +259,7 @@
 
 				msg_obj.command = 'device_remove'
 				msg_obj.title = encodeURIComponent(device.title || device.ssid)
-				msg_obj.mac = device.bssid.replace(new RegExp(':', 'g'), '')
+				msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
 				
 				if (mqtt_client) {
 					mqtt_client.publish(
@@ -276,7 +276,22 @@
 					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
 				
 				msg_obj.command = 'device_reboot'
-				msg_obj.mac = device.bssid.replace(new RegExp(':', 'g'), '')
+				msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
+
+				if (mqtt_client) {
+					mqtt_client.publish(
+						publish_topic,
+						JSON.stringify(msg_obj)
+					)	
+				}
+			})
+			
+			uni.$on('get_device_logs', (device) => {
+				let msg_obj = {},
+					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+				
+				msg_obj.command = 'report_error_log'
+				msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
 				
 				if (mqtt_client) {
 					mqtt_client.publish(
@@ -306,7 +321,7 @@
 						// 00:11:32:2C:A6:03
 						msg_obj.command = 'wake_up_pc'
 						msg_obj.title = encodeURIComponent(item.title)
-						msg_obj.mac = item.mac_address
+						msg_obj.mac_address = item.mac_address
 						
 						mqtt_client.publish(
 							publish_topic,
@@ -391,10 +406,11 @@
 							// 同步当前时间到硬件设备
 							mqtt_client.publish(
 								msg_obj.publish_topic,
-								{
+								JSON.stringify({
 									command: 'sync_datetime',
-									datetime: JSON.stringify(this.get_datetime())
-								}
+									mac_address: msg_obj.mac_address,
+									datetime: this.get_datetime()
+								})
 							)
 							
 							uni.$emit('device_status_update')
@@ -420,6 +436,17 @@
 						case 'sync_datetime_result':
 							if (msg_obj.result === 'success') {
 								console.log('device datetime synced')
+							}
+							break
+						case 'report_error_log_result':
+							if (msg_obj.result === 'success') {
+								let logs = ''
+								json_obj.logs.forEach(log=>{logs+=log})
+
+								uni.showModal({
+									content: logs || '无记录',
+									showCancel: false
+								})
 							}
 							break
 						default:
@@ -454,20 +481,19 @@
 				this.$refs.drawer.close()
 			},
 			get_datetime () {
-				const datetime = new Date()
-				
-				result = {
-					year: datetime.getFullYear(),
-					month: datetime.getMonth() + 1,
-					day: datetime.getDate(),
-					// MicroPython: weekday is 0-6 for Mon-Sun
-					// JS on +08: weekday is 0-6 for Sun-Sat
-					weekday: datetime.getDay() === 0 ? 6 : datetime.getDay() - 1,
-					hour: datetime.getHours(),
-					minute: datetime.getMinutes(),
-					second: datetime.getSeconds(),
-					millisecond: datetime.getMilliseconds()
-				}
+				const datetime = new Date(),
+					result = {
+						year: datetime.getFullYear(),
+						month: datetime.getMonth() + 1,
+						day: datetime.getDate(),
+						// MicroPython: weekday is 0-6 for Mon-Sun
+						// JS on +08: weekday is 0-6 for Sun-Sat
+						weekday: datetime.getDay() === 0 ? 6 : datetime.getDay() - 1,
+						hour: datetime.getHours(),
+						minute: datetime.getMinutes(),
+						second: datetime.getSeconds(),
+						millisecond: datetime.getMilliseconds()
+					}
 
 				return result
 			},
