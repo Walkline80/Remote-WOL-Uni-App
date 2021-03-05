@@ -350,6 +350,26 @@ function is_app_settings_exist() {
 	return result
 }
 
+/**
+ * 判断指定硬件设备是否存在
+ * 
+ * @param {string} key - 要查找的硬件设备的 mac 地址（不包含 mac 地址分隔符）
+ * @return {boolean}
+ */
+function is_device_item_exist(key) {
+	let result = false
+	
+	try {
+		if (uni.getStorageSync(DEVICE_ITEM_PREFIX + key)) {
+			result = true
+		}
+	} catch (error) {
+		console.log('is_device_item_exist error', error)
+	}
+	
+	return result
+}
+
 export default {
 	save_app_settings,
 	load_app_settings,
@@ -367,5 +387,6 @@ export default {
 	get_pc_item_counts,
 	remove_pc_item,
 	get_device_item_by_id,
-	update_device_item_ip_address
+	update_device_item_ip_address,
+	is_device_item_exist
 }
