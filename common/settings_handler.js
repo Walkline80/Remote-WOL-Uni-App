@@ -63,7 +63,7 @@ function load_app_settings() {
 function save_device_item(item) {
 	let result = true
 	
-	item.id = DEVICE_ITEM_PREFIX + item.bssid.replace(new RegExp(':', 'g'), '')
+	item.id = DEVICE_ITEM_PREFIX + format_mac_address(item.bssid)
 	
 	try {
 		uni.setStorageSync(item.id, item)
@@ -84,7 +84,7 @@ function save_device_item(item) {
 function save_pc_item(item) {
 	let result = true
 	
-	item.id = PC_ITEM_PREFIX + item.mac_address.replace(new RegExp(':', 'g'), '')
+	item.id = PC_ITEM_PREFIX + format_mac_address(item.mac_address)
 	
 	try {
 		uni.setStorageSync(item.id, item)
@@ -154,7 +154,7 @@ function get_device_item(key) {
 	let item = {}
 	
 	try {
-		item = uni.getStorageSync(DEVICE_ITEM_PREFIX + key)
+		item = uni.getStorageSync(DEVICE_ITEM_PREFIX + format_mac_address(key))
 
 		if (!item) {item = null}
 	} catch (error) {
@@ -281,7 +281,7 @@ function get_pc_item_counts() {
 function update_device_item_status(key, status) {
 	if (get_device_item_counts() === 0) {return}
 	
-	let item = get_device_item(key)
+	let item = get_device_item(format_mac_address(key))
 
 	if (item && typeof(item) === 'object') {
 		item.status = status
@@ -298,8 +298,7 @@ function update_device_item_status(key, status) {
 function update_device_item_ip_address(key, ip_address) {
 	if (get_device_item_counts() === 0) {return}
 	
-	console.log(ip_address)
-	let item = get_device_item(key)
+	let item = get_device_item(format_mac_address(key))
 
 	if (item && typeof(item) === 'object') {
 		item.ip_address = ip_address
@@ -378,9 +377,9 @@ function is_app_settings_exist() {
  */
 function is_device_item_exist(key) {
 	let result = false
-	
+
 	try {
-		if (uni.getStorageSync(DEVICE_ITEM_PREFIX + key)) {
+		if (uni.getStorageSync(DEVICE_ITEM_PREFIX + format_mac_address(key))) {
 			result = true
 		}
 	} catch (error) {
@@ -388,6 +387,15 @@ function is_device_item_exist(key) {
 	}
 	
 	return result
+}
+
+/**
+ * 去除 mac 地址中的冒号
+ * 
+ * @param {object} mac_address - 原始 mac 地址
+ */
+function format_mac_address(mac_address) {
+	return mac_address.replace(new RegExp(':', 'g'), '')
 }
 
 export default {
@@ -403,11 +411,12 @@ export default {
 	get_device_item_counts,
 	save_pc_item,
 	load_pc_items,
-	get_pc_item,
+	// get_pc_item,
 	get_pc_item_counts,
 	remove_pc_item,
 	get_device_item_by_id,
 	update_device_item_ip_address,
 	is_device_item_exist,
+	// format_mac_address,
 	get_pc_item_by_id
 }
