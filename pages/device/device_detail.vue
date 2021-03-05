@@ -13,82 +13,80 @@
 			<image src="@/static/icons/chip.png" mode="aspectFit" />
 		</view>
 		<view>
-			<uni-forms style="padding: 0;">
+			<uni-forms :value="device_info" style="padding: 0;">
 				<!-- <uni-group title="关于" top=-10> -->
-					<uni-list :border="false">
-						<uni-list-item
-							:rightText="device_info.hardware_name"
-							title="硬件名称"
-							:showExtraIcon="false"
-							:extraIcon="{size: '22',type: 'compose'}">
-						</uni-list-item>
-						<uni-list-item
-							:rightText="device_info.hardware_version"
-							title="固件版本"
-							:showExtraIcon="false"
-							:extraIcon="{size: '22',type: 'compose'}"
-							@click="open_page('../device/device_manage')">
-						</uni-list-item>
-						<uni-list-item
-							:rightText="device_info.ssid"
-							title="热点名称"
-							:showExtraIcon="false"
-							:extraIcon="{size: '22',type: 'compose'}">
-						</uni-list-item>
-						<uni-list-item
-							:rightText="device_info.ip_address"
-							title="IP 地址"
-							:showExtraIcon="false"
-							:extraIcon="{size: '22',type: 'compose'}">
-						</uni-list-item>
-						<uni-list-item
-							:rightText="device_info.bssid"
-							title="MAC 地址"
-							:showExtraIcon="false"
-							:extraIcon="{size: '22',type: 'compose'}">
-						</uni-list-item>
-					</uni-list>
-					
-					<view class="gap"></view>
-					
-					<uni-list :border="false">
-						<uni-list-item
-							link
-							:rightText="device_info.hardware_memo"
-							title="备注"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'compose'}"
-							@click="popup_show">
-						</uni-list-item>
-						<uni-list-item
-							link
-							title="查看设置"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'gear'}"
-							@click="device_item_click()">
-						</uni-list-item>
-						<uni-list-item
-							link
-							:rightText="device_info.hardware_memo"
-							title="日志记录"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'list'}"
-							@click="get_device_logs">
-						</uni-list-item>
-					</uni-list>
-					
-					<view class="gap"></view>
-					
-					<uni-list :border="false">
-						<uni-list-item
-							clickable
-							:rightText="device_info.hardware_memo"
-							title="重新启动"
-							:showExtraIcon="true"
-							:extraIcon="{size: '22',type: 'reload'}"
-							@click="device_reboot">
-						</uni-list-item>
-					</uni-list>
+				<uni-list :border="false">
+					<uni-list-item
+						:rightText="device_info.hardware_name"
+						title="硬件名称"
+						:showExtraIcon="false"
+						:extraIcon="{size: '22',type: 'compose'}">
+					</uni-list-item>
+					<uni-list-item
+						:rightText="device_info.hardware_version"
+						title="固件版本"
+						:showExtraIcon="false"
+						:extraIcon="{size: '22',type: 'compose'}"
+						@click="open_page('../device/device_manage')">
+					</uni-list-item>
+					<uni-list-item
+						:rightText="device_info.ssid"
+						title="热点名称"
+						:showExtraIcon="false"
+						:extraIcon="{size: '22',type: 'compose'}">
+					</uni-list-item>
+					<uni-list-item
+						:rightText="device_info.ip_address"
+						title="IP 地址"
+						:showExtraIcon="false"
+						:extraIcon="{size: '22',type: 'compose'}">
+					</uni-list-item>
+					<uni-list-item
+						:rightText="device_info.bssid"
+						title="MAC 地址"
+						:showExtraIcon="false"
+						:extraIcon="{size: '22',type: 'compose'}">
+					</uni-list-item>
+				</uni-list>
+				
+				<view class="gap"></view>
+				
+				<uni-list :border="false">
+					<uni-list-item
+						link
+						:rightText="device_info.hardware_memo"
+						title="备注"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'compose'}"
+						@click="popup_show">
+					</uni-list-item>
+					<uni-list-item
+						link
+						title="查看设置"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'gear'}"
+						@click="device_item_click()">
+					</uni-list-item>
+					<uni-list-item
+						link
+						title="日志记录"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'list'}"
+						@click="get_device_logs">
+					</uni-list-item>
+				</uni-list>
+				
+				<view class="gap"></view>
+				
+				<uni-list :border="false">
+					<uni-list-item
+						clickable
+						title="重新启动"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'reload'}"
+						@click="device_reboot">
+					</uni-list-item>
+				</uni-list>
 				<!-- </uni-group> -->
 			</uni-forms>
 			
