@@ -84,7 +84,7 @@ function save_device_item(item) {
 function save_pc_item(item) {
 	let result = true
 	
-	item.id = PC_ITEM_PREFIX + item.mac_address
+	item.id = PC_ITEM_PREFIX + item.mac_address.replace(new RegExp(':', 'g'), '')
 	
 	try {
 		uni.setStorageSync(item.id, item)
@@ -181,6 +181,26 @@ function get_device_item_by_id(id) {
 		console.log('get_device_item error', error)
 	}
 	
+	return item
+}
+
+/**
+ * 读取指定 pc 设置
+ * 
+ * @param {string} id - 要读取 pc 信息的 id
+ * @return {object} 返回指定的 pc 设置
+ */
+function get_pc_item_by_id(id) {
+	let item = {}
+	
+	try {
+		item = uni.getStorageSync(id)
+
+		if (!item) {item = null}
+	} catch (error) {
+		console.log('get_pc_item error', error)
+	}
+
 	return item
 }
 
@@ -292,11 +312,11 @@ function update_device_item_ip_address(key, ip_address) {
 /**
  * 删除指定硬件设备设置
  * 
- * @param {string} key - 要删除的硬件设备的 mac 地址（不包含 mac 地址分隔符）
+ * @param {string} id - 要删除的硬件设备的 id
  */
-function remove_device_item(key) {
+function remove_device_item(id) {
 	try {
-		uni.removeStorageSync(key)
+		uni.removeStorageSync(id)
 	} catch (error) {
 		console.log('remove_device_item error', error)
 	}
@@ -305,11 +325,11 @@ function remove_device_item(key) {
 /**
  * 删除指定 pc 设备设置
  * 
- * @param {string} key - 要删除的 pc 设备的 mac 地址（包含 mac 地址分隔符）
+ * @param {string} id - 要删除的 pc 设备的 id
  */
-function remove_pc_item(key) {
+function remove_pc_item(id) {
 	try {
-		uni.removeStorageSync(key)
+		uni.removeStorageSync(id)
 	} catch (error) {
 		console.log('remove_pc_item error', error)
 	}
@@ -388,5 +408,6 @@ export default {
 	remove_pc_item,
 	get_device_item_by_id,
 	update_device_item_ip_address,
-	is_device_item_exist
+	is_device_item_exist,
+	get_pc_item_by_id
 }
