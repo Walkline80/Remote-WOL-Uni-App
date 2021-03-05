@@ -319,6 +319,7 @@
 						let msg_obj = {},
 							publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
 						// 00:11:32:2C:A6:03
+
 						msg_obj.command = 'wake_up_pc'
 						msg_obj.title = encodeURIComponent(item.title)
 						msg_obj.mac_address = item.mac_address
@@ -374,7 +375,7 @@
 				
 			},
 			mqtt_on_message (topic, message) {
-				console.log(`topic: ${topic}, message: ${message.toString()}`)
+				console.log(`received topic: ${topic}, message: ${message.toString()}`)
 				
 				if (Object.keys(message).length === 0) {return}
 				
@@ -530,10 +531,10 @@
 					
 					mqtt_client.subscribe(mqtt_topic, (error, granted) => {
 						if (!error) {
-							console.log('no error')
+							console.log('subscribe no error')
 							this.set_mqtt_indicator_status(true)
 						} else {
-							console.log('got error', error)
+							console.log('subscribe error', error)
 						}
 					})
 				}).on('reconnect', () => {
