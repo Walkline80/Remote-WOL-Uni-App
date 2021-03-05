@@ -227,6 +227,7 @@
 				device_info: {
 					hardware_name: '',
 					hardware_version: '',
+					hardware_memo: '',
 					ip_address: '',
 					mqtt_is_bigiot: false,
 					mqtt_port: 1883,
@@ -375,6 +376,8 @@
 
 						view_mode = true
 						this.$data.device_info = settings_handler.get_device_item_by_id(options.device_id)
+						if (!this.$data.device_info.hardware_memo) {this.$data.device_info.hardware_memo = ''}
+						if (!this.$data.device_info.ip_address) {this.$data.device_info.ip_address = ''}
 					} else if (options.device_item) {
 						console.log('add device, a few data from prev page')
 
@@ -402,6 +405,8 @@
 					this.$data.device_info.bssid = item.bssid
 					this.$data.device_info.level = item.level
 					this.$data.device_info.mqtt_is_bigiot = is_bigiot
+					this.$data.device_info.hardware_memo = ''
+					this.$data.device_info.ip_address = ''
 				}
 
 				this.$data.view_mode = view_mode
