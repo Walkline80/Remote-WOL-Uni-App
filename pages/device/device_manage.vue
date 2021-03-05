@@ -71,7 +71,8 @@
 			device_item_click (item) {
 				// console.log('item: ' + JSON.stringify(item))
 				uni.navigateTo({
-					url:`../device/device_detail?device_id=${item.id}`
+					url:`../device/device_detail?device_id=${item.id}`,
+					animationType: "slide-in-right"
 				})
 			},
 			reload_page () {
