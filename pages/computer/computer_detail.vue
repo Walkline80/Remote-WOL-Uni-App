@@ -38,7 +38,7 @@
 				</uni-group>
 				
 				<view class="button-group">
-					<button style="width: 100%;" type="warn" @click="button_save_click">保存</button>
+					<button style="width: 100%;" type="warn" @click="button_save_click">{{view_mode ? '修改' : '保存'}}</button>
 				</view>
 			</uni-forms>
 		</view>
@@ -52,12 +52,16 @@
 	export default {
 		data() {
 			return {
+				view_mode: false,
 				popup_type: 'success',
 				popup_duration: 1000,
 				popup_message: '成功',
 				label_width: 80,
 				label_align: 'right',
-				pc_info: {},
+				pc_info: {
+					title: '',
+					mac_address: ''
+				},
 				rules: {
 					title: {
 						rules: [{
@@ -101,35 +105,36 @@
 		},
 		methods: {
 			load_pc_info (options) {
-				let item
-				const modify = true
+				let view_mode = false
 				
 				if (Object.keys(options).length !== 0) {
-					console.log('item data from prev page')
-					item = JSON.parse(decodeURIComponent(options.item))
-				} else {
-					console.log('item data from current page')
-					
-					if (modify) {
-						options.modify = '1'
-						item = JSON.parse('{"id": "remote_wol_pc_00:11:22:33:44:55","mac_address": "00:11:22:33:44:55",	"title": "群晖 NAS111"}')
+					if (options.pc_id) {
+						console.log('view pc_info, data from stroage')
+
+						view_mode = true
+						this.$data.pc_info = settings_handler.get_pc_item_by_id(options.pc_id)
 					} else {
-						options.modify = '0'
+						console.log('add pc')
+						view_mode = false
 					}
 				}
 				
-				if (options.modify === '0') {
-					console.log('pc append')
-					
-					if (this.DEV) {this.$data.pc_info = test_data.pc_data}
-				} else {
-					console.log('pc modify')
-					this.$data.pc_info = item
+				if (this.DEV) {
+					if (view_mode) {
+						console.log('view mode, data from current page')
+					} else {
+						console.log('add pc, data from current page')
+						this.$data.pc_info = test_data.pc_data
+					}
 				}
+				
+				this.$data.view_mode = view_mode
 			},
 			button_save_click (form) {
 				this.$refs.form.submit().then(result => {
-					settings_handler.remove_pc_item(this.$data.pc_info.id)
+					if (this.$data.view_mode) {
+						settings_handler.remove_pc_item(this.$data.pc_info.id)
+					}
 					
 					if (settings_handler.save_pc_item(this.$data.pc_info)) {
 						uni.navigateBack({
