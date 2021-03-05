@@ -143,7 +143,6 @@
 							thumbSize="base"
 							:title="item.title"
 							:note="'mac: ' + item.mac_address"
-							style="border: none; width: 100%;"
 							@click="pc_item_click(item)" />
 					</uni-swipe-action-item>
 				</uni-list>

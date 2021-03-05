@@ -24,7 +24,6 @@
 						:title="item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== '' ? ' (' + item.hardware_memo + ')' : '') || item.ssid"
 						:note="'mac: ' + item.bssid"
 						:rightText="item.status ? '在线' : '离线'"
-						style="border: none; width: 100%;"
 						@click="device_item_click(item)" />
 			</uni-list>
 		</view>

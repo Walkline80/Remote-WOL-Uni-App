@@ -21,7 +21,6 @@
 					thumbSize="base"
 					:title="item.ssid"
 					:note="'mac: ' + item.bssid"
-					style="border: none;"
 					@click="device_settings_click(item)" />
 			</uni-list>
 		</view>
