@@ -384,6 +384,8 @@
 					const json_obj = JSON.parse(decodeURIComponent(message))
 					let msg_obj = {}
 					
+					if (!settings_handler.is_device_item_exist(json_obj.mac_address)) {return}
+
 					msg_obj.command = json_obj.command
 					msg_obj.result = json_obj.result
 					msg_obj.mac_address = json_obj.mac_address || ''
@@ -404,14 +406,16 @@
 							)
 							
 							// 同步当前时间到硬件设备
-							mqtt_client.publish(
-								msg_obj.publish_topic,
-								JSON.stringify({
-									command: 'sync_datetime',
-									mac_address: msg_obj.mac_address,
-									datetime: this.get_datetime()
-								})
-							)
+							if (msg_obj.result === 'online') {
+								mqtt_client.publish(
+									msg_obj.publish_topic,
+									JSON.stringify({
+										command: 'sync_datetime',
+										mac_address: msg_obj.mac_address,
+										datetime: this.get_datetime()
+									})
+								)
+							}
 							
 							uni.$emit('device_status_update')
 							break
