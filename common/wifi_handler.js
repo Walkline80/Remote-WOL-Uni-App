@@ -213,6 +213,7 @@ function get_ip_address() {
 function scan_wifi() {
 	turn_on_wifi()
 	wifiManager.startScan()
+	sleep(2000)
 
 	let results = wifiManager.getScanResults()
 	let lists = []
