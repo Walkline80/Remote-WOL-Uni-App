@@ -128,11 +128,11 @@
 		</view> -->
 		
 		<view>
-			<uni-swipe-action>
-				<uni-list
-					v-for="(item, index) in pc_list"
-					:key="index"
-					:border="false">
+			<uni-list
+				v-for="(item, index) in pc_list"
+				:key="index"
+				:border="false">
+				<uni-swipe-action>
 					<uni-swipe-action-item
 						:rightOptions="swipe_options"
 						@click="swipe_click($event, index, item)">
@@ -143,10 +143,11 @@
 							thumbSize="base"
 							:title="item.title"
 							:note="'mac: ' + item.mac_address"
-							@click="pc_item_click(item)" />
+							@click="pc_item_click(item)">
+						</uni-list-item>
 					</uni-swipe-action-item>
-				</uni-list>
-			</uni-swipe-action>
+				</uni-swipe-action>
+			</uni-list>
 		</view>
 		
 		<view>
@@ -337,23 +338,20 @@
 			// item：点击的 list item
 			swipe_click (event, index, item) {
 				if (event.index === 0) {
-					const id = item.id,
-						title = item.title
-								
 					uni.showModal({
-						content: `是否删除 ${title}？`,
+						content: `是否删除 ${item.title}？`,
 						confirmText: '删除',
 						success: (result) => {
 							if (result.confirm) {
-								settings_handler.remove_pc_item(id)
+								settings_handler.remove_pc_item(item.id)
 								this.reload_page()
 							}
 						}
 					})
-				} else {
+				} else if (event.index === 1) {
 					console.log('modify pc item ' + index)
 					uni.navigateTo({
-						url: 'computer_detail?modify=1&item=' + encodeURIComponent(JSON.stringify(item)),
+						url: `computer_detail?pc_id=${item.id}`,
 						animationType: "slide-in-right"
 					})
 				}
@@ -361,14 +359,15 @@
 			fab_trigger (event) {
 				if (event.index === 0) {
 					uni.navigateTo({
-						url: 'computer_detail?modify=0&item={}',
+						url: 'computer_detail',
 						animationType: "slide-in-right"
 					})
 				}
 			},
 			open_add_page () {
 				uni.navigateTo({
-					url: 'commputer_add'
+					url: 'commputer_add',
+					animationType: "slide-in-right"
 				})
 			},
 			mqtt_query (topic, command) {
@@ -590,5 +589,10 @@
 		right: 20px;
 		color: gainsboro;
 		font-size: 14px;
+	}
+	
+	.uni-swipe .uni-list-item {
+		border-bottom: 1px solid lightgrey;
+		width: 100%;
 	}
 </style>
