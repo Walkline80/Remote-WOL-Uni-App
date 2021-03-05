@@ -166,9 +166,9 @@ function get_dhcp_info() {
 	
 	let info = wifiManager.getDhcpInfo()
 	let json_result = new Object()
-	
-	if (info.plusGetAttribute('ipAddress') === 0) {return null}
-	
+
+	if (info.plusGetAttribute('ipAddress') === 0) {return json_result}
+
 	json_result['ip'] = ip_to_string(info.plusGetAttribute('ipAddress'))
 	json_result['mask'] = ip_to_string(info.plusGetAttribute('netmask'))
 	json_result['gateway'] = ip_to_string(info.plusGetAttribute('gateway'))
