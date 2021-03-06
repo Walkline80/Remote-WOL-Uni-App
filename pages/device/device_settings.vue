@@ -397,7 +397,7 @@
 						console.log('add device, data from current page')
 					}
 
-					let item = JSON.parse('{"index":0,"ssid":"wol_246f2829c3f1","bssid":"24:6f:28:29:c3:f1","level":-37}'),
+					let item = JSON.parse('{"index":0,"ssid":"wol_246f289da321","bssid":"24:6f:28:9d:a3:21","level":-37}'),
 						is_bigiot = this.$data.device_info.mqtt_is_bigiot
 
 					this.$data.device_info = test_data.device_data

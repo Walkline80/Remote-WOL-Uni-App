@@ -63,7 +63,7 @@
 				
 				uni.navigateTo({
 					url: './device_add',
-					animationType: 'slide-in-right'
+					animationType: 'slide-in-bottom'
 				})
 			}
 		},
@@ -72,7 +72,7 @@
 				// console.log('item: ' + JSON.stringify(item))
 				uni.navigateTo({
 					url:`../device/device_detail?device_id=${item.id}`,
-					animationType: "slide-in-right"
+					animationType: "zoom-fade-out"
 				})
 			},
 			reload_page () {

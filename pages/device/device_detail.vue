@@ -167,6 +167,7 @@
 					// url:'../device/device_settings?modify=1&item=' + encodeURIComponent(JSON.stringify(item)),
 					// 传递 device_id 参数为 查看设置
 					url:`../device/device_settings?device_id=${this.$data.device_info.id}`,
+					animationType: "zoom-fade-out",
 					events:{
 						acceptDataFromOpenedPage(data) {
 							console.log(data)

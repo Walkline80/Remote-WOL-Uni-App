@@ -98,14 +98,14 @@
 					</view>
 				</template>
 			</uni-card>
-		</view>
+		</view> -->
 		
-		<view>
+		<!-- <view>
+			<uni-group title="" margin-top="">
 			<uni-card
 				title="未分类"
 				extra=""
-				note="未分类 PC 将通过所有设备进行唤醒"
-				:isShadow="true">
+				note="未分类 PC 将通过所有设备进行唤醒">
 				<uni-swipe-action>
 					<uni-list
 						v-for="(pc, index) in pc_list"
@@ -125,6 +125,8 @@
 					</uni-list>
 				</uni-swipe-action>
 			</uni-card>
+				
+			</uni-group>
 		</view> -->
 		
 		<view>

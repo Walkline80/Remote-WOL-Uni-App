@@ -153,6 +153,7 @@
 				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": {
+						// "type": "transparent",
 						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "硬件详情",
