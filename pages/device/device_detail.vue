@@ -14,7 +14,6 @@
 		</view>
 		<view>
 			<uni-forms :value="device_info" style="padding: 0;">
-				<!-- <uni-group title="关于" top=-10> -->
 				<uni-list :border="false">
 					<uni-list-item
 						:rightText="device_info.hardware_name"
@@ -47,11 +46,6 @@
 						:showExtraIcon="false"
 						:extraIcon="{size: '22',type: 'compose'}">
 					</uni-list-item>
-				</uni-list>
-				
-				<view class="gap"></view>
-				
-				<uni-list :border="false">
 					<uni-list-item
 						link
 						:rightText="device_info.hardware_memo"
@@ -60,6 +54,11 @@
 						:extraIcon="{size: '22',type: 'compose'}"
 						@click="popup_show">
 					</uni-list-item>
+				</uni-list>
+				
+				<view class="gap"></view>
+				
+				<uni-list :border="false">
 					<uni-list-item
 						link
 						title="查看设置"
@@ -87,12 +86,11 @@
 						@click="device_reboot">
 					</uni-list-item>
 				</uni-list>
-				<!-- </uni-group> -->
 			</uni-forms>
 			
 			<view class="gap"></view>
 			<view class="footer">
-				<button type="warn" style="margin: 15px;" @click="delete_device">删除硬件</button>
+				<button type="warn" @click="delete_device">删除硬件</button>
 			</view>
 		</view>
 		<view>
@@ -181,7 +179,6 @@
 			popup_confirm (done, value) {
 				this.$data.device_info.hardware_memo = value
 				settings_handler.save_device_item(this.$data.device_info)
-				
 				done()
 			},
 			delete_device () {
@@ -228,4 +225,45 @@
 		width: 100%;
 		background-color: #efefef;
 	}
+	
+	.footer button {
+		margin: 15px;
+	}
+
+	.uni-list {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		background-color: $uni-bg-color;
+		position: relative;
+		flex-direction: column;
+	}
+/* 	.uni-list-cell {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1px solid #c8c7cc;
+	}
+	.uni-list-cell-left {
+	    white-space: nowrap;
+		font-size:28rpx;
+		padding: 0 20rpx;
+	}
+	.uni-list-cell-db,
+	.uni-list-cell-right {
+		flex: 1;
+	}
+	.uni-input {
+		height: 50rpx;
+		padding: 15rpx 25rpx;
+		line-height:50rpx;
+		font-size:28rpx;
+		background:#FFF;
+		flex: 1;
+	}
+	.uni-icons {
+		padding-left: 14px;
+	} */
 </style>
