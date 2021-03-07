@@ -56,13 +56,13 @@
 		{
 			"path": "pages/computer/computer_detail",
 			"style": {
-				"navigationBarTitleText": "PC 信息",
+				"navigationBarTitleText": "PC 设置",
 				"enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":{
 						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
-						"titleText": "PC 信息",
+						"titleText": "PC 设置",
 						"titleAlign": "left"
 					}
 				}
