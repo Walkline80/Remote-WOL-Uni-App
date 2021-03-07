@@ -63,89 +63,72 @@
 				<!-- </uni-group> -->
 			</uni-drawer>
 		</view>
-		
-<!-- 		<view>
-			<uni-card
-				v-for="(device, index) in device_list"
-				:key="index"
-				:title="device.hardware_name + (device.hardware_memo !== undefined && device.hardware_memo !== '' ? ' (' + device.hardware_memo + ')' : '') || device.ssid"
-				:isShadow="true"
-				extra=""
-				note=""
-				mode="title"
-				thumbnail="/static/icons/device.png">
-				<uni-swipe-action>
-					<uni-list
-						v-for="(pc, index) in pc_list"
-						:key="index"
-						:border="false">
-						<uni-swipe-action-item>
+
+		<view class="groups"
+			v-for="(device, index) in device_list"
+			:key="index">
+			<view class="group-item">
+				<text style="font-size: 14px;">
+					<!-- {{device.hardware_name + (device.hardware_memo ? ' (' + device.hardware_memo + ')' : (' (' + device.bssid + ')'))}} -->
+					{{device.hardware_memo ? device.hardware_memo : (device.hardware_name + ' (' + device.bssid + ')')}}
+					<text class="uni-badge">{{counter[index]}}</text>
+				</text>
+				<button
+					size="mini"
+					type="primary"
+					plain
+					:disabled="!mqtt_status"
+					@click="group_wakeup(device)">唤醒</button>
+			</view>
+
+			<view>
+				<uni-list
+					v-for="(pc, index) in pc_list"
+					:key="index"
+					v-if="pc.group === device.id"
+					:border="false">
+					<uni-swipe-action>
+						<uni-swipe-action-item
+							:rightOptions="swipe_options"
+							:autoClose="true"
+							@click="swipe_click($event, index, pc)">
 							<uni-list-item
-								v-if="pc.assigned_device === device.id"
+								clickable
+								:disabled="!mqtt_status"
+								thumb="/static/icons/pc.png"
+								thumbSize="base"
 								:title="pc.title"
 								:note="'mac: ' + pc.mac_address"
-								clickable
-								:disabled="!mqtt_status"
-								thumb="/static/icons/pc.png"
-								thumbSize="base"
-								style="border: none; width: 100%;" />
+								@click="pc_item_click(pc)">
+							</uni-list-item>
 						</uni-swipe-action-item>
-					</uni-list>
-				</uni-swipe-action>
-				<template v-slot:footer>
-					<view style="color: #ff0000; display: flex; float: right;">
-						<view>全部唤醒</view>
-					</view>
-				</template>
-			</uni-card>
-		</view> -->
+					</uni-swipe-action>
+				</uni-list>
+			</view>
+			<view class="gap"></view>
+		</view>
 		
-		<!-- <view>
-			<uni-group title="" margin-top="">
-			<uni-card
-				title="未分类"
-				extra=""
-				note="未分类 PC 将通过所有设备进行唤醒">
-				<uni-swipe-action>
-					<uni-list
-						v-for="(pc, index) in pc_list"
-						:index="index"
-						:border="false">
-						<uni-swipe-action-item :rightOptions="swipe_options">
-							<uni-list-item
-								v-if="pc.assigned_device === undefined || pc.assigned_device === ''"
-								:title="pc.title"
-								:note="pc.mac_address"
-								clickable
-								:disabled="!mqtt_status"
-								thumb="/static/icons/pc.png"
-								thumbSize="base"
-								style="border: none; width: 100%;" />
-						</uni-swipe-action-item>
-					</uni-list>
-				</uni-swipe-action>
-			</uni-card>
-				
-			</uni-group>
-		</view> -->
-		
-		<view>
+		<view class="gap"
+			v-if="device_list.length > 0"></view>
+
+		<view class="ungroups">
 			<uni-list
-				v-for="(item, index) in pc_list"
+				v-for="(pc, index) in pc_list"
 				:key="index"
+				v-if="!pc.group"
 				:border="false">
 				<uni-swipe-action>
 					<uni-swipe-action-item
 						:rightOptions="swipe_options"
-						@click="swipe_click($event, index, item)">
+						@click="swipe_click($event, index, pc)">
 						<uni-list-item
 							clickable
 							:disabled="!mqtt_status"
 							thumb="/static/icons/pc.png"
 							thumbSize="base"
-							:title="item.title"
-							:note="'mac: ' + item.mac_address"
-							@click="pc_item_click(item)">
+							:title="pc.title"
+							:note="'mac: ' + pc.mac_address"
+							@click="pc_item_click(pc)">
 						</uni-list-item>
 					</uni-swipe-action-item>
 				</uni-swipe-action>
@@ -191,6 +174,7 @@
 						}
 					}
 				],
+				counter: [],
 				pc_list: {},
 				device_list: {},
 				app_settings: {},
@@ -220,14 +204,17 @@
 				}
 			}
 		},
-		onNavigationBarButtonTap(e) {
+		onNavigationBarButtonTap(event) {
 			// search button click event
-			if (e.index === 0) {
+			if (event.index === 0) {
 				this.$refs.drawer.open()
 			}
 		},
 		onUnload() {
 			this.end_mqtt_client()
+		},
+		onShow() {
+			this.reload_page()
 		},
 		onLoad(options) {
 			// #ifdef APP-PLUS
@@ -235,9 +222,8 @@
 				this.$data.version = wgtinfo.version
 			})
 			// #endif
-			
+
 			this.$data.app_settings = settings_handler.load_app_settings()
-			this.$data.device_list = settings_handler.load_device_items()
 			this.reload_page()
 			this.start_mqtt_client()
 			
@@ -252,7 +238,7 @@
 			})
 			
 			uni.$on('pc_items_update', () => {
-				this.reload_page()
+				// this.reload_page()
 			})
 			
 			uni.$on('device_remove', (device) => {
@@ -312,19 +298,17 @@
 			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
-			pc_item_click (item) {
+			pc_item_click (pc) {
 				// wake up pc
 				if (this.$data.mqtt_status) {
-					const device_items = settings_handler.load_device_items()
-					
-					device_items.forEach((device, index) => {
+					this.$data.device_list.forEach(device => {
 						let msg_obj = {},
 							publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
 						// 00:11:32:2C:A6:03
-
+					
 						msg_obj.command = 'wake_up_pc'
-						msg_obj.title = encodeURIComponent(item.title)
-						msg_obj.mac_address = item.mac_address
+						msg_obj.title = encodeURIComponent(pc.title)
+						msg_obj.mac_address = pc.mac_address
 						
 						mqtt_client.publish(
 							publish_topic,
@@ -333,8 +317,42 @@
 					})
 				}
 			},
+			group_wakeup (device_item) {
+				if (this.$data.mqtt_status) {
+					this.$data.pc_list.forEach(pc => {
+						if (pc.group === device_item.id) {
+							let msg_obj = {},
+								publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device_item.bssid.replace(new RegExp(':', 'g'), '')
+							
+							msg_obj.command = 'wake_up_pc'
+							msg_obj.title = encodeURIComponent(pc.title)
+							msg_obj.mac_address = pc.mac_address
+					
+							mqtt_client.publish(
+								publish_topic,
+								JSON.stringify(msg_obj)
+							)
+						}
+					})
+				}
+			},
 			reload_page () {
+				this.$data.device_list = settings_handler.load_device_items()
 				this.$data.pc_list = settings_handler.load_pc_items()
+				this.$data.counter = []
+
+				// 更新分组角标
+				this.$data.device_list.forEach(device => {
+					let count = 0
+
+					this.$data.pc_list.forEach(pc => {
+						if (pc.group === device.id) {
+							count += 1
+						}
+					})
+					
+					this.$data.counter.push(count)
+				})
 			},
 			// event: 滑动按钮事件，event.index：滑动后按钮索引
 			// index：list item 索引
@@ -372,9 +390,6 @@
 					url: 'commputer_add',
 					animationType: "slide-in-right"
 				})
-			},
-			mqtt_query (topic, command) {
-				
 			},
 			mqtt_on_message (topic, message) {
 				console.log(`received topic: ${topic}, message: ${message.toString()}`)
@@ -594,8 +609,52 @@
 		font-size: 14px;
 	}
 	
-	.uni-swipe .uni-list-item {
-		border-bottom: 1px solid lightgrey;
+	/* .uni-swipe .uni-list-item:not(:last-child) {
+		border-top: 1rpx solid lightgrey;
 		width: 100%;
+	} */
+	
+	.groups .uni-swipe .uni-list-item {
+		border-top: 1rpx solid lightgrey;
+		width: 100%;
+	}
+	
+	.groups {
+		background-color: white;
+	}
+	
+	.group-item {
+		display: flex;
+		height: 60rpx;
+		line-height: 60rpx;
+		padding: 12rpx 20rpx;
+	}
+	
+	.group-item text {
+		vertical-align: middle;
+		flex: 1;
+	}
+
+	.group-item uni-text {
+		vertical-align: text-bottom;
+	}
+
+	.uni-badge {
+		display: inline-flex;
+		box-sizing: border-box;
+		overflow: hidden;
+		justify-content: center;
+		flex-direction: row;
+		width: 18px;
+		height: 18px;
+		line-height: 18px;
+		color: white;
+		border-radius: 100px;
+		background-color: #4cd964;
+		text-align: center;
+		font-family: 'Helvetica Neue', Helvetica, sans-serif;
+		font-size: 12px;
+		padding: 0px 6px;
+		margin-left: 5px;
 	}
 </style>
