@@ -13,19 +13,22 @@
 			<text>点击加号添加硬件</text>
 		</view>
 		<view>
-			<uni-list
-				v-for="(item, index) in device_list"
-				:key="index"
-				:border="false">
-				<uni-list-item
+			<uni-forms ref="form" style="padding: 0;">
+				<uni-list
+					v-for="(item, index) in device_list"
+					:key="index"
+					:border="false">
+					<uni-list-item
 						link
 						thumb="/static/icons/device.png"
 						thumbSize="base"
 						:title="item.hardware_name + (item.hardware_memo !== undefined && item.hardware_memo !== '' ? ' (' + item.hardware_memo + ')' : '') || item.ssid"
 						:note="'mac: ' + item.bssid"
 						:rightText="item.status ? '在线' : '离线'"
-						@click="device_item_click(item)" />
-			</uni-list>
+						@click="device_item_click(item)">
+					</uni-list-item>
+				</uni-list>
+			</uni-forms>
 		</view>
 	</view>
 </template>
@@ -84,5 +87,7 @@
 </script>
 
 <style>
-	
+	/* .uni-list-item {
+		border-top: 1px solid lightgrey;
+	} */
 </style>
