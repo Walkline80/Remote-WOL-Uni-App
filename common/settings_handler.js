@@ -40,7 +40,7 @@ function load_app_settings() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key === APP_SETTINGS_KEY) {
 				const item = uni.getStorageSync(key)
 				settings = item
@@ -107,7 +107,7 @@ function load_device_items() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key.startsWith(DEVICE_ITEM_PREFIX)) {
 				const item = uni.getStorageSync(key)
 				items.push(item)
@@ -131,7 +131,7 @@ function load_pc_items() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key.startsWith(PC_ITEM_PREFIX)) {
 				const item = uni.getStorageSync(key)
 				items.push(item)
@@ -225,7 +225,7 @@ function get_pc_item(key) {
 }
 
 /**
- * 读取硬件设备设置数量
+ * 获取硬件设备设置数量
  * 
  * @return {int} 返回硬件设备设置总数
  */
@@ -235,7 +235,7 @@ function get_device_item_counts() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key.startsWith(DEVICE_ITEM_PREFIX)) {
 				const item = uni.getStorageSync(key)
 				items.push(item)
@@ -249,6 +249,39 @@ function get_device_item_counts() {
 }
 
 /**
+ * 获取硬件设备分组信息，用于填充 pc 设置页面中的'选择分组'项
+ * 
+ * @return {array} 返回硬件设备分组信息
+ */
+function get_group_items() {
+	let index = 0,
+		items = [{
+			'index': index,
+			'name': '无',
+			'device_id': null
+		}]
+
+	try {
+		const info = uni.getStorageInfoSync()
+		
+		info.keys.forEach(key => {
+			if (key.startsWith(DEVICE_ITEM_PREFIX)) {
+				const item = uni.getStorageSync(key)
+				items.push({
+					'index': index += 1,
+					'name': `${item.hardware_name} (${item.bssid})`,
+					'device_id': item.id
+				})
+			}
+		})
+	} catch (error) {
+		console.log('get_group_items error', error)
+	}
+	
+	return items
+}
+
+/**
  * 读取 pc 设备设置数量
  * 
  * @return {int} 返回 pc 设备设置总数
@@ -259,7 +292,7 @@ function get_pc_item_counts() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key.startsWith(PC_ITEM_PREFIX)) {
 				const item = uni.getStorageSync(key)
 				items.push(item)
@@ -293,7 +326,7 @@ function update_device_item_status(key, status) {
  * 更新指定硬件设备的 IP 地址
  * 
  * @param {string} key - 要读取的硬件设备的 mac 地址（不包含 mac 地址分隔符）
- * @param {boolean} ipaddress - IP 地址值
+ * @param {string} ipaddress - IP 地址值
  */
 function update_device_item_ip_address(key, ip_address) {
 	if (get_device_item_counts() === 0) {return}
@@ -309,12 +342,44 @@ function update_device_item_ip_address(key, ip_address) {
 }
 
 /**
- * 删除指定硬件设备设置
+ * 更新指定硬件设备的指定信息
+ * 
+ * @param {string} id - 要读取的硬件设备的 id
+ * @param {string} key - 指定信息的键
+ * @param {string} value - 指定信息的值
+ */
+function update_device_item_by_id(id, key, value) {
+	let item = {}
+
+	try {
+		item = uni.getStorageSync(id)
+
+		if (!item) {return}
+		item[key] = value
+	} catch (error) {
+		console.log('update_device_item_by_id error', error)
+	}
+	
+	console.log('success')
+}
+
+/**
+ * 删除指定硬件设备设置，同时删除 pc 设置中的分组信息
  * 
  * @param {string} id - 要删除的硬件设备的 id
  */
 function remove_device_item(id) {
 	try {
+		const device_item = get_device_item_by_id(id),
+			pc_items = load_pc_items()
+
+		pc_items.forEach(pc_item => {
+			if (pc_item.group === device_item.id) {
+				pc_item.group = ''
+				save_pc_item(pc_item)
+			}
+		})
+
 		uni.removeStorageSync(id)
 	} catch (error) {
 		console.log('remove_device_item error', error)
@@ -357,7 +422,7 @@ function is_app_settings_exist() {
 	try {
 		const info = uni.getStorageInfoSync()
 		
-		info.keys.forEach((key) => {
+		info.keys.forEach(key => {
 			if (key === APP_SETTINGS_KEY) {
 				result = true
 			}
@@ -418,5 +483,7 @@ export default {
 	update_device_item_ip_address,
 	is_device_item_exist,
 	// format_mac_address,
-	get_pc_item_by_id
+	get_pc_item_by_id,
+	get_group_items,
+	update_device_item_by_id
 }
