@@ -9,9 +9,13 @@
 
 <template>
 	<view>
-		<view class="">
-			<uni-forms :value="pc_info" ref="form" :rules="rules">
-				<uni-group title="PC 设置" top=0>
+		<view class="header">
+			<image src="@/static/icons/computer.png" mode="aspectFit" />
+		</view>
+
+		<view>
+			<uni-forms :value="pc_info" ref="form" :rules="rules" style="padding: 0 15px;">
+				<uni-group title="" top=0>
 					<uni-forms-item
 						required
 						label="名称"
@@ -35,12 +39,29 @@
 							placeholder="00:11:22:33:44:55"
 							v-model="pc_info.mac_address" />
 					</uni-forms-item>
+					<uni-forms-item
+						label="选择分组"
+						name="group_id"
+						:labelWidth="label_width"
+						:labelAlign="label_align"
+						style="margin-bottom: 0;">
+						<picker
+							mode="selector"
+							:range="group_items"
+							range-key="name"
+							:value="group_index"
+							@change="group_change">
+							<view class="uni-input">{{group_items[group_index].name}}</view>
+						</picker>
+					</uni-forms-item>
 				</uni-group>
-				
-				<view class="button-group">
-					<button style="width: 100%;" type="warn" @click="button_save_click">{{view_mode ? '修改' : '保存'}}</button>
-				</view>
 			</uni-forms>
+			
+			<view class="gap"></view>
+
+			<view class="footer">
+				<button type="warn" @click="button_save_click">{{view_mode ? '修改' : '保存'}}</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -60,8 +81,11 @@
 				label_align: 'right',
 				pc_info: {
 					title: '',
-					mac_address: ''
+					mac_address: '',
+					group: ''
 				},
+				group_items: [],
+				group_index: 0,
 				rules: {
 					title: {
 						rules: [{
@@ -107,6 +131,8 @@
 			load_pc_info (options) {
 				let view_mode = false
 				
+				this.$data.group_items = settings_handler.get_group_items()
+				
 				if (Object.keys(options).length !== 0) {
 					if (options.pc_id) {
 						console.log('view pc_info, data from stroage')
@@ -128,6 +154,14 @@
 					}
 				}
 				
+				if (this.$data.pc_info.group) {
+					this.$data.group_items.forEach((item) => {
+						if (item.device_id === this.$data.pc_info.group) {
+							this.$data.group_index = item.index
+						}
+					})
+				}
+				
 				this.$data.view_mode = view_mode
 			},
 			button_save_click (form) {
@@ -147,12 +181,44 @@
 					console.log('form error: ', error)
 				})
 			},
+			group_change (event) {
+				this.$data.group_index = event.detail.value
+				// settings_handler.update_device_item_by_id(this.$data.device_info.id, 'group_id', )
+				this.$data.pc_info.group = this.$data.group_items[this.$data.group_index].device_id
+			}
 		}
 	}
 </script>
 
 <style>
-	.uni-forms {
-		padding: 0 15px!important;
+	.uni-input {
+		height: 50rpx;
+		padding: 15rpx 25rpx;
+		line-height:50rpx;
+		font-size:28rpx;
+		background:#FFF;
+		flex: 1;
+	}
+
+	.header {
+		line-height: 150px;
+		height: 150px;
+		background-color: #0694a2;
+		text-align: center;
+	}
+	
+	.header image {
+		vertical-align: middle;
+		width: 100px;
+		height: 100px;
+	}
+	
+	.footer {
+		width: 100%;
+		background-color: #efefef;
+	}
+	
+	.footer button {
+		margin: 15px;
 	}
 </style>
