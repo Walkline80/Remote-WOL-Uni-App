@@ -13,7 +13,10 @@
 			<text>下拉搜索周围的硬件设备</text>
 		</view>
 		<view>
-			<uni-list v-for="(item, index) in wifi_list" :key="index" :border="false">
+			<uni-list
+				v-for="(item, index) in wifi_list"
+				:key="index"
+				:border="false">
 				<uni-list-item
 					v-if="item.ssid.startsWith('wol_')"
 					link="navigateTo"
@@ -21,7 +24,8 @@
 					thumbSize="base"
 					:title="item.ssid"
 					:note="'mac: ' + item.bssid"
-					@click="device_settings_click(item)" />
+					@click="device_settings_click(item)">
+				</uni-list-item>
 			</uni-list>
 		</view>
 	</view>
@@ -119,5 +123,7 @@
 </script>
 
 <style>
-
+	.uni-list-item {
+		border-top: 1px solid lightgrey;
+	}
 </style>
