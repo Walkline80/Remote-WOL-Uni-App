@@ -82,15 +82,14 @@
 			</view>
 
 			<view>
-				<uni-list
-					v-for="(pc, index) in pc_list"
-					:key="index"
-					v-if="pc.group === device.id"
-					:border="false">
-					<uni-swipe-action>
+				<uni-list :border="false">
+					<uni-swipe-action
+						v-for="(pc, index) in pc_list"
+						:key="index"
+						v-if="pc.group === device.id">
 						<uni-swipe-action-item
-							:rightOptions="swipe_options"
-							:autoClose="true"
+							:leftOptions="left_swipe_options"
+							:rightOptions="right_swipe_options"
 							@click="swipe_click($event, index, pc)">
 							<uni-list-item
 								clickable
@@ -99,7 +98,7 @@
 								thumbSize="base"
 								:title="pc.title"
 								:note="'mac: ' + pc.mac_address"
-								@click="pc_item_click(pc)">
+								@click="pc_item_click(pc, device)">
 							</uni-list-item>
 						</uni-swipe-action-item>
 					</uni-swipe-action>
@@ -112,14 +111,14 @@
 			v-if="device_list.length > 0"></view>
 
 		<view class="ungroups">
-			<uni-list
-				v-for="(pc, index) in pc_list"
-				:key="index"
-				v-if="!pc.group"
-				:border="false">
-				<uni-swipe-action>
+			<uni-list :border="false">
+				<uni-swipe-action
+					v-for="(pc, index) in pc_list"
+					:key="index"
+					v-if="!pc.group">
 					<uni-swipe-action-item
-						:rightOptions="swipe_options"
+						:leftOptions="left_swipe_options"
+						:rightOptions="right_swipe_options"
 						@click="swipe_click($event, index, pc)">
 						<uni-list-item
 							clickable
@@ -160,13 +159,15 @@
 			return {
 				version: '',
 				mqtt_status: false,
-				swipe_options: [
+				left_swipe_options: [
 					{
 						text: '删除',
 						style: {
 							backgroundColor: '#ff0000'
 						}
-					},
+					}
+				],
+				right_swipe_options: [
 					{
 						text: '编辑',
 						style: {
@@ -260,32 +261,54 @@
 			})
 			
 			uni.$on('device_reboot', (device) => {
-				let msg_obj = {},
-					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
-				
-				msg_obj.command = 'device_reboot'
-				msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
-
-				if (mqtt_client) {
-					mqtt_client.publish(
-						publish_topic,
-						JSON.stringify(msg_obj)
-					)	
+				if (this.$data.mqtt_status) {
+					let msg_obj = {},
+						publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+					
+					msg_obj.command = 'device_reboot'
+					msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
+					
+					if (mqtt_client) {
+						mqtt_client.publish(
+							publish_topic,
+							JSON.stringify(msg_obj)
+						)	
+					}
+					
+					uni.showToast({
+						title: '命令已下发',
+						icon: 'none',
+						duration: 2000
+					})
+				} else {
+					uni.showToast({
+						title: '下发命令失败',
+						icon: 'none',
+						duration: 2000
+					})
 				}
 			})
 			
 			uni.$on('get_device_logs', (device) => {
-				let msg_obj = {},
-					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
-				
-				msg_obj.command = 'report_error_log'
-				msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
-				
-				if (mqtt_client) {
-					mqtt_client.publish(
-						publish_topic,
-						JSON.stringify(msg_obj)
-					)	
+				if (this.$data.mqtt_status) {
+					let msg_obj = {},
+						publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+					
+					msg_obj.command = 'report_error_log'
+					msg_obj.mac_address = device.bssid.replace(new RegExp(':', 'g'), '')
+					
+					if (mqtt_client) {
+						mqtt_client.publish(
+							publish_topic,
+							JSON.stringify(msg_obj)
+						)	
+					}
+				} else {
+					uni.showToast({
+						title: '下发命令失败',
+						icon: 'none',
+						duration: 2000
+					})
 				}
 			})
 		},
@@ -298,31 +321,47 @@
 			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
-			pc_item_click (pc) {
+			wake_up_pc (pc, device) {
+				let msg_obj = {},
+					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
+				// 00:11:32:2C:A6:03
+										
+				msg_obj.command = 'wake_up_pc'
+				msg_obj.title = encodeURIComponent(pc.title)
+				msg_obj.mac_address = pc.mac_address
+				
+				mqtt_client.publish(
+					publish_topic,
+					JSON.stringify(msg_obj)
+				)
+			},
+			pc_item_click (pc, device=null) {
 				// wake up pc
 				if (this.$data.mqtt_status) {
-					this.$data.device_list.forEach(device => {
-						let msg_obj = {},
-							publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
-						// 00:11:32:2C:A6:03
-					
-						msg_obj.command = 'wake_up_pc'
-						msg_obj.title = encodeURIComponent(pc.title)
-						msg_obj.mac_address = pc.mac_address
-						
-						mqtt_client.publish(
-							publish_topic,
-							JSON.stringify(msg_obj)
-						)
+					if (device) {
+						console.log('waking up one pc via one device')
+						this.wake_up_pc(pc, device)
+					} else {
+						console.log('waking up one pc via all devices');
+						this.$data.device_list.forEach(device => {
+							this.wake_up_pc(pc, device)
+						})
+					}
+				} else {
+					uni.showToast({
+						title: '下发命令失败',
+						icon: 'none',
+						duration: 2000
 					})
 				}
 			},
-			group_wakeup (device_item) {
+			group_wakeup (device) {
 				if (this.$data.mqtt_status) {
+					console.log('waking up group: ' + device.id)
 					this.$data.pc_list.forEach(pc => {
-						if (pc.group === device_item.id) {
+						if (pc.group === device.id) {
 							let msg_obj = {},
-								publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device_item.bssid.replace(new RegExp(':', 'g'), '')
+								publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
 							
 							msg_obj.command = 'wake_up_pc'
 							msg_obj.title = encodeURIComponent(pc.title)
@@ -334,9 +373,17 @@
 							)
 						}
 					})
+				} else {
+					uni.showToast({
+						title: '下发命令失败',
+						icon: 'none',
+						duration: 2000
+					})
 				}
 			},
 			reload_page () {
+				this.$data.device_list = {}
+				this.$data.pc_list = {}
 				this.$data.device_list = settings_handler.load_device_items()
 				this.$data.pc_list = settings_handler.load_pc_items()
 				this.$data.counter = []
@@ -358,7 +405,7 @@
 			// index：list item 索引
 			// item：点击的 list item
 			swipe_click (event, index, item) {
-				if (event.index === 0) {
+				if (event.position === 'left') {
 					uni.showModal({
 						content: `是否删除 ${item.title}？`,
 						confirmText: '删除',
@@ -369,7 +416,7 @@
 							}
 						}
 					})
-				} else if (event.index === 1) {
+				} else if (event.position === 'right') {
 					console.log('modify pc item ' + index)
 					uni.navigateTo({
 						url: `computer_detail?pc_id=${item.id}`,
@@ -460,11 +507,14 @@
 							break
 						case 'report_error_log_result':
 							if (msg_obj.result === 'success') {
-								let logs = ''
-								json_obj.logs.forEach(log=>{logs+=log})
+								let logs = '无记录'
+								
+								if (json_obj.logs) {
+									json_obj.logs.forEach(log=>{logs+=log})
+								}
 
 								uni.showModal({
-									content: logs || '无记录',
+									content: logs,
 									showCancel: false
 								})
 							}
@@ -614,8 +664,13 @@
 		width: 100%;
 	} */
 	
-	.groups .uni-swipe .uni-list-item {
-		border-top: 1rpx solid lightgrey;
+	.groups .uni-list-item {
+		/* border-top: 1rpx solid lightgrey; */
+		width: 100%;
+	}
+	
+	.ungroups .uni-list-item {
+		/* border-top: 0; */
 		width: 100%;
 	}
 	
@@ -628,6 +683,7 @@
 		height: 60rpx;
 		line-height: 60rpx;
 		padding: 12rpx 20rpx;
+		border-bottom: 1rpx solid lightgrey;
 	}
 	
 	.group-item text {
@@ -644,6 +700,7 @@
 		box-sizing: border-box;
 		overflow: hidden;
 		justify-content: center;
+		vertical-align: text-top!important;
 		flex-direction: row;
 		width: 18px;
 		height: 18px;
