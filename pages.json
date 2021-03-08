@@ -17,7 +17,7 @@
 						"backgroundColor": "#0e4f77",
 						"titleColor": "#FFFFFF",
 						"titleText": "PC 设备",
-						"titleAlign": "left",
+						"titleAlign": "center",
 						"buttons": [
 							{
 								"text": "\ue868",
