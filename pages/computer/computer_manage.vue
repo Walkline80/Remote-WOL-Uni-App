@@ -136,6 +136,7 @@
 		
 		<view>
 			<uni-fab
+				ref="fab"
 				:pattern="fab_settings.pattern"
 				:content = "fab_settings.content"
 				:horizontal="fab_settings.horizontal"
@@ -431,6 +432,8 @@
 						animationType: "slide-in-right"
 					})
 				}
+				
+				this.$refs.fab.close()
 			},
 			open_add_page () {
 				uni.navigateTo({
