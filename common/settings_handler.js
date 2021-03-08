@@ -269,7 +269,7 @@ function get_group_items() {
 				const item = uni.getStorageSync(key)
 				items.push({
 					'index': index += 1,
-					'name': `${item.hardware_name} (${item.bssid})`,
+					'name': item.hardware_memo ? item.hardware_memo : (`${item.hardware_name} (${item.bssid})`),
 					'device_id': item.id
 				})
 			}
