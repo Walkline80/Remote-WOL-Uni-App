@@ -155,7 +155,7 @@
 				}
 				
 				if (this.$data.pc_info.group) {
-					this.$data.group_items.forEach((item) => {
+					this.$data.group_items.forEach(item => {
 						if (item.device_id === this.$data.pc_info.group) {
 							this.$data.group_index = item.index
 						}
