@@ -258,7 +258,7 @@ function get_group_items() {
 		items = [{
 			'index': index,
 			'name': '无',
-			'device_id': null
+			'device_id': ''
 		}]
 
 	try {
