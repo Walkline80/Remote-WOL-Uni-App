@@ -81,10 +81,12 @@
 			</view>
 
 			<view>
-				<uni-list :border="false">
+				<uni-list
+					v-if="pc_list_grouped.length > 0"
+					:border="false">
 					<uni-swipe-action ref="swipe_groups">
 						<uni-swipe-action-item
-							v-for="(pc, index) in pc_list"
+							v-for="(pc, index) in pc_list_grouped"
 							:key="pc.id"
 							v-if="pc.group === device.id"
 							:leftOptions="left_swipe_options"
@@ -110,12 +112,13 @@
 			v-if="device_list.length > 0"></view>
 
 		<view class="ungroups">
-			<uni-list :border="false">
+			<uni-list
+				v-if="pc_list_ungroup.length > 0"
+				:border="false">
 				<uni-swipe-action ref="swipe_ungroups">
 					<uni-swipe-action-item
-						v-for="(pc, index) in pc_list"
+						v-for="(pc, index) in pc_list_ungroup"
 						:key="pc.id"
-						v-if="!pc.group"
 						:leftOptions="left_swipe_options"
 						:rightOptions="right_swipe_options"
 						@click="swipe_click($event, index, pc)">
@@ -179,6 +182,8 @@
 				],
 				counter: [],
 				pc_list: {},
+				pc_list_grouped: {},
+				pc_list_ungroup: {},
 				device_list: {},
 				app_settings: {},
 				fab_settings: {
@@ -227,7 +232,7 @@
 			// #endif
 
 			this.$data.app_settings = settings_handler.load_app_settings()
-			this.reload_page()
+			// this.reload_page()
 			this.start_mqtt_client()
 			
 			uni.$on('app_settings_update', () => {
@@ -401,24 +406,31 @@
 				}
 			},
 			reload_page () {
-				this.$data.device_list = {}
-				this.$data.pc_list = {}
 				this.$data.device_list = settings_handler.load_device_items()
 				this.$data.pc_list = settings_handler.load_pc_items()
 				this.$data.counter = []
 
-				// 更新分组角标
+				let grouped = [],
+					ungroup = []
+
+				// 预处理 list 数据
 				this.$data.device_list.forEach(device => {
 					let count = 0
 
-					this.$data.pc_list.forEach(pc => {
-						if (pc.group === device.id) {
+					this.$data.pc_list.forEach((pc, index) => {
+ 						if (!pc.group) {
+							ungroup.push(pc)
+						} else if (pc.group === device.id) {
+							grouped.push(pc)
 							count += 1
 						}
 					})
-					
+
 					this.$data.counter.push(count)
 				})
+
+				this.$data.pc_list_grouped = grouped
+				this.$data.pc_list_ungroup = ungroup
 			},
 			// event: 滑动按钮事件，event.index：滑动后按钮索引
 			// index：list item 索引
@@ -706,7 +718,6 @@
 		height: 60rpx;
 		line-height: 60rpx;
 		padding: 12rpx 20rpx;
-		border-bottom: 1rpx solid lightgrey;
 	}
 	
 	.group-item text {
