@@ -14,11 +14,10 @@
 		</view>
 		<view>
 			<uni-forms ref="form" style="padding: 0;">
-				<uni-list
-					v-for="(item, index) in device_list"
-					:key="index"
-					:border="false">
+				<uni-list :border="false">
 					<uni-list-item
+						v-for="(item, index) in device_list"
+						:key="index"
 						link
 						thumb="/static/icons/device.png"
 						thumbSize="base"

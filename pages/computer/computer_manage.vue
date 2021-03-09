@@ -8,7 +8,7 @@
 -->
 
 <template>
-	<view class="content">
+	<view class="content" @touchend="touchend_event" style="height: 100%;">
 		<view>
 			<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
 				<view class="drawer_header">
@@ -69,7 +69,6 @@
 			:key="index">
 			<view class="group-item">
 				<text style="font-size: 14px;">
-					<!-- {{device.hardware_name + (device.hardware_memo ? ' (' + device.hardware_memo + ')' : (' (' + device.bssid + ')'))}} -->
 					{{device.hardware_memo ? device.hardware_memo : (device.hardware_name + ' (' + device.bssid + ')')}}
 					<text class="uni-badge">{{counter[index]}}</text>
 				</text>
@@ -83,11 +82,11 @@
 
 			<view>
 				<uni-list :border="false">
-					<uni-swipe-action
-						v-for="(pc, index) in pc_list"
-						:key="index"
-						v-if="pc.group === device.id">
+					<uni-swipe-action ref="swipe_groups">
 						<uni-swipe-action-item
+							v-for="(pc, index) in pc_list"
+							:key="pc.id"
+							v-if="pc.group === device.id"
 							:leftOptions="left_swipe_options"
 							:rightOptions="right_swipe_options"
 							@click="swipe_click($event, index, pc)">
@@ -112,11 +111,11 @@
 
 		<view class="ungroups">
 			<uni-list :border="false">
-				<uni-swipe-action
-					v-for="(pc, index) in pc_list"
-					:key="index"
-					v-if="!pc.group">
+				<uni-swipe-action ref="swipe_ungroups">
 					<uni-swipe-action-item
+						v-for="(pc, index) in pc_list"
+						:key="pc.id"
+						v-if="!pc.group"
 						:leftOptions="left_swipe_options"
 						:rightOptions="right_swipe_options"
 						@click="swipe_click($event, index, pc)">
@@ -127,6 +126,7 @@
 							thumbSize="base"
 							:title="pc.title"
 							:note="'mac: ' + pc.mac_address"
+							@longpress="show_action_sheet(pc)"
 							@click="pc_item_click(pc)">
 						</uni-list-item>
 					</uni-swipe-action-item>
@@ -136,6 +136,7 @@
 		
 		<view>
 			<uni-fab
+				id="fab"
 				ref="fab"
 				:pattern="fab_settings.pattern"
 				:content = "fab_settings.content"
@@ -322,6 +323,23 @@
 			//settings_handler.update_device_item_status('246f289da321', true)
 		},
 		methods: {
+			touchend_event (event) {
+				if (this.$refs.fab.isShow) {
+					this.$refs.fab.close()
+				}
+			},
+			show_action_sheet (item) {
+				uni.showActionSheet({
+					itemList: [
+						'选择一个操作',
+						'编辑',
+						'删除'
+					],
+					success(event) {
+						console.log('clicked item ' + event.tapIndex)
+					}
+				})
+			},
 			wake_up_pc (pc, device) {
 				let msg_obj = {},
 					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
@@ -432,12 +450,10 @@
 						animationType: "slide-in-right"
 					})
 				}
-				
-				this.$refs.fab.close()
 			},
 			open_add_page () {
 				uni.navigateTo({
-					url: 'commputer_add',
+					url: '../computer/computer_add',
 					animationType: "slide-in-right"
 				})
 			},
@@ -629,6 +645,10 @@
 </script>
 
 <style>
+	page {
+		height: 100%;
+	}
+
 	.drawer_header {
 		background-color: darkcyan;
 		width: 100%;

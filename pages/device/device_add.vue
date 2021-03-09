@@ -13,13 +13,12 @@
 			<text>下拉搜索周围的硬件设备</text>
 		</view>
 		<view>
-			<uni-list
-				v-for="(item, index) in wifi_list"
-				:key="index"
-				:border="false">
+			<uni-list :border="false">
 				<uni-list-item
+					v-for="(item, index) in wifi_list"
+					:key="index"
 					v-if="item.ssid.startsWith('wol_')"
-					link="navigateTo"
+					link
 					:thumb="'/static/icons/wifi_level/' + calculate_signal_level(item.level) + '.png'"
 					thumbSize="base"
 					:title="item.ssid"
