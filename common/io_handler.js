@@ -6,13 +6,12 @@
  */
 
 // #ifdef APP-PLUS
-var MainActivity = plus.android.runtimeMainActivity()
-var Intent = plus.android.importClass('android.content.Intent')
-var Uri = plus.android.importClass('android.net.Uri')
+const Intent = plus.android.importClass('android.content.Intent')
+const Uri = plus.android.importClass('android.net.Uri')
+const MainActivity = plus.android.runtimeMainActivity()
 // #endif
 
 const SETTINGS_FILENAME = 'remote_wol_settings.json'
-const TEMP_FILE = 'temp_file'
 
 function save_settings(settings) {
 	// #ifndef APP-PLUS
@@ -93,29 +92,41 @@ function load_settings() {
 	// #endif
 }
 
+function choose_file() {
+	// #ifndef APP-PLUS
+	return false
+	// #endif
+
+	const intent = new Intent()
+		.setAction(Intent.ACTION_GET_CONTENT)
+		.setType('text/*')
+
+	MainActivity.startActivityForResult(Intent.createChooser(intent, 'Choose a file'), 10086)
+
+	MainActivity.onActivityResult = (requestCode, resultCode, data) => {
+		if (requestCode === 10086 && resultCode === -1 && data) {
+			console.log(data.getData().getPath())
+		}
+	}
+}
+
 function share_file() {
 	// #ifndef APP-PLUS
 	return false
 	// #endif
 
-	let file_path = null
-	
 	plus.io.requestFileSystem(plus.io.PUBLIC_DOCUMENTS, fs => {
 		fs.root.getFile(SETTINGS_FILENAME, {}, file_entry => {
-			file_path = file_entry.fullPath
-			
-			const intent = new Intent(Intent.ACTION_SEND),
-				file_uri = Uri.parse(file_path),
-				context = MainActivity.getApplicationContext()
-			
-			intent.setType("*/*")
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			intent.putExtra(Intent.EXTRA_STREAM, file_uri)
-			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-			
-			context.startActivity(Intent.createChooser(intent, "分享文件"))
-			// context.startActivity(intent)
-			
+			const intent = new Intent()
+				.setAction(Intent.ACTION_SEND)
+				.setType('*/*')
+				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath))
+				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+		
+			MainActivity.startActivity(Intent.createChooser(intent, 'Share a file'))
+			// MainActivity.startActivity(intent)
+
 			return true
 		}, error => {
 			uni.showToast({
@@ -130,5 +141,6 @@ function share_file() {
 export default {
 	save_settings,
 	load_settings,
-	share_file
+	share_file,
+	choose_file
 }
