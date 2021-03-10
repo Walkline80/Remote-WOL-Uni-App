@@ -47,6 +47,13 @@
 						clickable
 						@click="open_page('../webview/changelog')">
 					</uni-list-item>
+					<uni-list-item
+						title="导入/导出设置"
+						:showExtraIcon="true"
+						:extraIcon="{size: '22',type: 'redo'}"
+						clickable
+						@click="show_action_sheet">
+					</uni-list-item>
 				</uni-list>
 				
 				<view class="gap-lg" style="background-color: white;"></view>
@@ -155,6 +162,7 @@
 <script>
 	import settings_handler from '@/common/settings_handler.js'
 	import update_handler from '@/common/update_handler.js'
+	import io_handler from '@/common/io_handler.js'
 	import mqtt from '@/common/mqtt.min.js'
 
 	var mqtt_client = null
@@ -337,11 +345,23 @@
 				uni.showActionSheet({
 					itemList: [
 						'选择一个操作',
-						'编辑',
-						'删除'
+						'从文件导入',
+						'导出到文件',
+						'分享'
 					],
 					success(event) {
 						console.log('clicked item ' + event.tapIndex)
+						
+						if (event.tapIndex === 1) {
+							// import settings file
+							io_handler.load_settings()
+						} else if (event.tapIndex === 2) {
+							// export settings file
+							io_handler.save_settings(settings_handler.export_settings())
+						} else if (event.tapIndex === 3) {
+							// share settings file
+							io_handler.share_file()
+						}
 					}
 				})
 			},
