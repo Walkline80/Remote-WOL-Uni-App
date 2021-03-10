@@ -354,7 +354,8 @@
 						
 						if (event.tapIndex === 1) {
 							// import settings file
-							io_handler.load_settings()
+							io_handler.choose_file()
+							// io_handler.load_settings()
 						} else if (event.tapIndex === 2) {
 							// export settings file
 							io_handler.save_settings(settings_handler.export_settings())
