@@ -455,6 +455,25 @@ function is_device_item_exist(key) {
 }
 
 /**
+ * 导出所有设置
+ * 
+ * @return {string}
+ */
+function export_settings() {
+	let app_settings = load_app_settings(),
+		device_items = load_device_items(),
+		pc_items = load_pc_items(),
+
+		settings = {
+			'app_settings': app_settings,
+			'device_items': device_items,
+			'pc_items': pc_items
+		}
+
+	return JSON.stringify(settings)
+}
+
+/**
  * 去除 mac 地址中的冒号
  * 
  * @param {object} mac_address - 原始 mac 地址
@@ -485,5 +504,6 @@ export default {
 	// format_mac_address,
 	get_pc_item_by_id,
 	get_group_items,
-	update_device_item_by_id
+	update_device_item_by_id,
+	export_settings
 }
