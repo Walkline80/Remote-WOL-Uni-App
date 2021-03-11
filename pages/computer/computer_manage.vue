@@ -331,6 +331,8 @@
 			// #ifdef APP-PLUS
 			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			update_handler.check_update()
+			
+			io_handler.choose_file()
 			// #endif
 
 			//settings_handler.update_device_item_status('246f289da321', true)
