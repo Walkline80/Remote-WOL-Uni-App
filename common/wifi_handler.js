@@ -9,9 +9,6 @@
 plus.android.importClass('java.util.List')
 plus.android.importClass('java.util.ArrayList')
 plus.android.importClass('android.net.wifi.WifiManager')
-// plus.android.importClass('android.net.wifi.ScanResult')
-// plus.android.importClass('android.net.wifi.WifiInfo')
-// plus.android.importClass('android.net.DhcpInfo')
 
 const PERMISSIONS = [
 	'android.permission.ACCESS_FINE_LOCATION',
@@ -24,7 +21,6 @@ const PERMISSIONS = [
 const MainActivity = plus.android.runtimeMainActivity(),
 	Context = plus.android.importClass('android.content.Context'),
 	wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE)
-// var WifiConfiguration = plus.android.importClass('android.net.wifi.WifiConfiguration')
 
 /**
  * 请求获取所需系统权限
@@ -106,7 +102,7 @@ function create_wifi_config(ssid) {
  * 
  * @param {string} ssid - 需要删除的 wifi 热点名称
  */
-const remove_last_wifi_config = ssid => {
+function remove_last_wifi_config(ssid) {
 	const last_config = is_wifi_config_exist(ssid)
 	
 	if (last_config) {
@@ -181,7 +177,7 @@ function get_dhcp_info() {
  * 
  * @return {String} 返回获取到的 ip 地址，否则返回 null
  */
-const get_ip_address = () => {
+function get_ip_address() {
 	turn_on_wifi()
 	sleep()
 	

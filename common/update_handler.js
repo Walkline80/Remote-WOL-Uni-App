@@ -7,7 +7,11 @@
 
 const CHECK_UPDATE_URI = "https://walkline.wang/tools/update/api/update/v1/check_update"
 
-const bytes_to_size = (bytes) => {
+/**
+ * 文件大小字节数可读性转换
+ * @param {integer} bytes - 文件大小字节数
+ */
+function bytes_to_size(bytes) {
 	if (bytes === 0) {return '0 B'}
 
 	const k = 1024,
@@ -18,19 +22,19 @@ const bytes_to_size = (bytes) => {
 }
 
 // #ifdef APP-PLUS
-var MainActivity = plus.android.runtimeMainActivity(),
-	package_name = MainActivity.getApplicationContext().getPackageName(),
-	app_version = null
+const MainActivity = plus.android.runtimeMainActivity(),
+	package_name = MainActivity.getPackageName()
+let app_version = null
 
-plus.runtime.getProperty(plus.runtime.appid, function (wgtinfo) {
+plus.runtime.getProperty(plus.runtime.appid, wgtinfo => {
 	app_version = wgtinfo.version
 })
-// #endif
 
-const check_update = () => {
-	// #ifdef APP-PLUS
-	console.log('checking update...')
-	console.log('current version: ' + app_version)
+/**
+ * 检查、下载、安装更新文件
+ */
+function check_update() {
+	console.log('checking update, current version: ' + app_version)
 
 	uni.request({
 		url: CHECK_UPDATE_URI,
@@ -93,9 +97,14 @@ const check_update = () => {
 			console.log('request failed: ', result)
 		}
 	})
-	// #endif
 }
 
+/**
+ * 下载并安装更新文件
+ * 
+ * @param {string} url - 更新文件下载地址
+ * @param {integer} method - 安装完成后的处理方式，1：退出程序，2：重启程序
+ */
 const download_and_install_update = (url, method=1) => {
 	console.log('start downloading update file')
 	
@@ -140,3 +149,4 @@ export default {
 	// download_and_install_update,
 	check_update
 }
+// #endif
