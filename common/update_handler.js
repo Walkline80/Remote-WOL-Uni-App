@@ -11,7 +11,7 @@ const CHECK_UPDATE_URI = "https://walkline.wang/tools/update/api/update/v1/check
  * 文件大小字节数可读性转换
  * @param {integer} bytes - 文件大小字节数
  */
-function bytes_to_size(bytes) {
+export function bytes_to_size(bytes) {
 	if (bytes === 0) {return '0 B'}
 
 	const k = 1024,
@@ -69,7 +69,7 @@ function check_update() {
 					} else {
 						uni.showModal({
 							title: `发现新版本 (${version})`,
-							content: `更新内容：\n\n${note}\n\n更新日期：${date}`,
+							content: `更新内容：\n\n${note}\n\n文件大小：${bytes_to_size(size)}\n更新日期：${date}`,
 							confirmText: '立即下载',
 							success: (result) => {
 								if (result.confirm) {
@@ -105,7 +105,7 @@ function check_update() {
  * @param {string} url - 更新文件下载地址
  * @param {integer} method - 安装完成后的处理方式，1：退出程序，2：重启程序
  */
-const download_and_install_update = (url, method=1) => {
+function download_and_install_update(url, method=1) {
 	console.log('start downloading update file')
 	
 	uni.downloadFile({

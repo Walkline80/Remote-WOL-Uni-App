@@ -459,7 +459,7 @@ function is_device_item_exist(key) {
  * 
  * @return {string}
  */
-function export_settings() {
+export function export_settings() {
 	let app_settings = load_app_settings(),
 		device_items = load_device_items(),
 		pc_items = load_pc_items(),
@@ -504,6 +504,6 @@ export default {
 	// format_mac_address,
 	get_pc_item_by_id,
 	get_group_items,
-	update_device_item_by_id,
-	export_settings
+	update_device_item_by_id
+	// export_settings
 }
