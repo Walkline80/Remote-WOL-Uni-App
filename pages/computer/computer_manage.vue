@@ -331,8 +331,6 @@
 			// #ifdef APP-PLUS
 			this.$scope.$getAppWebview().evalJS('plus.android.invoke(plus.android.currentWebview(), "setForceDarkAllowed", false)')
 			update_handler.check_update()
-			
-			io_handler.choose_file()
 			// #endif
 
 			//settings_handler.update_device_item_status('246f289da321', true)
@@ -346,23 +344,28 @@
 			show_action_sheet (item) {
 				uni.showActionSheet({
 					itemList: [
-						'选择一个操作',
+						'请选择一个操作',
 						'从文件导入',
 						'导出到文件',
-						'分享'
+						'分享（无法分享到微信）'
 					],
 					success(event) {
 						console.log('clicked item ' + event.tapIndex)
 						
 						if (event.tapIndex === 1) {
-							// import settings file
-							io_handler.choose_file()
-							// io_handler.load_settings()
+							uni.showModal({
+								title: '危险操作',
+								content: '导入设置会覆盖现有全部设置内容，是否继续操作？',
+								confirmText: '继续',
+								success: result => {
+									if (result.confirm) {
+										io_handler.load_settings()
+									}
+								}
+							})
 						} else if (event.tapIndex === 2) {
-							// export settings file
 							io_handler.save_settings(settings_handler.export_settings())
 						} else if (event.tapIndex === 3) {
-							// share settings file
 							io_handler.share_file()
 						}
 					}
