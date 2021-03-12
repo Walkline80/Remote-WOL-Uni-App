@@ -10,7 +10,12 @@
 <template>
 	<view class="content" @touchend="touchend_event" style="height: 100%;">
 		<view>
-			<uni-drawer ref="drawer" :mask="true" :maskClick="true" mode="left">
+			<uni-drawer
+				ref="drawer"
+				:width="260"
+				:mask="true"
+				:maskClick="true"
+				mode="left">
 				<view class="drawer_header">
 					<image src="@/static/header.png" mode="aspectFill"></image>
 					<text class="drawer_title">Remote WOL</text>
@@ -223,7 +228,7 @@
 		onNavigationBarButtonTap(event) {
 			// search button click event
 			if (event.index === 0) {
-				this.$refs.drawer.open()
+				this.$refs.drawer.showDrawer ? this.$refs.drawer.close() : this.$refs.drawer.open()
 			}
 		},
 		onUnload() {
@@ -364,7 +369,7 @@
 								}
 							})
 						} else if (event.tapIndex === 2) {
-							io_handler.save_settings(settings_handler.export_settings())
+							io_handler.save_settings()
 						} else if (event.tapIndex === 3) {
 							io_handler.share_file()
 						}
@@ -714,8 +719,8 @@
 
 	.drawer_version {
 		position: fixed;
-		top: 25px;
-		right: 20px;
+		top: 60px;
+		right: 10px;
 		color: gainsboro;
 		font-size: 14px;
 	}
