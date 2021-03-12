@@ -470,7 +470,7 @@ function export_settings() {
 			'pc_items': pc_items
 		}
 
-	return JSON.stringify(settings)
+	return settings
 }
 
 /**
