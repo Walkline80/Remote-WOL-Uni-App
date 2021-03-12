@@ -5,16 +5,26 @@
  * https://gitee.com/walkline/remote-wol-uni-app
  */
 
+import settings_handler from './settings_handler.js'
+
 // #ifdef APP-PLUS
 const MainActivity = plus.android.runtimeMainActivity(),
 	Intent = plus.android.importClass('android.content.Intent'),
 	Uri = plus.android.importClass('android.net.Uri'),
-	File = plus.android.importClass('java.io.File'),
-	FileInputStream = plus.android.importClass('java.io.FileInputStream'),
-	DocumentsContract = plus.android.importClass('android.provider.DocumentsContract')
-// #endif
+	ByteArrayOutputStream = plus.android.importClass('java.io.ByteArrayOutputStream')
 
-const SETTINGS_FILENAME = 'remote_wol_settings.json'
+plus.android.importClass('java.io.InputStream')
+plus.android.importClass('android.content.ContentResolver')
+
+const SETTINGS_FILENAME = 'remote_wol_settings.json',
+	PACKAGE_NAME = MainActivity.getPackageName()
+
+let APP_VERSION = null
+
+plus.runtime.getProperty(plus.runtime.appid, wgtinfo => {
+	APP_VERSION = wgtinfo.version
+})
+// #endif
 
 function save_settings(settings) {
 	// #ifndef APP-PLUS
@@ -26,9 +36,13 @@ function save_settings(settings) {
 		fs.root.getFile(SETTINGS_FILENAME, {create: true}, file_entry => {
 			file_entry.remove(() => {
 				console.log('delete old file success')
-				
+
 				file_entry.createWriter(writer => {
-					writer.write(settings)
+					settings['package_name'] = PACKAGE_NAME
+					settings['app_version'] = APP_VERSION
+					settings['date'] = new Date().toLocaleString()
+					
+					writer.write(encodeURIComponent(JSON.stringify(settings)))
 					console.log('write settings to file ' + file_entry.fullPath)
 					
 					uni.showToast({
@@ -64,138 +78,61 @@ function save_settings(settings) {
 	// #endif
 }
 
-function load_settings2(file_path) {
+function load_settings(uri) {
 	// #ifndef APP-PLUS
 	return false
 	// #endif
 	
 	// #ifdef APP-PLUS
-	// '/external_files/加油天津日志/deviceToken.txt'
-	
-	
-	// const file = new File('/storage/emulated/0/Android/data/io.dcloud.HBuilder/documents/remote_wol_settings.json'),
-	// 	file_reader = new plus.io.FileReader()
-	
-	// console.log(file)
-	// file_reader.readAsText(file, 'utf-8')
-	// file_reader.onloaded = (event) => {
-	// 	console.log(event.target)
-	// 	console.log(event.target.result)
-	// }
-	
-	plus.android.importClass(MainActivity.getContentResolver())
-	const input_stream = MainActivity.getContentResolver().openInputStream(file_path.getData())
-	// console.log(input_stream.available())
-	let bytes = new Array()
-
-	let temp = 0
-	while (temp !== -1) {
-		temp = input_stream.read()
-		bytes.push(temp)
-	}
-	bytes.pop()
-
-	console.log(byteToString(bytes))
-	// let reader = new plus.io.FileReader()
-	// console.log(reader)
-	// reader.readAsText(bytes, 'utf-8')
-	// console.log('hh')
-	// reader.onLoad = (event) => {
-	// 	console.log(event.target)
-	// 	console.log(event.target.result)
-	// }
+	choose_and_load_file(analyse_and_import_settings)
 	// #endif
 }
 
-function byteToString(arr) {
-	if(typeof arr === 'string') {
-		return arr;
+function analyse_and_import_settings(content) {
+	// console.log(decodeURIComponent(content))
+	try {
+		const settings = JSON.parse(decodeURIComponent(content))
+		console.log(settings.package_name)
+	} catch (e) {
+		console.error(e)
 	}
-	var str = '',
-		_arr = arr;
-	for(var i = 0; i < _arr.length; i++) {
-		var one = _arr[i].toString(2),
-			v = one.match(/^1+?(?=0)/);
-		if(v && one.length == 8) {
-			var bytesLength = v[0].length;
-			var store = _arr[i].toString(2).slice(7 - bytesLength);
-			for(var st = 1; st < bytesLength; st++) {
-				store += _arr[st + i].toString(2).slice(2);
-			}
-			str += String.fromCharCode(parseInt(store, 2));
-			i += bytesLength - 1;
-		} else {
-			str += String.fromCharCode(_arr[i]);
-		}
-	}
-	return str;
 }
-function load_settings() {
+
+function choose_and_load_file(callback) {
 	// #ifndef APP-PLUS
 	return false
 	// #endif
 
 	// #ifdef APP-PLUS
-	plus.io.requestFileSystem(plus.io.PUBLIC_DOCUMENTS, fs => {
-		fs.root.getFile(SETTINGS_FILENAME, {}, fileEntry => {
-			fileEntry.file(file => {
-				console.log(file)
-				let fileReader = new plus.io.FileReader()
-				// alert("getFile:" + JSON.stringify(file));
-				fileReader.readAsText(file, 'utf-8')
-				fileReader.onloadend = event => {
-					alert("event.target" + event.target)
-					alert(event.target.result)
-				}
-				alert(file.size + '--' + file.name)
-			}, error => {
-				alert(error.message)
-				console.log(error.message)
-				return false
-			})
-		}, error => {
-			alert(error.message)
-			console.log(error.message)
-			return false
-		})
-	})
-	// #endif
-}
-
-function choose_file() {
-	// #ifndef APP-PLUS
-	return false
-	// #endif
-
 	const intent = new Intent()
 		.setAction(Intent.ACTION_GET_CONTENT)
+		.addCategory(Intent.CATEGORY_DEFAULT)
 		.setType('application/*')
 
 	MainActivity.startActivityForResult(Intent.createChooser(intent, 'Choose a file'), 10086)
 
 	MainActivity.onActivityResult = (requestCode, resultCode, data) => {
-		if (requestCode === 10086 && resultCode === -1 && data) {
-			console.log(data.toString()) //.getData().getPath())
+		if (requestCode === 10086 && resultCode === MainActivity.RESULT_OK && data) {
+			// console.log(data.toString())
 
-			// const uri = data.getData()
-			// console.log(uri.getAuthority())
-			// if (DocumentsContract.isDocumentUri(MainActivity, uri)) {
-			// 	//
-			// }
-			// // MediaStore (and general)
-			// else if(uri.getScheme() === 'content') {
-			// 	console.log('type: content')
-			// 	getDataColumn(MainActivity, uri, null, null)
-			// }
-			// // File
-			// else if(uri.getScheme() === 'file') {
-			// 	console.log('type: file')
-			// 	console.log(uri.getPath())
-			// }
+			const input_stream = MainActivity.getContentResolver().openInputStream(data.getData()),
+				file_reader = new ByteArrayOutputStream()
+			
+			let bytes = new Array(),
+				temp = 0
+			
+			while ((temp = input_stream.read()) !== -1) {
+				bytes.push(temp)
+			}
 
-			load_settings2(data)
+			file_reader.write(bytes, 0, bytes.length)
+			callback(file_reader.toString())
+
+			input_stream.close()
+			file_reader.close()
 		}
 	}
+	// #endif
 }
 
 function share_file() {
@@ -203,6 +140,7 @@ function share_file() {
 	return false
 	// #endif
 
+	// #ifdef APP-PLUS
 	plus.io.requestFileSystem(plus.io.PUBLIC_DOCUMENTS, fs => {
 		fs.root.getFile(SETTINGS_FILENAME, {}, file_entry => {
 			const intent = new Intent()
@@ -224,32 +162,13 @@ function share_file() {
 			})
 		})
 	})
-}
-
-function getDataColumn(main, uri, selection, selectionArgs) {
-	plus.android.importClass(main.getContentResolver())
-	
-	// let cursor = main.getContentResolver().openFile(uri, null, null) //.query(uri, null, null, null, null)
-	const input_stream = main.getContentResolver().openInputStream(uri)
-
-	// plus.android.importClass(cursor)
-	console.log(input_stream)
-	
-	// if(cursor != null && cursor.moveToFirst()) {
-	// 	// var column_index = cursor.getColumnIndexOrThrow('_data')
-	// 	// var result = cursor.getString(column_index)
-	// 	const path = cursor.getString(cursor.getColumnIndex('_data'))
-	// 	console.log(path)
-	// 	cursor.close()
-	// 	return result
-	// }
-	// return null
+	// #endif
 }
 
 export default {
+	// choose_and_load_file,
+	// analyse_and_import_settings,
 	save_settings,
 	load_settings,
 	share_file,
-	choose_file,
-	load_settings2
 }
