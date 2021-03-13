@@ -82,7 +82,7 @@
 			<view class="group-item">
 				<text style="font-size: 14px;">
 					{{device.hardware_memo ? device.hardware_memo : (device.hardware_name + ' (' + device.bssid + ')')}}
-					<text class="uni-badge">{{counter[index]}}</text>
+					<text class="uni-badge">{{group_counter[index]}}</text>
 				</text>
 				<button
 					size="mini"
@@ -193,7 +193,7 @@
 						}
 					}
 				],
-				counter: [],
+				group_counter: [],
 				pc_list: {},
 				pc_list_grouped: {},
 				pc_list_ungroup: {},
@@ -445,26 +445,35 @@
 			reload_page () {
 				this.$data.device_list = settings_handler.load_device_items()
 				this.$data.pc_list = settings_handler.load_pc_items()
-				this.$data.counter = []
+				this.$data.group_counter = []
 
 				let grouped = [],
 					ungroup = []
 
 				// 预处理 list 数据
-				this.$data.device_list.forEach(device => {
-					let count = 0
+				if (this.$data.device_list.length > 0) {
+					this.$data.device_list.forEach(device => {
+						let count = 0
+					
+						this.$data.pc_list.forEach((pc, index) => {
+							if (!pc.group) {
+								if (!pc.added) {
+									pc.added = true
+									ungroup.push(pc)
+								}
+							} else if (pc.group === device.id) {
+								grouped.push(pc)
+								count += 1
+							}
+						})
 
-					this.$data.pc_list.forEach((pc, index) => {
- 						if (!pc.group) {
-							ungroup.push(pc)
-						} else if (pc.group === device.id) {
-							grouped.push(pc)
-							count += 1
-						}
+						this.$data.group_counter.push(count)
 					})
-
-					this.$data.counter.push(count)
-				})
+				} else {
+					this.$data.pc_list.forEach((pc, index) => {
+						ungroup.push(pc)
+					})
+				}
 
 				this.$data.pc_list_grouped = grouped
 				this.$data.pc_list_ungroup = ungroup
