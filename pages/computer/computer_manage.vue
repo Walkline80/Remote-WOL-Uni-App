@@ -170,8 +170,8 @@
 	import io_handler from '@/common/io_handler.js'
 	import mqtt from '@/common/mqtt.min.js'
 
-	var mqtt_client = null
-	
+	let mqtt_client = null
+
 	export default {
 		data() {
 			return {
@@ -247,7 +247,7 @@
 			this.$data.app_settings = settings_handler.load_app_settings()
 			// this.reload_page()
 			this.start_mqtt_client()
-			
+
 			uni.$on('app_settings_update', () => {
 				this.$data.app_settings = settings_handler.load_app_settings()
 				this.start_mqtt_client()
@@ -261,7 +261,7 @@
 			uni.$on('pc_items_update', () => {
 				// this.reload_page()
 			})
-			
+
 			uni.$on('device_remove', (device) => {
 				let msg_obj = {},
 					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
@@ -354,7 +354,7 @@
 						'导出到文件',
 						'分享（无法分享到微信）'
 					],
-					success(event) {
+					success: event => {
 						console.log('clicked item ' + event.tapIndex)
 						
 						if (event.tapIndex === 1) {
@@ -364,7 +364,7 @@
 								confirmText: '继续',
 								success: result => {
 									if (result.confirm) {
-										io_handler.load_settings()
+										io_handler.load_settings(this.load_settings_callback)
 									}
 								}
 							})
@@ -375,6 +375,12 @@
 						}
 					}
 				})
+			},
+			load_settings_callback () {
+				console.log('callback')
+				this.$data.app_settings = settings_handler.load_app_settings()
+				this.reload_page()
+				this.start_mqtt_client()
 			},
 			wake_up_pc (pc, device) {
 				let msg_obj = {},
@@ -589,7 +595,10 @@
 				}
 			},
 			end_mqtt_client () {
-				if (mqtt_client) {mqtt_client.end({force: true})}
+				if (mqtt_client) {
+					mqtt_client.end({force: true})
+					this.set_mqtt_indicator_status(false)
+				}
 			},
 			set_mqtt_indicator_status (status) {
 				let color = status ? '#F0AD4E' : '#b4b4b4'
@@ -631,11 +640,12 @@
 			},
 			start_mqtt_client () {
 				const settings = this.$data.app_settings
-				
-				if (Object.keys(settings).length === 0) {return}
-				
-				this.end_mqtt_client()
-				
+
+				if (Object.keys(settings).length === 0) {
+					this.end_mqtt_client()
+					return
+				}
+
 				let mqtt_topic = settings.mqtt_topic_prefix + '/remote_wol_device/+',
 					options = {
 						keepalive: parseInt(settings.mqtt_keepalive),
@@ -655,6 +665,7 @@
 				mqtt_client = mqtt.connect(`ws://${settings.mqtt_host}:${settings.mqtt_port}/mqtt`, options)
 				// #endif
 
+				console.log('start mqtt client create');
 				mqtt_client.on('connect', () => {
 					console.log('mqtt connected')
 					
