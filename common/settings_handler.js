@@ -5,7 +5,6 @@
  * https://gitee.com/walkline/remote-wol-uni-app
  */
 
-// const settings_filename = 'remote_wol_config.json'
 const APP_SETTINGS_KEY = 'remote_wol_app_settings'
 const DEVICE_ITEM_PREFIX = 'remote_wol_device_'
 const PC_ITEM_PREFIX = 'remote_wol_pc_'
@@ -18,7 +17,7 @@ const PC_ITEM_PREFIX = 'remote_wol_pc_'
  */
 function save_app_settings(settings) {
 	let result = true
-	
+
 	try {
 		uni.setStorageSync(APP_SETTINGS_KEY, settings)
 	} catch (error) {
@@ -39,7 +38,6 @@ function load_app_settings() {
 	
 	try {
 		const info = uni.getStorageInfoSync()
-		
 		info.keys.forEach(key => {
 			if (key === APP_SETTINGS_KEY) {
 				const item = uni.getStorageSync(key)
@@ -459,13 +457,13 @@ function is_device_item_exist(key) {
  * 
  * @return {string}
  */
-export function export_settings() {
+function export_settings() {
 	let app_settings = load_app_settings(),
 		device_items = load_device_items(),
 		pc_items = load_pc_items(),
 
 		settings = {
-			'app_settings': app_settings,
+			'app_items': Object.keys(app_settings).length === 0 ? [] : app_settings,
 			'device_items': device_items,
 			'pc_items': pc_items
 		}
@@ -504,6 +502,6 @@ export default {
 	// format_mac_address,
 	get_pc_item_by_id,
 	get_group_items,
-	update_device_item_by_id
-	// export_settings
+	update_device_item_by_id,
+	export_settings
 }
