@@ -88,7 +88,7 @@
 					size="mini"
 					type="primary"
 					plain
-					:disabled="!mqtt_status || !device.status"
+					:disabled="!(device.status && mqtt_status)"
 					@click="group_wakeup(device)">唤醒</button>
 			</view>
 
@@ -106,7 +106,7 @@
 							@click="swipe_click($event, index, pc)">
 							<uni-list-item
 								clickable
-								:disabled="!mqtt_status || !device.status"
+								:disabled="!(device.status && mqtt_status)"
 								thumb="/static/icons/pc.png"
 								thumbSize="base"
 								:title="pc.title"
@@ -148,7 +148,7 @@
 				</uni-swipe-action>
 			</uni-list>
 		</view>
-		
+
 		<view>
 			<uni-fab
 				id="fab"
@@ -245,7 +245,6 @@
 			// #endif
 
 			this.$data.app_settings = settings_handler.load_app_settings()
-			// this.reload_page()
 			this.start_mqtt_client()
 
 			uni.$on('app_settings_update', () => {
@@ -558,8 +557,9 @@
 									})
 								)
 							}
-							
+
 							uni.$emit('device_status_update')
+							this.reload_page()
 							break
 						case 'wake_up_pc_result':
 							if (msg_obj.result === 'success') {
@@ -623,6 +623,7 @@
 				// #endif
 				
 				this.$data.mqtt_status = status
+				this.reload_page()
 			},
 			open_page (url) {
 				uni.navigateTo({
