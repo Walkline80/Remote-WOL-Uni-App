@@ -88,7 +88,7 @@
 					size="mini"
 					type="primary"
 					plain
-					:disabled="!mqtt_status"
+					:disabled="!mqtt_status || !device.status"
 					@click="group_wakeup(device)">唤醒</button>
 			</view>
 
@@ -106,7 +106,7 @@
 							@click="swipe_click($event, index, pc)">
 							<uni-list-item
 								clickable
-								:disabled="!mqtt_status"
+								:disabled="!mqtt_status || !device.status"
 								thumb="/static/icons/pc.png"
 								thumbSize="base"
 								:title="pc.title"
@@ -377,12 +377,13 @@
 				})
 			},
 			load_settings_callback () {
-				console.log('callback')
 				this.$data.app_settings = settings_handler.load_app_settings()
 				this.reload_page()
 				this.start_mqtt_client()
 			},
 			wake_up_pc (pc, device) {
+				if (!device.status) {return}
+
 				let msg_obj = {},
 					publish_topic = this.$data.app_settings.mqtt_topic_prefix + '/remote_wol_device/' + device.bssid.replace(new RegExp(':', 'g'), '')
 				// 00:11:32:2C:A6:03
@@ -478,9 +479,10 @@
 				this.$data.pc_list_grouped = grouped
 				this.$data.pc_list_ungroup = ungroup
 			},
-			// event: 滑动按钮事件，event.index：滑动后按钮索引
-			// index：list item 索引
-			// item：点击的 list item
+
+			/** event: 滑动按钮事件，event.index：滑动后按钮索引
+			 * index：list item 索引
+			 * item：点击的 list item */
 			swipe_click (event, index, item) {
 				if (event.position === 'left') {
 					uni.showModal({
@@ -650,10 +652,8 @@
 			start_mqtt_client () {
 				const settings = this.$data.app_settings
 
-				if (Object.keys(settings).length === 0) {
-					this.end_mqtt_client()
-					return
-				}
+				this.end_mqtt_client()
+				if (Object.keys(settings).length === 0) {return}
 
 				let mqtt_topic = settings.mqtt_topic_prefix + '/remote_wol_device/+',
 					options = {
