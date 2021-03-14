@@ -16,6 +16,7 @@ const MainActivity = plus.android.runtimeMainActivity(),
 	Uri = plus.android.importClass('android.net.Uri'),
 	InputStreamReader = plus.android.importClass('java.io.InputStreamReader'),
 	BufferedReader = plus.android.importClass('java.io.BufferedReader'),
+	File = plus.android.importClass('java.io.File'),
 
 	SETTINGS_FILENAME = 'remote_wol_settings.json',
 	PACKAGE_NAME = MainActivity.getPackageName()
@@ -126,22 +127,18 @@ function analyse_and_import_settings(content) {
 							console.log('clearStorageSync error: ' + error)
 						}
 						
-						console.log(app_items)
 						app_items.forEach(app => {
 							settings_handler.save_app_settings(app)
 						})
 						
-						console.log('device_item_import')
 						device_items.forEach(device => {
 							settings_handler.save_device_item(device)
 						})
 						
-						console.log('pc_item_import')
 						pc_items.forEach(pc => {
 							settings_handler.save_pc_item(pc)
 						})
 
-						console.log('calling cb')
 						load_settings_callback()
 						success = true
 					}
@@ -214,12 +211,16 @@ function share_file() {
 	// #ifdef APP-PLUS
 	plus.io.requestFileSystem(plus.io.PUBLIC_DOCUMENTS, fs => {
 		fs.root.getFile(SETTINGS_FILENAME, {}, file_entry => {
+			// console.log(Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)).toString())
+			// const uri = Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)),
+			// const uri = Uri.parse(file_entry.fullPath.replace('/storage/emulated/0', 'content://com.android.fileexplorer.myprovider/external_files'))
 			const intent = new Intent()
 				.setAction(Intent.ACTION_SEND)
-				.setType('*/*')
+				.setType('text/plain')
 				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath))
-				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+				// .putExtra(Intent.EXTRA_TEXT, 'Share a file')
+				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath)) // Uri.parse('content://com.android.fileexplorer.myprovider/external_files/111/remote_wol_settings.json')) // Uri.fromFile('file:///storage/emulated/0/111/remote_wol_settings.json'))
+				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
 			MainActivity.startActivity(Intent.createChooser(intent, 'Share a file'))
 			// MainActivity.startActivity(intent)
