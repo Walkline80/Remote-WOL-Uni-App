@@ -10,6 +10,7 @@ import {bytes_to_size} from './update_handler.js'
 
 // #ifdef APP-PLUS
 plus.android.importClass('android.content.ContentResolver')
+plus.android.importClass('android.database.Cursor')
 
 const MainActivity = plus.android.runtimeMainActivity(),
 	Intent = plus.android.importClass('android.content.Intent'),
@@ -17,6 +18,9 @@ const MainActivity = plus.android.runtimeMainActivity(),
 	InputStreamReader = plus.android.importClass('java.io.InputStreamReader'),
 	BufferedReader = plus.android.importClass('java.io.BufferedReader'),
 	File = plus.android.importClass('java.io.File'),
+	MediaStore = plus.android.importClass('android.provider.MediaStore'),
+	MimeTypeMap = plus.android.importClass('android.webkit.MimeTypeMap'),
+	DocumentsContract = plus.android.importClass('android.provider.DocumentsContract'),
 
 	SETTINGS_FILENAME = 'remote_wol_settings.json',
 	PACKAGE_NAME = MainActivity.getPackageName()
@@ -214,13 +218,49 @@ function share_file() {
 			// console.log(Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)).toString())
 			// const uri = Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)),
 			// const uri = Uri.parse(file_entry.fullPath.replace('/storage/emulated/0', 'content://com.android.fileexplorer.myprovider/external_files'))
+			
+			
+			// plus.android.importClass(MainActivity.getContentResolver())
+			// console.log(file_entry.fullPath)
+			// console.log(MediaStore.Files.getContentUri("external").toString())
+			// var content_resolver = MainActivity.getContentResolver(),
+			// 	// uri = MediaStoreFiles.getContentUri("external"),
+				
+			// 	select = "(" + MediaStore.Files.FileColumns.DATA + " LIKE '%.json')",
+			// 	c = content_resolver.query(MediaStore.Files.getContentUri("external"), null, select , ['/storage/emulated/0/Android'], null)
+			// var projection = null,
+			// 	selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_NONE,
+			// 	selectionArgs = null, // there is no ? in selection so null here
+			// 	sortOrder = null, // unordered
+			// 	allNonMediaFiles = content_resolver.query(uri, projection, selection, selectionArgs, sortOrder)
+				// selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
+			// var mimeType = MimeTypeMap.getMimeTypeFromExtension("json")
+			// var selectionArgsPdf = ['pdf'],
+			// 	cursor = content_resolver.query(uri, selection, selectionMimeType, selectionArgsPdf, sortOrder)
+			// console.log(c.getColumnNames().toString())
+			// c.moveToNext()
+			// const columnIndexOrThrow_DATA = c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA),
+			// 	path = c.getString(columnIndexOrThrow_DATA)
+			// 	// console.log(c)
+			// 	console.log(path)
+
+			// while (cursor.moveToNext()) {
+				// cursor.moveToFirst()
+				// const column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA),
+				// 	filePath = cursor.getString(column_index),//所有pdf文件路径
+				// 	fileName = getFileNameWithSuffix(filePath)//所有文件名称
+					
+				// console.log(filePath)
+				// console.log(fileName)
+			// }
+
 			const intent = new Intent()
 				.setAction(Intent.ACTION_SEND)
 				.setType('text/plain')
 				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 				// .putExtra(Intent.EXTRA_TEXT, 'Share a file')
-				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath)) // Uri.parse('content://com.android.fileexplorer.myprovider/external_files/111/remote_wol_settings.json')) // Uri.fromFile('file:///storage/emulated/0/111/remote_wol_settings.json'))
-				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath)) // Uri.parse('content://com.android.fileexplorer.myprovider/external_files/111/remote_wol_settings.json')) // Uri.parse('/storage/emulated/0/111/remote_wol_settings.json'))
+				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
 			MainActivity.startActivity(Intent.createChooser(intent, 'Share a file'))
 			// MainActivity.startActivity(intent)
