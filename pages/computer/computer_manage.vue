@@ -351,7 +351,7 @@
 						'请选择一个操作',
 						'从文件导入',
 						'导出到文件',
-						'分享（无法分享到微信）'
+						'分享文件'
 					],
 					success: event => {
 						console.log('clicked item ' + event.tapIndex)
