@@ -10,17 +10,19 @@ import {bytes_to_size} from './update_handler.js'
 
 // #ifdef APP-PLUS
 plus.android.importClass('android.content.ContentResolver')
-plus.android.importClass('android.database.Cursor')
 
 const MainActivity = plus.android.runtimeMainActivity(),
 	Intent = plus.android.importClass('android.content.Intent'),
 	Uri = plus.android.importClass('android.net.Uri'),
 	InputStreamReader = plus.android.importClass('java.io.InputStreamReader'),
+	OutputStreamWriter = plus.android.importClass('java.io.OutputStreamWriter'),
 	BufferedReader = plus.android.importClass('java.io.BufferedReader'),
+	BufferedWriter = plus.android.importClass('java.io.BufferedWriter'),
 	File = plus.android.importClass('java.io.File'),
-	MediaStore = plus.android.importClass('android.provider.MediaStore'),
-	MimeTypeMap = plus.android.importClass('android.webkit.MimeTypeMap'),
-	DocumentsContract = plus.android.importClass('android.provider.DocumentsContract'),
+	FileInputStream = plus.android.importClass('java.io.FileInputStream'),
+	FileOutputStream = plus.android.importClass('java.io.FileOutputStream'),
+	MediaScannerConnection = plus.android.importClass('android.media.MediaScannerConnection'),
+	Environment = plus.android.importClass('android.os.Environment'),
 
 	SETTINGS_FILENAME = 'remote_wol_settings.json',
 	PACKAGE_NAME = MainActivity.getPackageName()
@@ -215,55 +217,33 @@ function share_file() {
 	// #ifdef APP-PLUS
 	plus.io.requestFileSystem(plus.io.PUBLIC_DOCUMENTS, fs => {
 		fs.root.getFile(SETTINGS_FILENAME, {}, file_entry => {
-			// console.log(Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)).toString())
-			// const uri = Uri.fromFile(new File(MainActivity.getExternalFilesDir(), file_entry.fullPath)),
-			// const uri = Uri.parse(file_entry.fullPath.replace('/storage/emulated/0', 'content://com.android.fileexplorer.myprovider/external_files'))
-			
-			
-			// plus.android.importClass(MainActivity.getContentResolver())
-			// console.log(file_entry.fullPath)
-			// console.log(MediaStore.Files.getContentUri("external").toString())
-			// var content_resolver = MainActivity.getContentResolver(),
-			// 	// uri = MediaStoreFiles.getContentUri("external"),
-				
-			// 	select = "(" + MediaStore.Files.FileColumns.DATA + " LIKE '%.json')",
-			// 	c = content_resolver.query(MediaStore.Files.getContentUri("external"), null, select , ['/storage/emulated/0/Android'], null)
-			// var projection = null,
-			// 	selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_NONE,
-			// 	selectionArgs = null, // there is no ? in selection so null here
-			// 	sortOrder = null, // unordered
-			// 	allNonMediaFiles = content_resolver.query(uri, projection, selection, selectionArgs, sortOrder)
-				// selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
-			// var mimeType = MimeTypeMap.getMimeTypeFromExtension("json")
-			// var selectionArgsPdf = ['pdf'],
-			// 	cursor = content_resolver.query(uri, selection, selectionMimeType, selectionArgsPdf, sortOrder)
-			// console.log(c.getColumnNames().toString())
-			// c.moveToNext()
-			// const columnIndexOrThrow_DATA = c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA),
-			// 	path = c.getString(columnIndexOrThrow_DATA)
-			// 	// console.log(c)
-			// 	console.log(path)
+			const listener = new plus.android.implements('android.media.MediaScannerConnection$OnScanCompletedListener', {
+				'onScanCompleted': (path, uri) => {
+					console.log('uri: ' + uri.toString())
 
-			// while (cursor.moveToNext()) {
-				// cursor.moveToFirst()
-				// const column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA),
-				// 	filePath = cursor.getString(column_index),//所有pdf文件路径
-				// 	fileName = getFileNameWithSuffix(filePath)//所有文件名称
-					
-				// console.log(filePath)
-				// console.log(fileName)
-			// }
+					const intent = new Intent()
+						.setAction(Intent.ACTION_SEND)
+						.setType('text/*')
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+						.putExtra(Intent.EXTRA_TEXT, 'Share a file')
+						.putExtra(Intent.EXTRA_STREAM, uri) // Uri.parse(file_entry.fullPath))
+						.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-			const intent = new Intent()
-				.setAction(Intent.ACTION_SEND)
-				.setType('text/plain')
-				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-				// .putExtra(Intent.EXTRA_TEXT, 'Share a file')
-				.putExtra(Intent.EXTRA_STREAM, Uri.parse(file_entry.fullPath)) // Uri.parse('content://com.android.fileexplorer.myprovider/external_files/111/remote_wol_settings.json')) // Uri.parse('/storage/emulated/0/111/remote_wol_settings.json'))
-				.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+					MainActivity.startActivity(Intent.createChooser(intent, 'Share a file'))
+					// MainActivity.startActivity(intent)
+					new File(path).deleteOnExit()
+				}
+			})
 
-			MainActivity.startActivity(Intent.createChooser(intent, 'Share a file'))
-			// MainActivity.startActivity(intent)
+			if (copy_file_to_public_directory(file_entry.fullPath)) {
+				MediaScannerConnection.scanFile(MainActivity, [get_public_directory() + '/' + SETTINGS_FILENAME], null, listener)
+			} else {
+				uni.showToast({
+					title: '复制文件出错',
+					icon: 'none',
+					duration: 2000
+				})
+			}
 
 			return true
 		}, error => {
@@ -277,9 +257,47 @@ function share_file() {
 	// #endif
 }
 
+function copy_file_to_public_directory(file_path) {
+	// #ifndef APP-PLUS
+	return false
+	// #endif
+	
+	// #ifdef APP-PLUS
+	const input_stream = new FileInputStream(file_path),
+		output_Stream = new FileOutputStream(get_public_directory() + '/' + SETTINGS_FILENAME),
+		file_reader = new BufferedReader(new InputStreamReader(input_stream)),
+		file_writer = new BufferedWriter(new OutputStreamWriter(output_Stream)),
+		content = file_reader.readLine()
+
+	file_writer.write(content, 0, content.length)
+	file_writer.flush()
+
+	file_writer.close()
+	file_reader.close()
+	output_Stream.close()
+	input_stream.close()
+	console.log('copy file success')
+
+	return true
+	// #endif
+}
+
+function get_public_directory() {
+	// '/storage/emulated/0/Download/temp'
+	// #ifndef APP-PLUS
+	return false
+	// #endif
+	
+	// #ifdef APP-PLUS
+	return new File(Environment.getExternalStorageDirectory(), 'Download/temp').getAbsolutePath()
+	// #endif
+}
+
 export default {
 	// choose_and_load_file,
 	// analyse_and_import_settings,
+	// copy_file_to_public_directory,
+	// get_public_directory,
 	save_settings,
 	load_settings,
 	share_file,
