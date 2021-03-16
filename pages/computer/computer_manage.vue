@@ -88,7 +88,7 @@
 					size="mini"
 					type="primary"
 					plain
-					:disabled="!(device.status && mqtt_status)"
+					:disabled="!(device.status && mqtt_status) || group_counter[index] <= 0"
 					@click="group_wakeup(device)">唤醒</button>
 			</view>
 
